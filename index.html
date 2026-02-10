@@ -1868,91 +1868,6 @@
                 </p>
             </div>
 
-            <!-- Antifragile by Design Card -->
-            <div class="card antifragile-card" style="max-width: 1000px; margin: var(--spacing-2xl) auto 0; background: linear-gradient(135deg, rgba(100, 50, 150, 0.08) 0%, rgba(100, 50, 150, 0.12) 100%); border: 2px solid rgba(150, 100, 200, 0.5); border-radius: 16px; padding: var(--spacing-xl);">
-                <div style="text-align: center; margin-bottom: var(--spacing-lg);">
-                    <div style="display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: var(--spacing-md);">
-                        <i class="fas fa-chart-line" style="color: rgba(150, 100, 200, 0.9); font-size: 1.5rem;"></i>
-                        <h3 style="color: rgba(150, 100, 200, 0.9); margin: 0; font-size: 1.4rem;">Antifragile by Design (Taleb): Convexity in Volatility</h3>
-                    </div>
-                    <p style="color: rgba(255,255,255,0.85); font-size: 1rem; line-height: 1.6; margin: 0; font-style: italic;">
-                        EPIG is inspired by a barbell logic: a defensive base plus small convex bets designed to benefit from volatility.
-                    </p>
-                </div>
-
-                <!-- 3-Column Definition Grid -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
-                    <div style="background: rgba(255, 74, 87, 0.1); border: 1px solid rgba(255, 74, 87, 0.3); border-radius: 8px; padding: var(--spacing-md); text-align: center;">
-                        <h5 style="color: var(--danger); margin: 0 0 0.5rem 0; font-size: 0.95rem;">Fragile</h5>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem;">Worse when volatility rises.</p>
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: var(--spacing-md); text-align: center;">
-                        <h5 style="color: rgba(255,255,255,0.8); margin: 0 0 0.5rem 0; font-size: 0.95rem;">Robust</h5>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem;">Resists shocks; doesn't improve.</p>
-                    </div>
-                    <div style="background: rgba(0, 200, 150, 0.1); border: 1px solid rgba(0, 200, 150, 0.3); border-radius: 8px; padding: var(--spacing-md); text-align: center;">
-                        <h5 style="color: var(--brand-teal); margin: 0 0 0.5rem 0; font-size: 0.95rem;">Anti-fragile</h5>
-                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem;">Can improve as volatility rises (convexity).</p>
-                    </div>
-                </div>
-
-                <!-- Minimal SVG Curve Visualization -->
-                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
-                    <svg viewBox="0 0 400 200" style="width: 100%; max-width: 500px; height: auto; display: block; margin: 0 auto;">
-                        <!-- Axes -->
-                        <line x1="40" y1="160" x2="360" y2="160" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                        <line x1="40" y1="20" x2="40" y2="160" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                        
-                        <!-- Labels -->
-                        <text x="200" y="185" fill="rgba(255,255,255,0.5)" font-size="11" text-anchor="middle">Volatility / Disorder →</text>
-                        <text x="15" y="90" fill="rgba(255,255,255,0.5)" font-size="11" text-anchor="middle" transform="rotate(-90 15 90)">Outcome Sensitivity →</text>
-                        
-                        <!-- Fragile Curve (downward) -->
-                        <path d="M 50 80 Q 150 100, 250 140" stroke="#FF4757" stroke-width="2.5" fill="none" stroke-dasharray="4,3"/>
-                        <text x="260" y="145" fill="#FF4757" font-size="10" font-weight="600">Fragile</text>
-                        
-                        <!-- Robust Curve (flat) -->
-                        <path d="M 50 100 L 350 105" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" fill="none"/>
-                        <text x="320" y="100" fill="rgba(255,255,255,0.6)" font-size="10" font-weight="600">Robust</text>
-                        
-                        <!-- Anti-fragile Curve (upward convex) -->
-                        <path d="M 50 120 Q 150 110, 250 50" stroke="#00C896" stroke-width="2.5" fill="none"/>
-                        <text x="255" y="48" fill="#00C896" font-size="10" font-weight="600">Anti-fragile</text>
-                    </svg>
-                </div>
-
-                <!-- 3 EPIG Translation Bullets -->
-                <div style="background: rgba(0, 0, 0, 0.2); border-left: 3px solid rgba(150, 100, 200, 0.7); border-radius: 8px; padding: var(--spacing-md); margin-bottom: var(--spacing-md);">
-                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
-                        <li style="color: rgba(255,255,255,0.85); font-size: 0.9rem; padding-left: 1.5rem; position: relative;">
-                            <i class="fas fa-shield-alt" style="position: absolute; left: 0; color: rgba(150, 100, 200, 0.8);"></i>
-                            Defensive base reduces fragility (selective exposure).
-                        </li>
-                        <li style="color: rgba(255,255,255,0.85); font-size: 0.9rem; padding-left: 1.5rem; position: relative;">
-                            <i class="fas fa-wave-square" style="position: absolute; left: 0; color: rgba(150, 100, 200, 0.8);"></i>
-                            Convex sleeves seek asymmetry in turbulence.
-                        </li>
-                        <li style="color: rgba(255,255,255,0.85); font-size: 0.9rem; padding-left: 1.5rem; position: relative;">
-                            <i class="fas fa-power-off" style="position: absolute; left: 0; color: rgba(150, 100, 200, 0.8);"></i>
-                            Circuit breakers cap downside; optionality preserves upside.
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- "What this is NOT" -->
-                <div style="background: rgba(255, 200, 0, 0.08); border: 1px solid rgba(255, 200, 0, 0.3); border-radius: 8px; padding: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
-                    <p style="color: rgba(255, 220, 100, 0.95); margin: 0; font-size: 0.85rem; line-height: 1.5;">
-                        <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
-                        <strong>What this is NOT:</strong> This does not mean risk-free or always profitable—convexity can have carry costs.
-                    </p>
-                </div>
-
-                <!-- Micro-disclaimer -->
-                <p style="color: rgba(255,255,255,0.4); margin: 0; font-size: 0.75rem; text-align: center; font-style: italic;">
-                    Educational concept only. Results vary; losses can occur.
-                </p>
-            </div>
-
             <!-- Mobile Responsive Adjustment -->
             <style>
                 @media (max-width: 768px) {
@@ -3344,6 +3259,91 @@
                         <strong style="color: var(--brand-gold);">The Result:</strong> Unlike traditional strategies that force you to spread assets across multiple "buckets," EPIG's architecture lets you <strong>consolidate 50-90% of your liquid net worth</strong> into a single unified strategy—because you're in control at all times.
                     </p>
                 </div>
+            </div>
+
+            <!-- Antifragile by Design Card -->
+            <div class="card antifragile-card" style="max-width: 1000px; margin: var(--spacing-2xl) auto; background: linear-gradient(135deg, rgba(100, 50, 150, 0.08) 0%, rgba(100, 50, 150, 0.12) 100%); border: 2px solid rgba(150, 100, 200, 0.5); border-radius: 16px; padding: var(--spacing-xl);">
+                <div style="text-align: center; margin-bottom: var(--spacing-lg);">
+                    <div style="display: inline-flex; align-items: center; gap: 0.75rem; margin-bottom: var(--spacing-md);">
+                        <i class="fas fa-chart-line" style="color: rgba(150, 100, 200, 0.9); font-size: 1.5rem;"></i>
+                        <h3 style="color: rgba(150, 100, 200, 0.9); margin: 0; font-size: 1.4rem;">Antifragile by Design (Taleb): Convexity in Volatility</h3>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.85); font-size: 1rem; line-height: 1.6; margin: 0; font-style: italic;">
+                        EPIG is inspired by a barbell logic: a defensive base plus small convex bets designed to benefit from volatility.
+                    </p>
+                </div>
+
+                <!-- 3-Column Definition Grid -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-md); margin-bottom: var(--spacing-xl);">
+                    <div style="background: rgba(255, 74, 87, 0.1); border: 1px solid rgba(255, 74, 87, 0.3); border-radius: 8px; padding: var(--spacing-md); text-align: center;">
+                        <h5 style="color: var(--danger); margin: 0 0 0.5rem 0; font-size: 0.95rem;">Fragile</h5>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem;">Worse when volatility rises.</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: var(--spacing-md); text-align: center;">
+                        <h5 style="color: rgba(255,255,255,0.8); margin: 0 0 0.5rem 0; font-size: 0.95rem;">Robust</h5>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem;">Resists shocks; doesn't improve.</p>
+                    </div>
+                    <div style="background: rgba(0, 200, 150, 0.1); border: 1px solid rgba(0, 200, 150, 0.3); border-radius: 8px; padding: var(--spacing-md); text-align: center;">
+                        <h5 style="color: var(--brand-teal); margin: 0 0 0.5rem 0; font-size: 0.95rem;">Anti-fragile</h5>
+                        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 0.85rem;">Can improve as volatility rises (convexity).</p>
+                    </div>
+                </div>
+
+                <!-- Minimal SVG Curve Visualization -->
+                <div style="background: rgba(0, 0, 0, 0.3); border-radius: 12px; padding: var(--spacing-lg); margin-bottom: var(--spacing-lg);">
+                    <svg viewBox="0 0 400 200" style="width: 100%; max-width: 500px; height: auto; display: block; margin: 0 auto;">
+                        <!-- Axes -->
+                        <line x1="40" y1="160" x2="360" y2="160" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                        <line x1="40" y1="20" x2="40" y2="160" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                        
+                        <!-- Labels -->
+                        <text x="200" y="185" fill="rgba(255,255,255,0.5)" font-size="11" text-anchor="middle">Volatility / Disorder →</text>
+                        <text x="15" y="90" fill="rgba(255,255,255,0.5)" font-size="11" text-anchor="middle" transform="rotate(-90 15 90)">Outcome Sensitivity →</text>
+                        
+                        <!-- Fragile Curve (downward) -->
+                        <path d="M 50 80 Q 150 100, 250 140" stroke="#FF4757" stroke-width="2.5" fill="none" stroke-dasharray="4,3"/>
+                        <text x="260" y="145" fill="#FF4757" font-size="10" font-weight="600">Fragile</text>
+                        
+                        <!-- Robust Curve (flat) -->
+                        <path d="M 50 100 L 350 105" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" fill="none"/>
+                        <text x="320" y="100" fill="rgba(255,255,255,0.6)" font-size="10" font-weight="600">Robust</text>
+                        
+                        <!-- Anti-fragile Curve (upward convex) -->
+                        <path d="M 50 120 Q 150 110, 250 50" stroke="#00C896" stroke-width="2.5" fill="none"/>
+                        <text x="255" y="48" fill="#00C896" font-size="10" font-weight="600">Anti-fragile</text>
+                    </svg>
+                </div>
+
+                <!-- 3 EPIG Translation Bullets -->
+                <div style="background: rgba(0, 0, 0, 0.2); border-left: 3px solid rgba(150, 100, 200, 0.7); border-radius: 8px; padding: var(--spacing-md); margin-bottom: var(--spacing-md);">
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li style="color: rgba(255,255,255,0.85); font-size: 0.9rem; padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-shield-alt" style="position: absolute; left: 0; color: rgba(150, 100, 200, 0.8);"></i>
+                            Defensive base reduces fragility (selective exposure).
+                        </li>
+                        <li style="color: rgba(255,255,255,0.85); font-size: 0.9rem; padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-wave-square" style="position: absolute; left: 0; color: rgba(150, 100, 200, 0.8);"></i>
+                            Convex sleeves seek asymmetry in turbulence.
+                        </li>
+                        <li style="color: rgba(255,255,255,0.85); font-size: 0.9rem; padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-power-off" style="position: absolute; left: 0; color: rgba(150, 100, 200, 0.8);"></i>
+                            Circuit breakers cap downside; optionality preserves upside.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- "What this is NOT" -->
+                <div style="background: rgba(255, 200, 0, 0.08); border: 1px solid rgba(255, 200, 0, 0.3); border-radius: 8px; padding: var(--spacing-sm); margin-bottom: var(--spacing-sm);">
+                    <p style="color: rgba(255, 220, 100, 0.95); margin: 0; font-size: 0.85rem; line-height: 1.5;">
+                        <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                        <strong>What this is NOT:</strong> This does not mean risk-free or always profitable—convexity can have carry costs.
+                    </p>
+                </div>
+
+                <!-- Micro-disclaimer -->
+                <p style="color: rgba(255,255,255,0.4); margin: 0; font-size: 0.75rem; text-align: center; font-style: italic;">
+                    Educational concept only. Results vary; losses can occur.
+                </p>
             </div>
 
             <!-- The Real Comparison: Traditional Constraint vs EPIG Capability -->
