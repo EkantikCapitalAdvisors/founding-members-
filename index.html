@@ -1803,6 +1803,113 @@
                 </div>
             </div>
 
+            <!-- Casino EV Comparison Table -->
+            <div style="background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(220, 53, 69, 0.08) 100%); border: 2px solid var(--danger); border-radius: 16px; padding: var(--spacing-lg); margin-bottom: var(--spacing-2xl); max-width: 900px; margin-left: auto; margin-right: auto;">
+                <h4 style="color: var(--brand-gold); margin-bottom: var(--spacing-md); text-align: center; font-size: 1.2rem; font-weight: 700;">
+                    <i class="fas fa-chart-line"></i> Strategy Comparison: Edge & Trade Frequency
+                </h4>
+                
+                <p style="color: rgba(255,255,255,0.8); text-align: center; margin-bottom: var(--spacing-lg); font-size: 0.95rem; line-height: 1.6;">
+                    Different strategies have vastly different <strong style="color: var(--brand-gold);">mathematical edges</strong> and trade frequencies. 
+                    Here's how EPIG compares across the spectrum:
+                </p>
+
+                <!-- Strategy Comparison Table -->
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; background: rgba(0, 0, 0, 0.3); border-radius: 8px; overflow: hidden;">
+                        <thead>
+                            <tr style="background: rgba(0, 0, 0, 0.5);">
+                                <th style="padding: var(--spacing-sm); text-align: left; color: var(--brand-gold); font-weight: 700; border-bottom: 2px solid rgba(244, 185, 66, 0.3);">Strategy - "Business Model"</th>
+                                <th style="padding: var(--spacing-sm); text-align: center; color: var(--brand-gold); font-weight: 700; border-bottom: 2px solid rgba(244, 185, 66, 0.3);">Edge / Trade</th>
+                                <th style="padding: var(--spacing-sm); text-align: center; color: var(--brand-gold); font-weight: 700; border-bottom: 2px solid rgba(244, 185, 66, 0.3);">Trades / Month</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Casino - American Roulette (NEGATIVE) -->
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <td style="padding: var(--spacing-sm); color: rgba(255,255,255,0.9);">Casino - American roulette</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: var(--danger); font-weight: 700; font-family: 'Courier New', monospace;">-5.26%</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: rgba(255,255,255,0.7); font-weight: 600;">≥ 2,400</td>
+                            </tr>
+                            
+                            <!-- High-Frequency Market-Making (POSITIVE) -->
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0, 200, 150, 0.05);">
+                                <td style="padding: var(--spacing-sm); color: rgba(255,255,255,0.9);">High-Frequency Market-Making</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: var(--brand-teal); font-weight: 700; font-family: 'Courier New', monospace;">+0.017%</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: rgba(255,255,255,0.7); font-weight: 600;">≈ 100,000+</td>
+                            </tr>
+                            
+                            <!-- Stat-Arb pairs / baskets (POSITIVE) -->
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0, 200, 150, 0.05);">
+                                <td style="padding: var(--spacing-sm); color: rgba(255,255,255,0.9);">Stat-Arb pairs / baskets</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: var(--brand-teal); font-weight: 700; font-family: 'Courier New', monospace;">+0.5-2%</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: rgba(255,255,255,0.7); font-weight: 600;">≈ 200-500</td>
+                            </tr>
+                            
+                            <!-- Trend-Following CTAs (POSITIVE) -->
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0, 200, 150, 0.05);">
+                                <td style="padding: var(--spacing-sm); color: rgba(255,255,255,0.9);">Trend-Following CTAs</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: var(--brand-teal); font-weight: 700; font-family: 'Courier New', monospace;">+0.5-1%</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: rgba(255,255,255,0.7); font-weight: 600;">≈ 10-30</td>
+                            </tr>
+                            
+                            <!-- Retail Day-Trader (median) - NEGATIVE -->
+                            <tr style="border-bottom: 2px solid rgba(220, 53, 69, 0.3);">
+                                <td style="padding: var(--spacing-sm); color: rgba(255,255,255,0.9);">Retail Day-Trader (median)</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: var(--danger); font-weight: 700; font-family: 'Courier New', monospace;">negative</td>
+                                <td style="padding: var(--spacing-sm); text-align: center; color: rgba(255,255,255,0.7); font-weight: 600;">500+</td>
+                            </tr>
+                            
+                            <!-- EPIG Strategy - HIGHLIGHTED -->
+                            <tr style="background: linear-gradient(135deg, rgba(0, 200, 150, 0.25) 0%, rgba(0, 200, 150, 0.15) 100%); border-top: 3px solid var(--brand-teal); border-bottom: 3px solid var(--brand-teal);">
+                                <td style="padding: var(--spacing-md) var(--spacing-sm); color: var(--brand-gold); font-weight: 800; font-size: 1.1rem;">
+                                    <i class="fas fa-crown"></i> EPIG Strategy
+                                </td>
+                                <td style="padding: var(--spacing-md) var(--spacing-sm); text-align: center; color: var(--brand-teal); font-weight: 900; font-size: 1.3rem; font-family: 'Courier New', monospace;">
+                                    +20%
+                                </td>
+                                <td style="padding: var(--spacing-md) var(--spacing-sm); text-align: center; color: var(--brand-gold); font-weight: 800; font-size: 1.1rem;">
+                                    200-500
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Key Insight Boxes -->
+                <div class="key-insight-boxes" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-lg);">
+                    <!-- Left Box - The Edge Spectrum -->
+                    <div style="background: rgba(0, 200, 150, 0.15); border-left: 4px solid var(--brand-teal); border-radius: 8px; padding: var(--spacing-md);">
+                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin: 0; line-height: 1.6;">
+                            <strong style="color: var(--brand-teal); font-size: 1rem;">📊 The Edge Spectrum:</strong><br>
+                            <span style="color: var(--danger);">Casino:</span> <strong>-5.26%</strong> (guaranteed loss)<br>
+                            <span style="color: var(--danger);">Retail traders:</span> <strong>negative</strong> (most fail)<br>
+                            <span style="color: var(--brand-teal);">HFT market-making:</span> <strong>+0.017%</strong> (needs millions of trades)<br>
+                            <span style="color: var(--brand-teal);">Stat-Arb / CTAs:</span> <strong>+0.5-2%</strong> (institutional edge)<br>
+                            <span style="color: var(--brand-gold);">EPIG:</span> <strong>+20%</strong> per trade 🎯
+                        </p>
+                    </div>
+                    
+                    <!-- Right Box - The Sweet Spot -->
+                    <div style="background: rgba(244, 185, 66, 0.15); border-left: 4px solid var(--brand-gold); border-radius: 8px; padding: var(--spacing-md);">
+                        <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin: 0; line-height: 1.6;">
+                            <strong style="color: var(--brand-gold); font-size: 1rem;">⚡ The Sweet Spot:</strong><br>
+                            EPIG combines <strong style="color: var(--brand-teal);">massive edge</strong> (+20% per trade) with <strong style="color: var(--brand-gold);">meaningful frequency</strong> (200-500 trades/month).<br><br>
+                            <strong style="color: white;">HFT</strong> needs millions of trades to compound tiny edges.<br>
+                            <strong style="color: white;">EPIG</strong> compounds a 40× larger edge with patient precision. That's why we can deliver <strong style="color: var(--brand-teal);">10× in 10 years with &lt;10% drawdown</strong>.
+                        </p>
+                    </div>
+                </div>
+                
+                <style>
+                    @media (max-width: 768px) {
+                        .key-insight-boxes {
+                            grid-template-columns: 1fr !important;
+                        }
+                    }
+                </style>
+            </div>
+
             <!-- Four Pillars Grid -->
             <h3 style="text-align: center; color: white; font-size: 1.8rem; margin-bottom: var(--spacing-xl);">
                 <i class="fas fa-columns"></i> Four Components of Asymmetric Risk-Reward
