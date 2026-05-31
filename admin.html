@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Ekantik Capital — Trade Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        :root{
+            --navy:#1B2A4A;--navy-deep:#131F38;--gold:#C8A951;--gold-soft:rgba(200,169,81,.14);
+            --slate:#8A97AD;--slate-dim:#5E6B82;--ink:#EAEFF7;
+            --hair:rgba(200,169,81,.18);--hair-cool:rgba(138,151,173,.16);
+            --pos:#4FB286;--neg:#C9554E;
+            --display:'Playfair Display',Georgia,serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--sans:'Inter',-apple-system,sans-serif;
+        }
+        body{font-family:var(--sans);background:var(--navy);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+        .wrap{max-width:1240px;margin:0 auto;padding:0 24px;}
+        a{color:var(--gold);text-decoration:none;}a:hover{text-decoration:underline;}
+        h1{font-family:var(--display);font-size:1.7rem;}h2{font-family:var(--display);font-size:1.2rem;margin-bottom:.6rem;}
+        .mono{font-family:var(--mono);}
+
+        .topbar{position:sticky;top:0;z-index:20;background:rgba(19,31,56,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair-cool);}
+        .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;}
+        .brand{font-family:var(--mono);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;}
+        .brand span{color:var(--gold);}
+        .topbar a{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);}
+
+        header.hd{padding:40px 0 8px;}
+        header.hd .kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);}
+        header.hd p{color:#C7D0DE;max-width:840px;margin-top:.5rem;}
+
+        section.card{border:1px solid var(--hair-cool);border-radius:8px;background:rgba(255,255,255,.012);padding:1.4rem;margin:22px 0;}
+        .row{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;}
+        textarea{width:100%;min-height:150px;background:var(--navy-deep);color:var(--ink);border:1px solid var(--hair-cool);border-radius:6px;
+            padding:.9rem;font-family:var(--mono);font-size:.78rem;resize:vertical;}
+        textarea:focus{outline:none;border-color:var(--gold);}
+        .btn{font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;padding:.7rem 1.2rem;border-radius:5px;border:1px solid var(--gold);cursor:pointer;
+            background:transparent;color:var(--gold);transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;}
+        .btn:hover{background:var(--gold-soft);text-decoration:none;}
+        .btn.primary{background:var(--gold);color:var(--navy-deep);font-weight:600;}
+        .btn.primary:hover{background:#d9bc66;}
+        .btn.ghost{border-color:var(--hair-cool);color:var(--slate);}
+        .file-label{font-family:var(--mono);font-size:.74rem;color:var(--slate);}
+        input[type=file]{font-family:var(--mono);font-size:.74rem;color:var(--slate);}
+
+        .stat-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:.8rem;margin:10px 0 0;}
+        .stat{border:1px solid var(--hair-cool);border-radius:6px;padding:.8rem;}
+        .stat .l{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);}
+        .stat .v{font-family:var(--mono);font-size:1.1rem;color:var(--ink);margin-top:.2rem;}
+        .stat .v.pos{color:var(--pos);}.stat .v.neg{color:var(--neg);}.stat .v.gold{color:var(--gold);}
+
+        .table-scroll{overflow-x:auto;border:1px solid var(--hair-cool);border-radius:8px;margin-top:10px;}
+        table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.76rem;min-width:980px;}
+        th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--hair-cool);}
+        th{color:var(--gold);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;position:sticky;top:0;background:var(--navy-deep);}
+        tr.review{background:rgba(200,169,81,.07);}
+        tr.excluded{opacity:.45;}
+        td input,td select{background:var(--navy-deep);color:var(--ink);border:1px solid var(--hair-cool);border-radius:4px;padding:.3rem .4rem;font-family:var(--mono);font-size:.74rem;width:100%;}
+        td input:focus,td select:focus{outline:none;border-color:var(--gold);}
+        td.num input{width:74px;}
+        .raw-cell{max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--slate-dim);font-size:.68rem;}
+        .pill{font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .45rem;border-radius:99px;border:1px solid var(--hair-cool);color:var(--slate);}
+        .msg{font-family:var(--mono);font-size:.76rem;margin-left:1rem;}
+        .msg.ok{color:var(--pos);}.msg.err{color:var(--neg);}
+        .hint{font-family:var(--mono);font-size:.7rem;color:var(--slate-dim);margin-top:.5rem;}
+        .checkcol{text-align:center;}
+    </style>
+</head>
+<body>
+    <div class="topbar"><div class="wrap">
+        <div class="brand">EKANTIK CAPITAL · <span>Trade Admin</span></div>
+        <div><a href="dashboard.html">Dashboard →</a> &nbsp; <a href="index.html">Founding page</a></div>
+    </div></div>
+
+    <div class="wrap">
+        <header class="hd">
+            <span class="kicker">Internal · not public</span>
+            <h1>Upload &amp; review trades</h1>
+            <p>Paste the Discord <span class="mono">#imo-futures-trades</span> HTML export (or drop the file), parse it, fix any flagged rows, then download <span class="mono">trades.json</span> and commit it to the repo. The dashboard and the founding page read that one file — this is the single source of truth.</p>
+        </header>
+
+        <section class="card">
+            <h2>1 · Load the export</h2>
+            <div class="row" style="margin-bottom:.8rem;">
+                <label class="file-label">HTML file: <input type="file" id="file" accept=".html,.htm,.txt"></label>
+                <span class="hint">…or paste below. Plain text also works: one message per line, optionally <span class="mono">timestamp | message</span>.</span>
+            </div>
+            <textarea id="input" placeholder="Paste the Discord export HTML here, or load a file above…"></textarea>
+            <div class="row" style="margin-top:.9rem;">
+                <button class="btn primary" id="parseBtn">Parse trades</button>
+                <button class="btn ghost" id="loadCurrent">Load current trades.json</button>
+                <span id="parseMsg" class="msg"></span>
+            </div>
+        </section>
+
+        <section class="card" id="reviewCard" style="display:none;">
+            <h2>2 · Review &amp; correct</h2>
+            <p class="hint">Rows highlighted in gold need a human look (half-size / parenthetical results, unresolved, no-trade). Edit any cell. Untick <b>Incl.</b> to exclude a record from the public counts.</p>
+            <div class="stat-strip" id="stats"></div>
+            <div class="table-scroll">
+                <table id="tbl"><thead><tr>
+                    <th class="checkcol">Incl.</th><th>ID</th><th>Series</th><th>Dir</th><th>Entry</th><th>Stop</th><th>Target</th>
+                    <th>Points</th><th>Size</th><th>Date</th><th>Status</th><th>Raw (source)</th>
+                </tr></thead><tbody id="tbody"></tbody></table>
+            </div>
+        </section>
+
+        <section class="card" id="exportCard" style="display:none;">
+            <h2>3 · Export</h2>
+            <div class="row">
+                <button class="btn primary" id="downloadBtn">⬇ Download trades.json</button>
+                <button class="btn" id="copyBtn">Copy JSON</button>
+                <button class="btn ghost" id="saveLocal">Save to browser</button>
+                <span id="exportMsg" class="msg"></span>
+            </div>
+            <p class="hint">Commit the downloaded <span class="mono">trades.json</span> to the repo root. The live page serves whatever is committed there.</p>
+        </section>
+    </div>
+
+    <script src="parser.js"></script>
+    <script>
+        var ROWS = [], META = null;
+        var $ = function(id){ return document.getElementById(id); };
+
+        $("file").addEventListener("change", function(e){
+            var f = e.target.files[0]; if(!f) return;
+            var rd = new FileReader();
+            rd.onload = function(){ $("input").value = rd.result; flash("parseMsg","Loaded "+f.name+" ("+(f.size/1024|0)+" KB). Click Parse.","ok"); };
+            rd.readAsText(f);
+        });
+
+        $("parseBtn").addEventListener("click", function(){
+            var txt = $("input").value.trim();
+            if(!txt){ flash("parseMsg","Nothing to parse — load a file or paste the export.","err"); return; }
+            try {
+                var trades = EkantikParser.parse(txt);
+                ROWS = trades.map(function(t){ t._incl = (t.status!=="no-trade" && t.status!=="unresolved"); return t; });
+                META = META || defaultMeta();
+                renderRows(); renderStats();
+                $("reviewCard").style.display = ""; $("exportCard").style.display = "";
+                flash("parseMsg","Parsed "+trades.length+" records.","ok");
+                $("reviewCard").scrollIntoView({behavior:"smooth"});
+            } catch(err){ flash("parseMsg","Parse error: "+err.message,"err"); }
+        });
+
+        $("loadCurrent").addEventListener("click", function(){
+            fetch("trades.json",{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("not found"); return r.json(); })
+            .then(function(doc){
+                META = { schema:doc.schema, source:doc.source, instrument:doc.instrument, live_since:doc.live_since, note:doc.note };
+                ROWS = (doc.trades||doc).map(function(t){ t._incl = (t.status!=="no-trade" && t.status!=="unresolved"); return t; });
+                renderRows(); renderStats();
+                $("reviewCard").style.display=""; $("exportCard").style.display="";
+                flash("parseMsg","Loaded current trades.json ("+ROWS.length+" records).","ok");
+            }).catch(function(e){ flash("parseMsg","Could not load trades.json: "+e.message,"err"); });
+        });
+
+        function defaultMeta(){
+            return { schema:"ekantik-trades/v1",
+                source:"Discord #imo-futures-trades export",
+                instrument:"ES / MES index futures (points)",
+                live_since:"2026-05-22",
+                note:"F-series = pre-launch operator history; S-series = live public sample since 2026-05-22. 'review:true' marks records needing confirmation. Counts exclude no-trade and unresolved records." };
+        }
+
+        function renderRows(){
+            var tb = $("tbody"); tb.innerHTML = "";
+            ROWS.forEach(function(t,i){
+                var tr = document.createElement("tr");
+                if(t.review) tr.classList.add("review");
+                if(!t._incl) tr.classList.add("excluded");
+                tr.innerHTML =
+                  '<td class="checkcol"><input type="checkbox" data-i="'+i+'" data-k="_incl" '+(t._incl?"checked":"")+'></td>' +
+                  '<td><input data-i="'+i+'" data-k="id" value="'+attr(t.id)+'" style="width:54px"></td>' +
+                  '<td>'+sel(i,"series",t.series,["historical","live"])+'</td>' +
+                  '<td>'+sel(i,"direction",t.direction,["short","long",""])+'</td>' +
+                  '<td class="num">'+num(i,"entry",t.entry)+'</td>' +
+                  '<td class="num">'+num(i,"stop",t.stop)+'</td>' +
+                  '<td class="num">'+num(i,"target",t.target)+'</td>' +
+                  '<td class="num">'+num(i,"points",t.points)+'</td>' +
+                  '<td><input data-i="'+i+'" data-k="size" value="'+attr(t.size)+'" style="width:62px"></td>' +
+                  '<td><input data-i="'+i+'" data-k="date" value="'+attr(t.date)+'" style="width:96px"></td>' +
+                  '<td><span class="pill">'+attr(t.status)+'</span>'+(t.review?' <span class="pill" style="color:var(--gold)">review</span>':'')+'</td>' +
+                  '<td class="raw-cell" title="'+attr(t.raw)+'">'+attr(t.raw)+'</td>';
+                tb.appendChild(tr);
+            });
+            tb.querySelectorAll("input,select").forEach(function(el){
+                el.addEventListener("change", onEdit);
+            });
+        }
+
+        function onEdit(e){
+            var el = e.target, i = +el.getAttribute("data-i"), k = el.getAttribute("data-k");
+            var t = ROWS[i];
+            if(k === "_incl"){ t._incl = el.checked; }
+            else if(["entry","stop","target","points"].indexOf(k) !== -1){
+                t[k] = el.value === "" ? null : parseFloat(el.value);
+            } else { t[k] = el.value || (k==="direction"?null:el.value); }
+            // recompute status from points when points edited
+            if(k === "points"){
+                if(t.points == null) t.status = "unresolved";
+                else if(t.points > 0) t.status = "win";
+                else if(t.points < 0) t.status = "loss";
+                else t.status = "scratch";
+            }
+            renderRows(); renderStats();
+        }
+
+        function renderStats(){
+            var included = ROWS.filter(function(t){ return t._incl; });
+            var s = EkantikParser.computeStats(included.map(stripUI));
+            $("stats").innerHTML =
+                stat("Countable", s.count, "") +
+                stat("Win rate", (s.winRate*100).toFixed(1)+"%", "gold") +
+                stat("Net pts", fmt(s.net), s.net>=0?"pos":"neg") +
+                stat("Profit factor", s.profitFactor==null?"—":s.profitFactor.toFixed(2), "gold") +
+                stat("Hist / Live", s.historical+" / "+s.live, "") +
+                stat("Flagged", ROWS.filter(function(t){return t.review;}).length, "gold");
+        }
+        function stat(l,v,c){ return '<div class="stat"><div class="l">'+l+'</div><div class="v '+c+'">'+v+'</div></div>'; }
+
+        $("downloadBtn").addEventListener("click", function(){
+            var blob = new Blob([buildJSON()], {type:"application/json"});
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(blob); a.download = "trades.json"; a.click();
+            URL.revokeObjectURL(a.href);
+            flash("exportMsg","Downloaded. Commit it to the repo root.","ok");
+        });
+        $("copyBtn").addEventListener("click", function(){
+            navigator.clipboard.writeText(buildJSON()).then(function(){ flash("exportMsg","Copied to clipboard.","ok"); });
+        });
+        $("saveLocal").addEventListener("click", function(){
+            localStorage.setItem("ekantik_trades", buildJSON());
+            flash("exportMsg","Saved to this browser (localStorage).","ok");
+        });
+
+        function buildJSON(){
+            var trades = ROWS.map(function(t){
+                var o = stripUI(t);
+                o.review = !!t.review;
+                if(!t._incl && o.status!=="no-trade" && o.status!=="unresolved"){ o.status = "excluded"; o.review = true; }
+                return o;
+            });
+            var doc = Object.assign({}, META, { generated: new Date().toISOString().replace(/\.\d+Z$/,"Z"), trades: trades });
+            return JSON.stringify(doc, null, 2);
+        }
+        function stripUI(t){
+            var o = {}; ["id","series","direction","entry","stop","target","points","size","date","time","status","review","raw"].forEach(function(k){ if(k in t) o[k]=t[k]; });
+            return o;
+        }
+
+        function sel(i,k,v,opts){
+            return '<select data-i="'+i+'" data-k="'+k+'">'+opts.map(function(o){
+                return '<option value="'+o+'"'+(String(v||"")===o?" selected":"")+'>'+(o||"—")+'</option>';
+            }).join("")+'</select>';
+        }
+        function num(i,k,v){ return '<input data-i="'+i+'" data-k="'+k+'" value="'+(v==null?"":v)+'" inputmode="decimal">'; }
+        function attr(s){ return s==null?"":String(s).replace(/"/g,"&quot;").replace(/</g,"&lt;"); }
+        function fmt(n){ return (n>0?"+":"")+n; }
+        function flash(id,txt,cls){ var e=$(id); e.textContent=txt; e.className="msg "+(cls||""); }
+    </script>
+</body>
+</html>
