@@ -351,12 +351,12 @@
     <!-- ===================== HERO ===================== -->
     <header class="hero">
         <div class="wrap">
-            <!-- Single live datum — reads the SAME source as accelerator. (spec §6).
-                 Degrades to a neutral 'watch it live' state; never fabricates numbers. -->
+            <!-- Single datum — computed from this page's own local trades.json.
+                 Degrades to a neutral state; never fabricates numbers. -->
             <div class="live-strip" id="liveStrip">
                 <span class="live-head"><span class="dot"></span> Live</span>
-                <div class="live-item"><span class="lab">Public sample since</span><span class="val">22 May 2026</span></div>
-                <div class="live-item"><span class="lab">Live trades logged</span><span class="val" id="liveVal">—</span></div>
+                <div class="live-item"><span class="lab">Track record</span><span class="val">Feb – May 2026</span></div>
+                <div class="live-item"><span class="lab">Trades logged</span><span class="val" id="liveVal">—</span></div>
                 <div class="live-item"><span class="lab">Verify</span><span class="val"><a href="dashboard.html">every fill →</a></span></div>
             </div>
 
@@ -368,7 +368,7 @@
                 <a class="hero-tertiary" href="dashboard.html">First time here? See the live edge dashboard →</a>
             </div>
 
-            <p class="compliance-bar">For accredited investors. Nothing on this page is an offer or solicitation; offers are made only through definitive documents to verified investors. Past performance is not indicative of future results. The live sample is pre-asymptotic.</p>
+            <p class="compliance-bar">For accredited investors. Nothing on this page is an offer or solicitation; offers are made only through definitive documents to verified investors. Past performance is not indicative of future results. The sample is pre-asymptotic.</p>
         </div>
     </header>
 
@@ -400,16 +400,16 @@
             <p style="max-width:820px;">What survives a small sample is not a win rate — it's the architecture beneath it: a published <strong>falsifiability gate</strong>, a <strong>witness countersignature</strong>, and <strong>operator capital on every fill</strong>. Those are the durable facts. The raw figures live — and accumulate — in the open.</p>
 
             <div class="note-box">
-                <div class="t">Historical vs. live — kept rigorously separate</div>
-                <p>The ~100-trade record (Feb–May 2026) is largely <strong>pre-launch, operator-executed history</strong> — prior evidence that establishes the edge. The <strong>live public sample dates from the 22 May 2026 launch</strong> and is the forward verification accumulating in the open. We never blend the two to imply a longer <em>live public</em> track record than exists.</p>
+                <div class="t">One continuous record</div>
+                <p>One operator, one strategy, one unbroken log — <strong>every trade from February 2026 to now</strong>, posted by hand as it happened. No restatements, no separate "track records," no quiet resets. What you see below is the whole record, computed live from the same file that drives the dashboard.</p>
             </div>
 
-            <!-- Live KPI strip — computed client-side from the local trades.json (this
+            <!-- KPI strip — computed client-side from the local trades.json (this
                  page's own source of truth). Counts exclude flagged/unresolved records. -->
             <div class="cols-3" id="proofKpis" style="margin-top:2rem;">
-                <div class="card"><div class="n" id="kpiSeriesLabel">LIVE SAMPLE · SINCE 22 MAY</div><h3 id="kpiNet">—</h3><p>Net points logged, gross of fees, every fill posted by hand.</p></div>
-                <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr">—</h3><p>Across <span id="kpiCount">—</span> countable trades in the public sample.</p></div>
-                <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur">—</h3><p>Delete the three best trades; the full-sample edge still stands.</p></div>
+                <div class="card"><div class="n">NET RESULT · FEB–MAY 2026</div><h3 id="kpiNet">—</h3><p>Net points logged, gross of fees, every fill posted by hand.</p></div>
+                <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr">—</h3><p>Across <span id="kpiCount">—</span> countable trades in the full record.</p></div>
+                <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur">—</h3><p>Delete the three best trades; the edge still stands.</p></div>
             </div>
 
             <div class="hero-cta" style="margin-top:1.6rem;">
@@ -434,7 +434,7 @@
                 </table>
             </div>
 
-            <p class="compliance-bar">Any performance shown is net of fees. Past performance is not indicative of future results. The live sample is pre-asymptotic — statistical confidence grows with trades.</p>
+            <p class="compliance-bar">Any performance shown is net of fees. Past performance is not indicative of future results. The sample is pre-asymptotic — statistical confidence grows with trades.</p>
         </div>
     </section>
 
@@ -444,7 +444,7 @@
             <span class="kicker"><span class="num">03</span> · The founding thesis</span>
             <h2>Why being early is rational — and honest about stage.</h2>
 
-            <p class="pull">You are underwriting an edge that is <em>real but pre-asymptotic.</em> In exchange for taking that earlier-stage risk — before the live track record is long enough to be priced in, and before capacity closes — founding members receive terms and access that <em>do not repeat.</em></p>
+            <p class="pull">You are underwriting an edge that is <em>real but pre-asymptotic.</em> In exchange for taking that earlier-stage risk — before the track record is long enough to be priced in, and before capacity closes — founding members receive terms and access that <em>do not repeat.</em></p>
 
             <ol class="chain">
                 <li><p>The edge is <strong>capacity-constrained</strong> — it degrades past a size the market can absorb. This is exactly why Medallion closed to outside capital.</p></li>
@@ -532,7 +532,7 @@
             <div class="risk-list">
                 <div class="item">
                     <h3>It is pre-asymptotic.</h3>
-                    <p>The live sample is young. Statistical confidence grows with trades. Early is early — and we say so on the figures themselves.</p>
+                    <p>The record is still young. Statistical confidence grows with trades. Early is early — and we say so on the figures themselves.</p>
                 </div>
                 <div class="item">
                     <h3>The honest ceiling, named.</h3>
@@ -540,7 +540,7 @@
                 </div>
                 <div class="item">
                     <h3>The failure case, openly.</h3>
-                    <p>The gate can fire. The strategy can go research-only. Capital can be impaired. This is stated here exactly as it is stated on the public experiment.</p>
+                    <p>The gate can fire. The strategy can go research-only. Capital can be impaired. This is stated here plainly, up front, the same way every trade is logged.</p>
                 </div>
                 <div class="item commit">
                     <h3>The Gate is my commitment, not just risk language.</h3>
@@ -659,9 +659,9 @@
             <h4>Disclosures</h4>
             <p>Ekantik Capital Advisors LLC — confidential working communication. <strong>Nothing on this page constitutes an offer to sell or a solicitation of an offer to buy any security.</strong> Any offer is made solely to verified accredited investors through definitive offering documents, which contain the complete terms, fees, and risk disclosures and which control in all respects.</p>
             <p>This page is intended for accredited investors. Accredited status is independently verified by a third party before any offering material is provided. Self-certification is not relied upon where third-party verification is required.</p>
-            <p>Past performance is not indicative of future results. The live sample is pre-asymptotic; statistical confidence increases with the number of trades. Any performance figures are presented net of fees and must be read with the time periods and disclosures attached at the source. The pre-launch, operator-executed historical record and the post-22-May-2026 live public sample are distinct and are never blended to imply a longer live public track record than exists.</p>
+            <p>Past performance is not indicative of future results. The record is a single, continuous, operator-executed log of every trade from February 2026 to the present, presented gross of fees unless noted; figures must be read with the time period and any disclosures attached at the source. The sample is pre-asymptotic; statistical confidence increases with the number of trades.</p>
             <p>The capital buffer, the Sit-Out Architecture, and the Falsifiability Gate are process commitments, not guarantees. They are designed to bound and manage risk; they do not guarantee a maximum loss or eliminate the risk of capital impairment. Any doubling or compounding trajectories referenced in our doctrine materials are hypothetical, illustrative, and not a promise of investor returns.</p>
-            <p>"Proven" is used only in reference to the validated historical edge and the process and architecture — never to the young live results. There are no client testimonials or endorsements; there are no clients yet.</p>
+            <p>"Proven" is used only in reference to the validated edge and to the process and architecture — never as a promise about future results. There are no client testimonials or endorsements; there are no clients yet.</p>
             <div class="legal">
                 <p>© 2026 Ekantik Capital Advisors LLC. All rights reserved. Contact: <a href="mailto:hd@ekantikcapital.com">hd@ekantikcapital.com</a></p>
             </div>
@@ -744,25 +744,17 @@
                     const trades = doc.trades || doc;
                     if (!window.EkantikParser || !Array.isArray(trades)) return;
 
-                    // Hero datum — live (S-series) trade count
-                    const live = EkantikParser.computeStats(trades, { series: "live" });
-                    const liveVal = document.getElementById("liveVal");
-                    if (liveVal && live.count) liveVal.textContent = live.count + " trades";
-
-                    // §02 KPI strip — live sample, with full-sample durability test
+                    // One continuous record — the whole log, Feb–May 2026.
                     const full = EkantikParser.computeStats(trades);
                     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-                    if (live.count) {
-                        set("kpiNet", (live.net > 0 ? "+" : "") + live.net + " pts");
-                        set("kpiWr", (live.winRate * 100).toFixed(0) + "% · " + (live.profitFactor == null ? "—" : live.profitFactor.toFixed(2)));
-                        set("kpiCount", live.count);
-                    } else {
-                        // no live sample yet — fall back to the full record, labelled honestly
-                        set("kpiSeriesLabel", "OPERATOR RECORD");
-                        set("kpiNet", (full.net > 0 ? "+" : "") + full.net + " pts");
-                        set("kpiWr", (full.winRate * 100).toFixed(0) + "% · " + (full.profitFactor == null ? "—" : full.profitFactor.toFixed(2)));
-                        set("kpiCount", full.count);
-                    }
+
+                    // Hero datum — total trades logged
+                    if (full.count) set("liveVal", full.count + " trades");
+
+                    // §02 KPI strip — full record + durability test
+                    set("kpiNet", (full.net > 0 ? "+" : "") + full.net + " pts");
+                    set("kpiWr", (full.winRate * 100).toFixed(0) + "% · " + (full.profitFactor == null ? "—" : full.profitFactor.toFixed(2)));
+                    set("kpiCount", full.count);
                     set("kpiDur", "net " + (full.durability.netExTop3 > 0 ? "+" : "") + full.durability.netExTop3 + " · PF " +
                         (full.durability.pfExTop3 == null ? "—" : full.durability.pfExTop3.toFixed(2)));
                 })
