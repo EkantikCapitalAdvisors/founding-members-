@@ -340,7 +340,7 @@
         <div class="wrap nav-inner">
             <div class="brand">EKANTIK CAPITAL · <span>Founding Cohort</span></div>
             <div class="nav-links">
-                <a href="https://accelerator.ekantikcapital.com" target="_blank" rel="noopener">Live experiment ↗</a>
+                <a href="dashboard.html">Edge dashboard</a>
                 <a href="#how">How it survives</a>
                 <a href="#risk">The risk</a>
                 <button class="btn btn-primary" onclick="openModal()">Request briefing</button>
@@ -356,7 +356,8 @@
             <div class="live-strip" id="liveStrip">
                 <span class="live-head"><span class="dot"></span> Live</span>
                 <div class="live-item"><span class="lab">Public sample since</span><span class="val">22 May 2026</span></div>
-                <div class="live-item"><span class="lab">Live verification</span><span class="val" id="liveVal">watch it print ↗</span></div>
+                <div class="live-item"><span class="lab">Live trades logged</span><span class="val" id="liveVal">—</span></div>
+                <div class="live-item"><span class="lab">Verify</span><span class="val"><a href="dashboard.html">every fill →</a></span></div>
             </div>
 
             <h1>A capacity-limited edge. A founding cohort. One window.</h1>
@@ -364,7 +365,7 @@
 
             <div class="hero-cta">
                 <button class="btn btn-primary" onclick="openModal()">Request the founding-cohort briefing →</button>
-                <a class="hero-tertiary" href="https://accelerator.ekantikcapital.com" target="_blank" rel="noopener">First time here? Watch the live experiment →</a>
+                <a class="hero-tertiary" href="dashboard.html">First time here? See the live edge dashboard →</a>
             </div>
 
             <p class="compliance-bar">For accredited investors. Nothing on this page is an offer or solicitation; offers are made only through definitive documents to verified investors. Past performance is not indicative of future results. The live sample is pre-asymptotic.</p>
@@ -403,9 +404,17 @@
                 <p>The ~100-trade record (Feb–May 2026) is largely <strong>pre-launch, operator-executed history</strong> — prior evidence that establishes the edge. The <strong>live public sample dates from the 22 May 2026 launch</strong> and is the forward verification accumulating in the open. We never blend the two to imply a longer <em>live public</em> track record than exists.</p>
             </div>
 
-            <div class="hero-cta" style="margin-top:2.2rem;">
-                <a class="btn btn-ghost" href="https://accelerator.ekantikcapital.com" target="_blank" rel="noopener">Live dashboard ↗</a>
-                <a class="btn btn-ghost" href="https://accelerator.ekantikcapital.com" target="_blank" rel="noopener">Every fill, by hand, in public ↗</a>
+            <!-- Live KPI strip — computed client-side from the local trades.json (this
+                 page's own source of truth). Counts exclude flagged/unresolved records. -->
+            <div class="cols-3" id="proofKpis" style="margin-top:2rem;">
+                <div class="card"><div class="n" id="kpiSeriesLabel">LIVE SAMPLE · SINCE 22 MAY</div><h3 id="kpiNet">—</h3><p>Net points logged, gross of fees, every fill posted by hand.</p></div>
+                <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr">—</h3><p>Across <span id="kpiCount">—</span> countable trades in the public sample.</p></div>
+                <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur">—</h3><p>Delete the three best trades; the full-sample edge still stands.</p></div>
+            </div>
+
+            <div class="hero-cta" style="margin-top:1.6rem;">
+                <a class="btn btn-ghost" href="dashboard.html">Open the full edge dashboard →</a>
+                <a class="btn btn-ghost" href="dashboard.html">Every fill, by hand, in public ↗</a>
             </div>
 
             <!-- Edge landscape — compressed comparison map (spec §02) -->
@@ -604,7 +613,7 @@
                 <div class="s"><div class="num">STEP 03</div><h4>Private briefing</h4><p>Verified investors receive the data room and an operator call — the real conversation.</p></div>
             </div>
 
-            <p class="cta-micro" style="font-size:1rem;margin-top:2.4rem;">New here, and not ready for this? <a href="https://accelerator.ekantikcapital.com" target="_blank" rel="noopener">Watch the live experiment first →</a></p>
+            <p class="cta-micro" style="font-size:1rem;margin-top:2.4rem;">New here, and not ready for this? <a href="dashboard.html">See the live edge dashboard first →</a></p>
         </div>
     </section>
 
@@ -659,6 +668,7 @@
         </div>
     </footer>
 
+    <script src="parser.js"></script>
     <script>
         /* =========================================================
            CONFIGURATION
@@ -724,20 +734,39 @@
             msg.innerHTML = "Received. A person will read this and reach out about the next step — independent accreditation verification, then a private briefing. No drip sequence.";
         }
 
-        /* ---- Live datum: read the SAME source as accelerator. (spec §6)
-                Never fabricate a number; degrade to the 'watch it live' link. ---- */
-        (function loadLiveDatum() {
-            const SHARED_TRADES = "https://accelerator.ekantikcapital.com/trades.json";
-            const valEl = document.getElementById('liveVal');
-            fetch(SHARED_TRADES, { cache: "no-store" })
-                .then(r => r.ok ? r.json() : Promise.reject())
-                .then(json => {
-                    const trades = Array.isArray(json) ? json : (json.trades || []);
-                    if (trades.length) {
-                        valEl.textContent = "n = " + trades.length + " live fills";
+        /* ---- Live proof: read THIS page's own local trades.json (independent of
+                any other property) and compute the figures client-side. Counts
+                exclude flagged/unresolved records; degrades silently on failure. ---- */
+        (function loadEdge() {
+            fetch("trades.json", { cache: "no-store" })
+                .then(r => r.ok ? r.json() : Promise.reject(new Error("trades.json")))
+                .then(doc => {
+                    const trades = doc.trades || doc;
+                    if (!window.EkantikParser || !Array.isArray(trades)) return;
+
+                    // Hero datum — live (S-series) trade count
+                    const live = EkantikParser.computeStats(trades, { series: "live" });
+                    const liveVal = document.getElementById("liveVal");
+                    if (liveVal && live.count) liveVal.textContent = live.count + " trades";
+
+                    // §02 KPI strip — live sample, with full-sample durability test
+                    const full = EkantikParser.computeStats(trades);
+                    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+                    if (live.count) {
+                        set("kpiNet", (live.net > 0 ? "+" : "") + live.net + " pts");
+                        set("kpiWr", (live.winRate * 100).toFixed(0) + "% · " + (live.profitFactor == null ? "—" : live.profitFactor.toFixed(2)));
+                        set("kpiCount", live.count);
+                    } else {
+                        // no live sample yet — fall back to the full record, labelled honestly
+                        set("kpiSeriesLabel", "OPERATOR RECORD");
+                        set("kpiNet", (full.net > 0 ? "+" : "") + full.net + " pts");
+                        set("kpiWr", (full.winRate * 100).toFixed(0) + "% · " + (full.profitFactor == null ? "—" : full.profitFactor.toFixed(2)));
+                        set("kpiCount", full.count);
                     }
+                    set("kpiDur", "net " + (full.durability.netExTop3 > 0 ? "+" : "") + full.durability.netExTop3 + " · PF " +
+                        (full.durability.pfExTop3 == null ? "—" : full.durability.pfExTop3.toFixed(2)));
                 })
-                .catch(() => { /* keep neutral 'watch it print ↗' — no fabricated figure */ });
+                .catch(() => { /* leave placeholders; never fabricate */ });
         })();
     </script>
 </body>

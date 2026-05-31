@@ -47,6 +47,32 @@ spec (§1.3).
 
 ---
 
+## Independent edge dashboard & data pipeline
+
+This page demonstrates the edge **on its own data**, with no dependency on other
+properties. Four pieces:
+
+| File | Role |
+|---|---|
+| `parser.js` | Pure, dependency-free parser. Turns the Discord `#imo-futures-trades` export into structured trade records and computes edge stats (win rate, profit factor, expectancy, drawdown, equity curve, the delete-top-3 durability test). Shared by the admin tool, dashboard, and the `index.html` proof strip. |
+| `admin.html` | **Internal** upload/review tool. Load the Discord HTML export (or paste it), parse, correct any flagged rows in an editable table, then **download `trades.json`** and commit it. The single source of truth. |
+| `trades.json` | The committed dataset the public pages read. Wrapper carries `live_since` (2026-05-22) so history and live stay separated. Generated from the Feb–May 2026 export. |
+| `dashboard.html` | The public, self-contained dashboard: KPI tiles, equity curve (Chart.js), the durability test, full trade log, and an All / Pre-launch history / Live (since 5/22) toggle. |
+
+**Series convention (= spec §02 historical/live separation):** trade labels
+`F#` are pre-launch operator history; `S#` are the live public sample (S1 is
+dated the 22 May launch). The parser tags each record `series: historical|live`
+and the dashboard never blends them.
+
+**Updating the data:** open `admin.html` → load the latest export → review flagged
+rows → download `trades.json` → commit to repo root. Done.
+
+**Current snapshot** (from the committed `trades.json`): 103 countable trades
+(88 historical, 15 live), 64% win rate, profit factor 2.0, net +180.75 pts.
+Durability — delete the 3 best trades and it still nets +123.75 pts at PF 1.69.
+
+---
+
 ## Conversion mechanism (spec §4) — current build
 
 CTA → **qualification modal** (name, email, one fit question + two
@@ -75,10 +101,11 @@ steps (third-party accreditation verification → data room → operator call) a
   gone; scarcity is the two real caps (spec §07 / §8.2).
 - **Historical vs. live kept separate** — pre-launch operator record vs. the
   post-22-May-2026 live public sample are never blended (spec §02 / §9).
-- **No fabricated numbers** — the hero live datum reads the **same**
-  `trades.json` source as `accelerator.` (spec §6) and degrades gracefully to a
-  "watch it print" link rather than hardcoding a figure. Resolve the 12
-  "Unknown"-direction trades (spec §9) before any headline figure is displayed.
+- **No fabricated numbers** — every figure (hero datum, §02 KPI strip, the whole
+  dashboard) is computed **client-side from this repo's own `trades.json`** via
+  `parser.js`. Nothing is hardcoded; counts exclude records flagged for review.
+  This page is a **self-contained demonstration of the edge** — independent of
+  `accelerator.` or any other property.
 - **Process-not-guarantee language** on the Sit-Out and the Gate; "proven"
   attached only to the historical edge and the architecture (spec §7).
 
@@ -89,10 +116,13 @@ steps (third-party accreditation verification → data room → operator call) a
 1. Engage **securities counsel** (506(b) vs 506(c), Marketing Rule, founding
    economic interest) — spec standing caveat.
 2. Set `FORMSPREE_ENDPOINT` (or swap in another form backend).
-3. Confirm the shared `trades.json` URL/path for the hero live datum.
-4. Fill the real cohort cap values in §07 (`[N]` / `[$X]`).
-5. Confirm cross-links to `accelerator.ekantikcapital.com` (one-directional per
-   spec §1.3 — `founding.` is the only property carrying solicitation language).
+3. Review the flagged rows in `admin.html` and confirm the 8 ambiguous
+   half-size / parenthetical results before publishing headline figures
+   (spec §9 data-integrity discipline).
+4. Fill the real cohort cap values in §07.
+5. Decide whether `admin.html` should ship to the public host at all — it is
+   `noindex` and internal-only; consider hosting it separately or removing it
+   from the public deploy.
 
 ---
 
