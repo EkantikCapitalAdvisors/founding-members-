@@ -51,7 +51,16 @@
         .toggle button.active{background:var(--gold);color:var(--navy-deep);font-weight:600;}
 
         /* KPI grid */
-        .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:14px 0 8px;}
+        .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin:14px 0 8px;}
+        .kpihead{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-top:8px;}
+        .kpihead .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+        .kpihead .rng{font-family:var(--mono);font-size:.72rem;color:var(--slate);font-style:italic;}
+        .winbar{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin:14px 0 4px;}
+        .winbar .wl{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--slate-dim);}
+        .winbar button{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;background:transparent;color:var(--slate);
+            border:1px solid var(--hair-cool);border-radius:99px;padding:.4rem .9rem;cursor:pointer;}
+        .winbar button.active{background:var(--gold);color:var(--navy-deep);font-weight:600;border-color:var(--gold);}
+        .winbar .note{font-family:var(--mono);font-size:.66rem;color:var(--slate-dim);margin-left:.4rem;}
         .kpi{border:1px solid var(--hair-cool);border-radius:8px;padding:1.2rem 1.3rem;background:rgba(255,255,255,.012);}
         .kpi .lab{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);}
         .kpi .val{font-family:var(--mono);font-size:1.7rem;color:var(--ink);margin-top:.4rem;}
@@ -105,13 +114,16 @@
 
     <script src="parser.js"></script>
     <script>
-        var TRADES = [], DOC = null;
+        var TRADES = [], DOC = null, WINDOW = "all", PV = 50, WU = 5000;
+        var WINDOWS = [["7d","7d"],["30d","30d"],["90d","90d"],["mtd","MTD"],["ytd","YTD"],["all","All time"]];
 
         fetch("trades.json", { cache: "no-store" })
             .then(function(r){ if(!r.ok) throw new Error("trades.json not found"); return r.json(); })
             .then(function(doc){
                 DOC = doc;
                 TRADES = doc.trades || doc; // tolerate bare array
+                if (doc.point_value != null) PV = doc.point_value;
+                if (doc.working_unit != null) WU = doc.working_unit;
                 renderMeta();
                 render();
             })
@@ -139,26 +151,51 @@
 
         var chart = null;
         function render(){
-            var s = EkantikParser.computeStats(TRADES);
+            var sWin = EkantikParser.computeStats(TRADES, { window: WINDOW, pointValue: PV, workingUnit: WU });
+            var sAll = EkantikParser.computeStats(TRADES, { pointValue: PV, workingUnit: WU });
             var c = document.getElementById("content");
             c.classList.remove("loading");
-            c.innerHTML = kpiHTML(s) + chartHTML() + durabilityHTML(s) + logHTML() + discHTML();
-            drawChart(s);
+            c.innerHTML = winbarHTML(sWin) + kpiHTML(sWin) + chartHTML() + durabilityHTML(sAll) + logHTML() + discHTML();
+            wireWindow();
+            drawChart(sAll);
         }
 
+        function winbarHTML(s){
+            var btns = WINDOWS.map(function(w){
+                return '<button data-win="'+w[0]+'"'+(WINDOW===w[0]?' class="active"':'')+'>'+w[1]+'</button>';
+            }).join("");
+            return '<div class="kpihead"><span class="lbl">Key performance indicators</span>' +
+                   '<span class="rng">'+ s.tradeCount +' trades · '+ (dateRange()||'—') +'</span></div>' +
+                   '<div class="winbar"><span class="wl">Window</span>'+btns+
+                   '<span class="note">KPIs & table filter by window; charts and the durability test stay all-time.</span></div>';
+        }
+        function wireWindow(){
+            document.querySelectorAll(".winbar button").forEach(function(b){
+                b.addEventListener("click", function(){ WINDOW = b.getAttribute("data-win"); render(); });
+            });
+        }
+
+        function dollar(n){ var v = Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0}); return (n<0?"−$":"+$")+v; }
+        function dollarPlain(n){ return "$"+Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0}); }
+
         function kpiHTML(s){
-            var netClass = s.net > 0 ? "pos" : s.net < 0 ? "neg" : "";
+            var netCls = s["net$"]>0?"pos":s["net$"]<0?"neg":"";
             return '<div class="kpis">' +
-                kpi("Net result", fmt(s.net) + " pts", netClass, s.count + " trades") +
-                kpi("Win rate", (s.winRate*100).toFixed(1) + "%", "gold", s.wins + "W · " + s.losses + "L") +
-                kpi("Profit factor", s.profitFactor==null?"—":s.profitFactor.toFixed(2), "gold", "gross " + fmt(s.grossProfit) + " / " + fmt(s.grossLoss)) +
-                kpi("Expectancy", fmt(s.expectancy) + " pts", netClass, "per trade") +
-                '</div>' +
-                '<div class="kpis">' +
-                kpi("Avg win", "+" + s.avgWin + " pts", "pos", s.wins + " winners") +
-                kpi("Avg loss", "−" + s.avgLoss + " pts", "neg", s.losses + " losers") +
-                kpi("Max drawdown", "−" + s.maxDrawdown + " pts", "", "peak-to-trough") +
-                kpi("Span", (dateRange()||"—"), "", s.count + " trades, in order") +
+                kpi("Win rate", (s.winRate*100).toFixed(1)+"%", "", s.wins+" W · "+s.losses+" L") +
+                kpi("Profit factor", s.profitFactor==null?"—":s.profitFactor.toFixed(2), "", "gross profit / gross loss") +
+                kpi("R-expectancy", s.rExpectancy==null?"—":(s.rExpectancy>0?"+":"")+s.rExpectancy.toFixed(2)+"R", "gold", "size-neutral per-trade") +
+                kpi("Annual R", s.annualR==null?"—":(s.annualR>0?"+":"")+s.annualR+"R", "gold", "~"+(s.annualTrades||"—")+" trades/yr extrapolated") +
+                kpi("EV / trade", dollar(s.ev$), netCls, "net "+dollar(s["net$"])+" over window") +
+                '</div><div class="kpis">' +
+                kpi("Avg win", "+"+dollarPlain(s["avgWin$"]), "pos", s.wins+" winning trades") +
+                kpi("Avg loss", "−"+dollarPlain(s["avgLoss$"]), "neg", s.losses+" losing trades") +
+                kpi("Best trade", dollar(s["best$"]), "pos", "single largest win") +
+                kpi("Worst trade", dollar(s["worst$"]), "neg", "single deepest loss") +
+                kpi("Max drawdown", "−"+dollarPlain(s["maxDrawdown$"]), "neg", (s.maxDrawdownPct==null?"":s.maxDrawdownPct+"% of ")+dollarPlain(s.workingUnit)+" working unit") +
+                '</div><div class="kpis">' +
+                kpi("Recovery", s.recovery==null?"not yet":s.recovery+" trades", "", "trades to restore peak") +
+                kpi("Loss streak (max)", s.maxLossStreak+" in a row", "", "longest consecutive losses") +
+                kpi("Avg risk / trade", s["avgRisk$"]==null?"—":dollarPlain(s["avgRisk$"]), "", "1R · per-trade dollar risk") +
                 '</div>';
         }
         function kpi(lab,val,cls,sub){
@@ -183,7 +220,7 @@
         }
 
         function logHTML(){
-            var rows = TRADES.slice().sort(function(a,b){return a.seq-b.seq;});
+            var rows = EkantikParser.filterWindow(TRADES, WINDOW).slice().sort(function(a,b){return a.seq-b.seq;});
             var body = rows.map(function(t){
                 var pts = t.points==null ? "—" : (t.points>0?"+":"") + t.points;
                 var cls = t.points>0?"pos":t.points<0?"neg":"";

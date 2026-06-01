@@ -152,7 +152,7 @@
         $("loadCurrent").addEventListener("click", function(){
             fetch("trades.json",{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("not found"); return r.json(); })
             .then(function(doc){
-                META = { schema:doc.schema, source:doc.source, instrument:doc.instrument, live_since:doc.live_since, note:doc.note };
+                META = { schema:doc.schema, source:doc.source, instrument:doc.instrument, point_value:doc.point_value, working_unit:doc.working_unit, note:doc.note };
                 ROWS = (doc.trades||doc).map(function(t){ t._incl = (t.status!=="no-trade" && t.status!=="unresolved"); return t; });
                 renderRows(); renderStats();
                 $("reviewCard").style.display=""; $("exportCard").style.display="";
@@ -164,8 +164,9 @@
             return { schema:"ekantik-trades/v1",
                 source:"Discord #imo-futures-trades export",
                 instrument:"ES / MES index futures (points)",
-                live_since:"2026-05-22",
-                note:"F-series = pre-launch operator history; S-series = live public sample since 2026-05-22. 'review:true' marks records needing confirmation. Counts exclude no-trade and unresolved records." };
+                point_value:50,
+                working_unit:5000,
+                note:"One continuous, operator-executed record. point_value = $/point (50 = one ES contract); working_unit = $ base for drawdown %. 'review:true' marks records needing confirmation; counts exclude no-trade and unresolved records." };
         }
 
         function renderRows(){
