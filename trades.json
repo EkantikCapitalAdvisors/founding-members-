@@ -1580,5 +1580,7 @@
       "review": false,
       "raw": "S15: s 7569 sl7581 5mes | S15: s 7569 sl7581 5mes | S15: -12 H2"
     }
-  ]
+  ],
+  "point_value": 50,
+  "working_unit": 5000
 }

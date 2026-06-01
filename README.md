@@ -54,10 +54,27 @@ properties. Four pieces:
 
 | File | Role |
 |---|---|
-| `parser.js` | Pure, dependency-free parser. Turns the Discord `#imo-futures-trades` export into structured trade records and computes edge stats (win rate, profit factor, expectancy, drawdown, equity curve, the delete-top-3 durability test). Shared by the admin tool, dashboard, and the `index.html` proof strip. |
+| `parser.js` | Pure, dependency-free parser + stats engine. Turns the Discord `#imo-futures-trades` export into structured trade records and computes the full KPI set in points, dollars, and R-multiples (see below). Shared by the admin tool, dashboard, and the `index.html` proof strip. |
 | `admin.html` | **Internal** upload/review tool. Load the Discord HTML export (or paste it), parse, correct any flagged rows in an editable table, then **download `trades.json`** and commit it. The single source of truth. |
-| `trades.json` | The committed dataset the public pages read. Generated from the Feb–May 2026 export. |
-| `dashboard.html` | The public, self-contained dashboard: KPI tiles, equity curve (Chart.js), the durability test, and the full trade log. |
+| `trades.json` | The committed dataset the public pages read. Generated from the Feb–May 2026 export. Carries the model fields `point_value` ($/point, 50 = one ES contract) and `working_unit` ($ base for drawdown %). |
+| `dashboard.html` | The public, self-contained dashboard: a window filter, the KPI set, equity curve (Chart.js), the durability test, and the full trade log. |
+
+**KPI set** (computed in `parser.js`, displayed on the dashboard, filterable by
+window): win rate, profit factor, R-expectancy, annual R (extrapolated from the
+realised trade rate), EV/trade ($), avg win/loss ($), best/worst trade ($), max
+drawdown ($ and % of working unit), recovery (trades to restore peak), max loss
+streak, and avg risk/trade (1R, $). Dollars use `point_value`; R-multiples use
+each trade's `|entry − stop|` as 1R (stop distances above 50 pts are treated as
+log typos and skipped). **Window filter:** 7d / 30d / 90d / MTD / YTD / All time
+— filters the KPIs and the trade table; the equity curve and durability test stay
+all-time as context.
+
+> **Note on headline $ figures:** a few early trades are logged half-size with
+> ambiguous results (e.g. `F1: 25 points ( 12.5 points)`). Until those flagged
+> rows are confirmed in `admin.html`, the dashboard counts the parser's literal
+> value, so figures that depend on the single biggest trades (best trade, net $,
+> EV, profit factor, R) will differ from the operator's reviewed numbers. The
+> drawdown, win rate, loss streak, and trade count are unaffected.
 
 **One continuous record.** The page presents a single, unbroken, operator-executed
 log — every trade from February 2026 to now, in order. There is no "historical

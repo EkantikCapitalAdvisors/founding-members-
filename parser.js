@@ -177,37 +177,103 @@
     return parseMessages(msgs);
   }
 
-  /* Edge statistics over countable trades (excludes no-trade & unresolved). */
+  /* Edge statistics over countable trades (excludes no-trade & unresolved).
+     opts:
+       series       legacy filter ("historical"|"live") — kept for compat
+       window       "7d"|"30d"|"90d"|"mtd"|"ytd"|"all"   (date filter)
+       asOf         ISO date the window is measured back from (default: today
+                    or the latest trade date, whichever is later)
+       pointValue   $ per index point (default 50 = one ES contract)
+       workingUnit  $ account/working unit for drawdown % (default 5000)
+       maxRiskPts   ignore stop distances larger than this as typos (default 50)
+  */
   function computeStats(trades, opts) {
     opts = opts || {};
-    var list = trades.filter(function (t) {
+    var pv = opts.pointValue != null ? opts.pointValue : 50;
+    var wu = opts.workingUnit != null ? opts.workingUnit : 5000;
+    var maxRiskPts = opts.maxRiskPts != null ? opts.maxRiskPts : 50;
+
+    var countable = trades.filter(function (t) {
       if (opts.series && t.series !== opts.series) return false;
       return t.status === "win" || t.status === "loss" || t.status === "scratch";
     });
+    var list = filterWindow(countable, opts.window, opts.asOf);
+
     var wins = list.filter(function (t){ return t.status === "win"; });
     var losses = list.filter(function (t){ return t.status === "loss"; });
+    var scratch = list.filter(function (t){ return t.status === "scratch"; });
+    var wl = wins.length + losses.length;                 // win/loss count (excl. scratch)
     var gp = sum(wins.map(function(t){return t.points;}));
     var gl = sum(losses.map(function(t){return -t.points;}));
     var net = sum(list.map(function(t){return t.points;}));
-    var n = list.length;
+
     var ordered = list.slice().sort(function(a,b){ return a.seq - b.seq; });
     var equity = [], run = 0;
     ordered.forEach(function (t) { run += t.points; equity.push({ id: t.id, date: t.date, series: t.series, points: t.points, cum: round(run) }); });
+
+    var best = list.length ? Math.max.apply(null, list.map(function(t){return t.points;})) : 0;
+    var worst = list.length ? Math.min.apply(null, list.map(function(t){return t.points;})) : 0;
     var top3 = list.slice().sort(function(a,b){ return b.points - a.points; }).slice(0,3);
     var top3sum = sum(top3.map(function(t){return t.points;}));
+
+    // R model: per-trade risk = |entry - stop| in points (guard against typos).
+    var riskList = [];
+    var rMults = [];
+    ordered.forEach(function (t) {
+      if (t.entry != null && t.stop != null) {
+        var rp = Math.abs(t.entry - t.stop);
+        if (rp > 0 && rp <= maxRiskPts) {
+          riskList.push(rp);
+          if (t.status === "win" || t.status === "loss") rMults.push(t.points / rp);
+        }
+      }
+    });
+    var avgRiskPts = riskList.length ? mean(riskList) : null;
+    var rExpectancy = rMults.length ? mean(rMults) : null;
+
+    // Annualised R from the realised trade rate over the window's span.
+    var span = spanDays(ordered);
+    var annualTrades = (span > 0) ? wl * 365 / span : null;
+    var annualR = (rExpectancy != null && annualTrades != null) ? rExpectancy * annualTrades : null;
+
+    var dd = maxDD(equity);
+
     return {
-      count: n,
+      // counts
+      count: wl + scratch.length,        // total countable
+      tradeCount: wl,                    // win+loss (matches "N trades" headline)
+      wins: wins.length, losses: losses.length, scratch: scratch.length,
       historical: list.filter(function(t){return t.series==="historical";}).length,
       live: list.filter(function(t){return t.series==="live";}).length,
-      wins: wins.length, losses: losses.length, scratch: n - wins.length - losses.length,
-      winRate: n ? wins.length / n : 0,
-      grossProfit: round(gp), grossLoss: round(gl),
-      net: round(net),
+      winRate: wl ? wins.length / wl : 0,
+      // points
+      grossProfit: round(gp), grossLoss: round(gl), net: round(net),
       profitFactor: gl ? round(gp / gl) : null,
-      expectancy: n ? round(net / n) : 0,
+      expectancy: wl ? round(net / wl) : 0,             // points per trade
       avgWin: wins.length ? round(gp / wins.length) : 0,
       avgLoss: losses.length ? round(gl / losses.length) : 0,
-      maxDrawdown: round(maxDD(equity)),
+      best: round(best), worst: round(worst),
+      maxDrawdown: round(dd),
+      // dollars (pointValue)
+      pointValue: pv, workingUnit: wu,
+      net$: round(net * pv),
+      ev$: wl ? round(net * pv / wl) : 0,
+      avgWin$: wins.length ? round(gp * pv / wins.length) : 0,
+      avgLoss$: losses.length ? round(gl * pv / losses.length) : 0,
+      best$: round(best * pv), worst$: round(worst * pv),
+      maxDrawdown$: round(dd * pv),
+      maxDrawdownPct: wu ? round(dd * pv / wu * 1000) / 10 : null,   // % of working unit
+      avgRisk$: avgRiskPts != null ? round(avgRiskPts * pv) : null,
+      // R-multiples (size-neutral)
+      avgRiskPts: avgRiskPts != null ? round(avgRiskPts) : null,
+      rExpectancy: rExpectancy != null ? round(rExpectancy) : null,
+      annualR: annualR != null ? Math.round(annualR) : null,
+      annualTrades: annualTrades != null ? Math.round(annualTrades) : null,
+      // behaviour
+      maxLossStreak: maxStreak(ordered, "loss"),
+      recovery: recoveryTrades(equity),
+      spanDays: span,
+      // series / equity / durability
       equity: equity,
       durability: {
         removedTop3: top3.map(function(t){ return { id: t.id, points: t.points }; }),
@@ -217,12 +283,52 @@
     };
   }
 
+  /* Filter a countable list by a trailing/anchored window. */
+  function filterWindow(list, window, asOf) {
+    if (!window || window === "all") return list;
+    var dates = list.filter(function(t){return t.date;}).map(function(t){return t.date;}).sort();
+    var anchor = asOf ? new Date(asOf + "T00:00:00") : new Date();
+    if (dates.length) {
+      var last = new Date(dates[dates.length-1] + "T00:00:00");
+      if (last > anchor) anchor = last;
+    }
+    var from;
+    if (window === "mtd") from = new Date(anchor.getFullYear(), anchor.getMonth(), 1);
+    else if (window === "ytd") from = new Date(anchor.getFullYear(), 0, 1);
+    else {
+      var days = parseInt(window, 10);
+      if (isNaN(days)) return list;
+      from = new Date(anchor.getTime() - days * 86400000);
+    }
+    return list.filter(function (t) {
+      if (!t.date) return false;
+      return new Date(t.date + "T00:00:00") >= from;
+    });
+  }
+
+  function spanDays(ordered){
+    var dated = ordered.filter(function(t){return t.date;});
+    if (dated.length < 2) return dated.length ? 1 : 0;
+    var a = new Date(dated[0].date + "T00:00:00"), b = new Date(dated[dated.length-1].date + "T00:00:00");
+    return Math.max(1, Math.round((b - a) / 86400000));
+  }
+  function maxStreak(ordered, status){ var m=0,c=0; ordered.forEach(function(t){ if(t.status===status){c++; if(c>m)m=c;} else c=0; }); return m; }
+  function recoveryTrades(equity){
+    // trades from the max-drawdown trough until equity first regains the prior peak
+    var peak=-Infinity, peakIdx=0, troughIdx=0, dd=0, foundPeak=0;
+    for (var i=0;i<equity.length;i++){ if(equity[i].cum>peak){peak=equity[i].cum;foundPeak=i;} var d=peak-equity[i].cum; if(d>dd){dd=d;troughIdx=i;peakIdx=foundPeak;} }
+    if (dd<=0) return 0;
+    var target = equity[peakIdx].cum;
+    for (var j=troughIdx+1;j<equity.length;j++){ if(equity[j].cum>=target) return j-troughIdx; }
+    return null; // not yet recovered
+  }
   function maxDD(equity){ var peak=-Infinity,dd=0; equity.forEach(function(p){ if(p.cum>peak)peak=p.cum; var d=peak-p.cum; if(d>dd)dd=d; }); return dd; }
   function sum(a){ return a.reduce(function(s,x){return s+x;},0); }
+  function mean(a){ return a.length ? sum(a)/a.length : 0; }
   function round(x){ return Math.round(x*100)/100; }
 
   var api = { parse: parse, parseMessages: parseMessages, extractFromHTML: extractFromHTML,
-              extractFromText: extractFromText, computeStats: computeStats };
+              extractFromText: extractFromText, computeStats: computeStats, filterWindow: filterWindow };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.EkantikParser = api;
