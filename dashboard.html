@@ -205,18 +205,18 @@
 
         function chartHTML(){
             return '<section class="block"><h2>Equity curve</h2>' +
-                '<p class="note">Cumulative points, every trade in the order it happened — one continuous record.</p>' +
+                '<p class="note">Cumulative P&amp;L (size-aware $), every trade in the order it happened — one continuous record.</p>' +
                 '<div class="chart-card"><div class="chart-wrap"><canvas id="eq"></canvas></div></div></section>';
         }
 
         function durabilityHTML(s){
             var d = s.durability;
-            var holds = d.netExTop3 > 0;
+            var holds = d["netExTop3$"] > 0;
             return '<section class="block"><h2>The durability test</h2>' +
                 '<p class="note">Delete the three best trades. If the edge were luck, it would collapse. If it is structural, it survives.</p>' +
-                '<div class="durability"><div class="t">Remove the top 3 winners ('+ d.removedTop3.map(function(t){return t.id+" +"+t.points;}).join(", ") +')</div>' +
-                '<div class="big">The edge ' + (holds ? '<em>still stands</em>' : 'does not survive') + ': net <em>' + fmt(d.netExTop3) + ' pts</em>, profit factor <em>' + (d.pfExTop3==null?"—":d.pfExTop3.toFixed(2)) + '</em>.</div>' +
-                '<div class="detail">Full sample: net ' + fmt(s.net) + ' pts, PF ' + (s.profitFactor==null?"—":s.profitFactor.toFixed(2)) + '  →  minus top 3: net ' + fmt(d.netExTop3) + ' pts, PF ' + (d.pfExTop3==null?"—":d.pfExTop3.toFixed(2)) + '.</div>' +
+                '<div class="durability"><div class="t">Remove the top 3 winners ('+ d.removedTop3.map(function(t){return t.id+" "+dollar(t.usd);}).join(", ") +')</div>' +
+                '<div class="big">The edge ' + (holds ? '<em>still stands</em>' : 'does not survive') + ': net <em>' + dollar(d["netExTop3$"]) + '</em>, profit factor <em>' + (d.pfExTop3==null?"—":d.pfExTop3.toFixed(2)) + '</em>.</div>' +
+                '<div class="detail">Full sample: net ' + dollar(s["net$"]) + ', PF ' + (s.profitFactor==null?"—":s.profitFactor.toFixed(2)) + '  →  minus top 3: net ' + dollar(d["netExTop3$"]) + ', PF ' + (d.pfExTop3==null?"—":d.pfExTop3.toFixed(2)) + '.</div>' +
                 '</div></section>';
         }
 
@@ -248,11 +248,11 @@
             if(!ctx) return;
             if(chart) chart.destroy();
             var labels = s.equity.map(function(p){return p.id;});
-            var data = s.equity.map(function(p){return p.cum;});
+            var data = s.equity.map(function(p){return p["cum$"];});
             chart = new Chart(ctx, {
                 type:"line",
                 data:{ labels:labels, datasets:[{
-                    label:"Cumulative points", data:data,
+                    label:"Cumulative $", data:data,
                     borderColor:"#C8A951", borderWidth:2, pointRadius:0, tension:.15,
                     fill:true,
                     backgroundColor:function(c){
@@ -263,11 +263,11 @@
                 options:{
                     responsive:true, maintainAspectRatio:false,
                     plugins:{ legend:{display:false},
-                        tooltip:{callbacks:{label:function(c){var p=s.equity[c.dataIndex];return p.id+": "+(p.points>0?"+":"")+p.points+" → "+p.cum+" pts";}}}
+                        tooltip:{callbacks:{label:function(c){var p=s.equity[c.dataIndex];return p.id+": "+dollar(p["pnl$"])+" → "+dollar(p["cum$"]);}}}
                     },
                     scales:{
                         x:{ grid:{color:"rgba(138,151,173,.08)"}, ticks:{color:"#5E6B82",font:{family:"'JetBrains Mono'",size:9},maxTicksLimit:18} },
-                        y:{ grid:{color:"rgba(138,151,173,.10)"}, ticks:{color:"#8A97AD",font:{family:"'JetBrains Mono'",size:10}}, title:{display:true,text:"cumulative points",color:"#5E6B82",font:{family:"'JetBrains Mono'",size:10}} }
+                        y:{ grid:{color:"rgba(138,151,173,.10)"}, ticks:{color:"#8A97AD",font:{family:"'JetBrains Mono'",size:10},callback:function(v){return "$"+v;}}, title:{display:true,text:"cumulative $",color:"#5E6B82",font:{family:"'JetBrains Mono'",size:10}} }
                     }
                 }
             });

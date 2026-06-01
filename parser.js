@@ -206,27 +206,46 @@
     var net = sum(list.map(function(t){return t.points;}));
 
     var ordered = list.slice().sort(function(a,b){ return a.seq - b.seq; });
-    var equity = [], run = 0;
-    ordered.forEach(function (t) { run += t.points; equity.push({ id: t.id, date: t.date, series: t.series, points: t.points, cum: round(run) }); });
+
+    // Size-aware per-trade dollar P&L. ES = pv/pt × contracts; MES = (pv/10)/pt
+    // × micros; half = pv/2; untagged or unrecognised tag = 1 ES (pv).
+    function d$(t){ return t.points * dollarPerPoint(t.size, pv); }
+
+    var equity = [], runPts = 0, run$ = 0;
+    ordered.forEach(function (t) {
+      runPts += t.points; run$ += d$(t);
+      equity.push({ id: t.id, date: t.date, series: t.series, points: t.points,
+                    cum: round(runPts), pnl$: round(d$(t)), cum$: round(run$) });
+    });
+
+    var gp$ = sum(wins.map(d$));
+    var gl$ = sum(losses.map(function(t){return -d$(t);}));
+    var net$ = sum(list.map(d$));
 
     var best = list.length ? Math.max.apply(null, list.map(function(t){return t.points;})) : 0;
     var worst = list.length ? Math.min.apply(null, list.map(function(t){return t.points;})) : 0;
-    var top3 = list.slice().sort(function(a,b){ return b.points - a.points; }).slice(0,3);
-    var top3sum = sum(top3.map(function(t){return t.points;}));
+    var best$ = list.length ? Math.max.apply(null, list.map(d$)) : 0;
+    var worst$ = list.length ? Math.min.apply(null, list.map(d$)) : 0;
+    // durability: remove the three biggest dollar winners
+    var top3 = list.slice().sort(function(a,b){ return d$(b) - d$(a); }).slice(0,3);
+    var top3$ = sum(top3.map(d$));
+    var top3pts = sum(top3.map(function(t){return t.points;}));
 
     // R model: per-trade risk = |entry - stop| in points (guard against typos).
-    var riskList = [];
-    var rMults = [];
+    // R-expectancy is size-neutral (points/riskPts); avg risk $ is size-aware.
+    var riskList = [], risk$List = [], rMults = [];
     ordered.forEach(function (t) {
       if (t.entry != null && t.stop != null) {
         var rp = Math.abs(t.entry - t.stop);
         if (rp > 0 && rp <= maxRiskPts) {
           riskList.push(rp);
+          risk$List.push(rp * dollarPerPoint(t.size, pv));
           if (t.status === "win" || t.status === "loss") rMults.push(t.points / rp);
         }
       }
     });
     var avgRiskPts = riskList.length ? mean(riskList) : null;
+    var avgRisk$ = risk$List.length ? mean(risk$List) : null;
     var rExpectancy = rMults.length ? mean(rMults) : null;
 
     // Annualised R + monthly trade rate from the realised rate over the window's span.
@@ -235,7 +254,8 @@
     var annualR = (rExpectancy != null && annualTrades != null) ? rExpectancy * annualTrades : null;
     var tradesPerMonth = (span > 0) ? wl * 30.4375 / span : null;
 
-    var dd = maxDD(equity);
+    var ddPts = maxDD(equity, "cum");
+    var dd$ = maxDD(equity, "cum$");
 
     return {
       // counts
@@ -245,24 +265,25 @@
       historical: list.filter(function(t){return t.series==="historical";}).length,
       live: list.filter(function(t){return t.series==="live";}).length,
       winRate: wl ? wins.length / wl : 0,
-      // points
+      // dollars (size-aware) — the primary economic view
+      pointValue: pv, workingUnit: wu,
+      profitFactor: gl$ ? round(gp$ / gl$) : null,
+      net$: round(net$),
+      ev$: wl ? round(net$ / wl) : 0,
+      grossProfit$: round(gp$), grossLoss$: round(gl$),
+      avgWin$: wins.length ? round(gp$ / wins.length) : 0,
+      avgLoss$: losses.length ? round(gl$ / losses.length) : 0,
+      best$: round(best$), worst$: round(worst$),
+      maxDrawdown$: round(dd$),
+      maxDrawdownPct: wu ? round(dd$ / wu * 1000) / 10 : null,   // % of working unit
+      avgRisk$: avgRisk$ != null ? round(avgRisk$) : null,
+      // points (reference / size-neutral)
       grossProfit: round(gp), grossLoss: round(gl), net: round(net),
-      profitFactor: gl ? round(gp / gl) : null,
       expectancy: wl ? round(net / wl) : 0,             // points per trade
       avgWin: wins.length ? round(gp / wins.length) : 0,
       avgLoss: losses.length ? round(gl / losses.length) : 0,
       best: round(best), worst: round(worst),
-      maxDrawdown: round(dd),
-      // dollars (pointValue)
-      pointValue: pv, workingUnit: wu,
-      net$: round(net * pv),
-      ev$: wl ? round(net * pv / wl) : 0,
-      avgWin$: wins.length ? round(gp * pv / wins.length) : 0,
-      avgLoss$: losses.length ? round(gl * pv / losses.length) : 0,
-      best$: round(best * pv), worst$: round(worst * pv),
-      maxDrawdown$: round(dd * pv),
-      maxDrawdownPct: wu ? round(dd * pv / wu * 1000) / 10 : null,   // % of working unit
-      avgRisk$: avgRiskPts != null ? round(avgRiskPts * pv) : null,
+      maxDrawdown: round(ddPts),
       // R-multiples (size-neutral)
       avgRiskPts: avgRiskPts != null ? round(avgRiskPts) : null,
       rExpectancy: rExpectancy != null ? round(rExpectancy) : null,
@@ -272,16 +293,31 @@
       months: span > 0 ? round(span / 30.4375) : null,
       // behaviour
       maxLossStreak: maxStreak(ordered, "loss"),
-      recovery: recoveryTrades(equity),
+      recovery: recoveryTrades(equity, "cum$"),
       spanDays: span,
       // series / equity / durability
       equity: equity,
       durability: {
-        removedTop3: top3.map(function(t){ return { id: t.id, points: t.points }; }),
-        netExTop3: round(net - top3sum),
-        pfExTop3: gl ? round((gp - top3sum) / gl) : null
+        removedTop3: top3.map(function(t){ return { id: t.id, points: t.points, usd: round(d$(t)) }; }),
+        netExTop3$: round(net$ - top3$),
+        pfExTop3: gl$ ? round((gp$ - top3$) / gl$) : null,
+        netExTop3: round(net - top3pts)
       }
     };
+  }
+
+  /* Dollar value of one point for a trade's size tag.
+       ES (default / "2es")   -> basePV per point × contracts
+       MES ("5mes","2mes"…)   -> (basePV/10) per point × micros
+       half                   -> basePV/2
+       unrecognised / none    -> basePV (one ES) */
+  function dollarPerPoint(size, basePV) {
+    if (!size) return basePV;
+    var s = String(size).toLowerCase(), m;
+    if ((m = s.match(/(\d+(?:\.\d+)?)\s*mes/))) return parseFloat(m[1]) * (basePV / 10);
+    if (s.indexOf("half") !== -1) return basePV / 2;
+    if ((m = s.match(/(\d+(?:\.\d+)?)\s*es/))) return parseFloat(m[1]) * basePV;
+    return basePV;
   }
 
   /* Filter a countable list by a trailing/anchored window. */
@@ -314,16 +350,17 @@
     return Math.max(1, Math.round((b - a) / 86400000));
   }
   function maxStreak(ordered, status){ var m=0,c=0; ordered.forEach(function(t){ if(t.status===status){c++; if(c>m)m=c;} else c=0; }); return m; }
-  function recoveryTrades(equity){
+  function recoveryTrades(equity, key){
+    key = key || "cum";
     // trades from the max-drawdown trough until equity first regains the prior peak
     var peak=-Infinity, peakIdx=0, troughIdx=0, dd=0, foundPeak=0;
-    for (var i=0;i<equity.length;i++){ if(equity[i].cum>peak){peak=equity[i].cum;foundPeak=i;} var d=peak-equity[i].cum; if(d>dd){dd=d;troughIdx=i;peakIdx=foundPeak;} }
+    for (var i=0;i<equity.length;i++){ if(equity[i][key]>peak){peak=equity[i][key];foundPeak=i;} var d=peak-equity[i][key]; if(d>dd){dd=d;troughIdx=i;peakIdx=foundPeak;} }
     if (dd<=0) return 0;
-    var target = equity[peakIdx].cum;
-    for (var j=troughIdx+1;j<equity.length;j++){ if(equity[j].cum>=target) return j-troughIdx; }
+    var target = equity[peakIdx][key];
+    for (var j=troughIdx+1;j<equity.length;j++){ if(equity[j][key]>=target) return j-troughIdx; }
     return null; // not yet recovered
   }
-  function maxDD(equity){ var peak=-Infinity,dd=0; equity.forEach(function(p){ if(p.cum>peak)peak=p.cum; var d=peak-p.cum; if(d>dd)dd=d; }); return dd; }
+  function maxDD(equity, key){ key = key || "cum"; var peak=-Infinity,dd=0; equity.forEach(function(p){ if(p[key]>peak)peak=p[key]; var d=peak-p[key]; if(d>dd)dd=d; }); return dd; }
   function sum(a){ return a.reduce(function(s,x){return s+x;},0); }
   function mean(a){ return a.length ? sum(a)/a.length : 0; }
   function round(x){ return Math.round(x*100)/100; }
