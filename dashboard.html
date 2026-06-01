@@ -225,13 +225,14 @@
                 var pts = t.points==null ? "—" : (t.points>0?"+":"") + t.points;
                 var cls = t.points>0?"pos":t.points<0?"neg":"";
                 var flag = t.review ? ' <span class="pill flag">review</span>' : '';
+                var size = t.size ? '<span class="pill">'+esc(t.size)+'</span>' : '<span style="color:var(--slate-dim)">full</span>';
                 return '<tr><td>'+esc(t.id)+'</td><td>'+esc(t.date||"")+'</td><td>'+(t.direction||"—")+
-                    '</td><td>'+(t.entry==null?"—":t.entry)+'</td><td>'+(t.stop==null?"—":t.stop)+'</td><td>'+(t.target==null?"—":t.target)+
+                    '</td><td>'+size+'</td><td>'+(t.entry==null?"—":t.entry)+'</td><td>'+(t.stop==null?"—":t.stop)+'</td><td>'+(t.target==null?"—":t.target)+
                     '</td><td class="'+cls+'">'+pts+'</td><td>'+esc(t.status||"")+flag+'</td></tr>';
             }).join("");
             return '<section class="block"><h2>Trade log</h2>' +
-                '<p class="note">Every record from the export, in order. "review" marks human-logged ambiguities (half-size / parenthetical results, unresolved, or no-trade) — these are excluded from the counts above until confirmed.</p>' +
-                '<div class="table-scroll"><table><thead><tr><th>ID</th><th>Date</th><th>Dir</th><th>Entry</th><th>Stop</th><th>Target</th><th>Points</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
+                '<p class="note">Every record from the export, in order. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged); points are recorded as logged. "review" marks only genuine gaps — an unresolved result or a no-trade — which are excluded from the counts above.</p>' +
+                '<div class="table-scroll"><table><thead><tr><th>ID</th><th>Date</th><th>Dir</th><th>Size</th><th>Entry</th><th>Stop</th><th>Target</th><th>Points</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
         }
 
         function discHTML(){
