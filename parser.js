@@ -229,10 +229,11 @@
     var avgRiskPts = riskList.length ? mean(riskList) : null;
     var rExpectancy = rMults.length ? mean(rMults) : null;
 
-    // Annualised R from the realised trade rate over the window's span.
+    // Annualised R + monthly trade rate from the realised rate over the window's span.
     var span = spanDays(ordered);
     var annualTrades = (span > 0) ? wl * 365 / span : null;
     var annualR = (rExpectancy != null && annualTrades != null) ? rExpectancy * annualTrades : null;
+    var tradesPerMonth = (span > 0) ? wl * 30.4375 / span : null;
 
     var dd = maxDD(equity);
 
@@ -267,6 +268,8 @@
       rExpectancy: rExpectancy != null ? round(rExpectancy) : null,
       annualR: annualR != null ? Math.round(annualR) : null,
       annualTrades: annualTrades != null ? Math.round(annualTrades) : null,
+      tradesPerMonth: tradesPerMonth != null ? round(tradesPerMonth) : null,
+      months: span > 0 ? round(span / 30.4375) : null,
       // behaviour
       maxLossStreak: maxStreak(ordered, "loss"),
       recovery: recoveryTrades(equity),
