@@ -407,7 +407,7 @@
             <!-- KPI strip — computed client-side from the local trades.json (this
                  page's own source of truth). Counts exclude flagged/unresolved records. -->
             <div class="cols-3" id="proofKpis" style="margin-top:2rem;">
-                <div class="card"><div class="n">NET RESULT · FEB–MAY 2026</div><h3 id="kpiNet">—</h3><p>Net points logged, gross of fees, every fill posted by hand.</p></div>
+                <div class="card"><div class="n">NET RESULT · FEB–MAY 2026</div><h3 id="kpiNet">—</h3><p>Net P&amp;L (size-aware), gross of fees, every fill posted by hand.</p></div>
                 <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr">—</h3><p>Across <span id="kpiCount">—</span> countable trades in the full record.</p></div>
                 <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur">—</h3><p>Delete the three best trades; the edge still stands.</p></div>
             </div>
@@ -745,17 +745,18 @@
                     if (!window.EkantikParser || !Array.isArray(trades)) return;
 
                     // One continuous record — the whole log, Feb–May 2026.
-                    const full = EkantikParser.computeStats(trades);
+                    const full = EkantikParser.computeStats(trades, { pointValue: doc.point_value, workingUnit: doc.working_unit });
                     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+                    const usd = n => (n < 0 ? "−$" : "+$") + Math.abs(n).toLocaleString("en-US", { maximumFractionDigits: 0 });
 
                     // Hero datum — total trades logged
                     if (full.count) set("liveVal", full.count + " trades");
 
-                    // §02 KPI strip — full record + durability test
-                    set("kpiNet", (full.net > 0 ? "+" : "") + full.net + " pts");
+                    // §02 KPI strip — full record (size-aware $) + durability test
+                    set("kpiNet", usd(full["net$"]));
                     set("kpiWr", (full.winRate * 100).toFixed(0) + "% · " + (full.profitFactor == null ? "—" : full.profitFactor.toFixed(2)));
                     set("kpiCount", full.count);
-                    set("kpiDur", "net " + (full.durability.netExTop3 > 0 ? "+" : "") + full.durability.netExTop3 + " · PF " +
+                    set("kpiDur", "net " + usd(full.durability["netExTop3$"]) + " · PF " +
                         (full.durability.pfExTop3 == null ? "—" : full.durability.pfExTop3.toFixed(2)));
                 })
                 .catch(() => { /* leave placeholders; never fabricate */ });
