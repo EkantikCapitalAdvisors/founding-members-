@@ -56,20 +56,20 @@ properties. Four pieces:
 |---|---|
 | `parser.js` | Pure, dependency-free parser. Turns the Discord `#imo-futures-trades` export into structured trade records and computes edge stats (win rate, profit factor, expectancy, drawdown, equity curve, the delete-top-3 durability test). Shared by the admin tool, dashboard, and the `index.html` proof strip. |
 | `admin.html` | **Internal** upload/review tool. Load the Discord HTML export (or paste it), parse, correct any flagged rows in an editable table, then **download `trades.json`** and commit it. The single source of truth. |
-| `trades.json` | The committed dataset the public pages read. Wrapper carries `live_since` (2026-05-22) so history and live stay separated. Generated from the Feb–May 2026 export. |
-| `dashboard.html` | The public, self-contained dashboard: KPI tiles, equity curve (Chart.js), the durability test, full trade log, and an All / Pre-launch history / Live (since 5/22) toggle. |
+| `trades.json` | The committed dataset the public pages read. Generated from the Feb–May 2026 export. |
+| `dashboard.html` | The public, self-contained dashboard: KPI tiles, equity curve (Chart.js), the durability test, and the full trade log. |
 
-**Series convention (= spec §02 historical/live separation):** trade labels
-`F#` are pre-launch operator history; `S#` are the live public sample (S1 is
-dated the 22 May launch). The parser tags each record `series: historical|live`
-and the dashboard never blends them.
+**One continuous record.** The page presents a single, unbroken, operator-executed
+log — every trade from February 2026 to now, in order. There is no "historical
+vs. live" split in the public presentation. (The `F#`/`S#` labels in the data are
+just the operator's own sequence tags and carry no separate-track-record meaning.)
 
 **Updating the data:** open `admin.html` → load the latest export → review flagged
 rows → download `trades.json` → commit to repo root. Done.
 
-**Current snapshot** (from the committed `trades.json`): 103 countable trades
-(88 historical, 15 live), 64% win rate, profit factor 2.0, net +180.75 pts.
-Durability — delete the 3 best trades and it still nets +123.75 pts at PF 1.69.
+**Current snapshot** (from the committed `trades.json`): 103 countable trades,
+64% win rate, profit factor 2.0, net +180.75 pts. Durability — delete the 3 best
+trades and it still nets +123.75 pts at PF 1.69.
 
 ---
 
@@ -99,8 +99,9 @@ steps (third-party accreditation verification → data room → operator call) a
   live behind verification (spec §1.3 / §4).
 - **No manufactured urgency** — the old countdown / "spots remaining" framing is
   gone; scarcity is the two real caps (spec §07 / §8.2).
-- **Historical vs. live kept separate** — pre-launch operator record vs. the
-  post-22-May-2026 live public sample are never blended (spec §02 / §9).
+- **One continuous record** — the page shows a single, unbroken, operator-executed
+  log from February 2026 to now, in order; no separate "track records," no resets.
+  (Per the client's direction, this supersedes the spec's §02 historical/live split.)
 - **No fabricated numbers** — every figure (hero datum, §02 KPI strip, the whole
   dashboard) is computed **client-side from this repo's own `trades.json`** via
   `parser.js`. Nothing is hardcoded; counts exclude records flagged for review.

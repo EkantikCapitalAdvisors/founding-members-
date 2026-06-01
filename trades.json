@@ -3,8 +3,7 @@
   "generated": "2026-05-31T03:35:13Z",
   "source": "Discord #imo-futures-trades export (Feb 02 2026 \u2013 May 30 2026)",
   "instrument": "ES / MES index futures (points)",
-  "live_since": "2026-05-22",
-  "note": "F-series = pre-launch operator history; S-series = live public sample since 2026-05-22. 'review:true' marks records needing human confirmation (half-size / parenthetical results, unresolved, or no-trade). Counts in the dashboard exclude no-trade and unresolved records.",
+  "note": "One continuous, operator-executed record \u2014 every trade from February 2026 to the present, in order. 'review:true' marks records needing human confirmation (half-size / parenthetical results, unresolved, or no-trade). Counts in the dashboard exclude no-trade and unresolved records. The F/S labels are the operator's own sequence tags and carry no separate-track-record meaning.",
   "trades": [
     {
       "id": "F1",
