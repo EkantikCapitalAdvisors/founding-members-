@@ -1,11 +1,11 @@
 {
   "schema": "ekantik-trades/v1",
-  "generated": "2026-06-01T12:05:17Z",
-  "source": "Discord #imo-futures-trades export (Feb 02 2026 – May 30 2026)",
+  "generated": "2026-06-01T12:59:32Z",
+  "source": "Discord #imo-futures-trades export (Feb 02 2026 \u2013 May 30 2026)",
   "instrument": "ES / MES index futures (points)",
   "point_value": 50,
   "working_unit": 5000,
-  "note": "One continuous, operator-executed record — every trade from February 2026 to the present, in order. 'review:true' marks records needing human confirmation (half-size / parenthetical results, unresolved, or no-trade). Counts in the dashboard exclude no-trade and unresolved records. The F/S labels are the operator's own sequence tags and carry no separate-track-record meaning.",
+  "note": "One continuous, operator-executed record \u2014 every trade from February 2026 to the present, in order. 'review:true' marks records needing human confirmation (half-size / parenthetical results, unresolved, or no-trade). Counts in the dashboard exclude no-trade and unresolved records. The F/S labels are the operator's own sequence tags and carry no separate-track-record meaning.",
   "trades": [
     {
       "id": "F1",
@@ -942,14 +942,14 @@
       "direction": "short",
       "entry": 7295,
       "stop": null,
-      "target": 7291,
-      "points": null,
+      "target": 7291.0,
+      "points": 2.0,
       "size": "5mes",
       "date": "2026-05-01",
       "time": "2026-05-01T09:19:38",
-      "status": "unresolved",
-      "review": true,
-      "raw": "F56: s 7295 5mes | F56: tp7291"
+      "status": "win",
+      "review": false,
+      "raw": "F56: s 7295 5mes | F56: tp7291 | F56: +2 (resolved from log image, 5 MES)"
     },
     {
       "id": "F57",
