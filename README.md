@@ -22,11 +22,15 @@ spec (§1.3).
 
 | Anchor | Section | Spec |
 |---|---|---|
-| `header.hero` | Frame inversion — access, not pitch | HERO |
+| `header.hero` | Frame inversion + live stat ribbon (win rate · profit factor · durability) | HERO |
 | `#who` | Who this is for (qualify by self-selection) | §01 |
-| `#proof` | The proof, compressed (durability fact; historical vs. live separated) | §02 |
+| `#edge-plain` | The edge, in plain English (casino/coin, the live $ edge) | §01.5 |
+| `#proof` | The proof, compressed (Validation 1 live record + Validation 2 durability) | §02 |
+| `#repeat` | Why a small edge is the whole point (repetition mechanic) | §02.5 |
 | `#thesis` | The founding thesis (why early is rational) | §03 |
-| `#how` | How it survives — buffer → Sit-Out → Gate | §04 |
+| `#how` | How it survives — buffer → Sit-Out → Gate (+ Validation 3, gate drawer) | §04 |
+| `#dial` | The only decision you make — the risk-per-trade dial (static, no numbers) | §04.5 |
+| `#rule-one` | Rule No. 1 — Buffett's rule operationalized into four disciplines | §04.7 |
 | `#receives` | What a founding member receives (described, not priced) | §05 |
 | `#risk` | The risk, stated first | §06 |
 | `#scarcity` | Structural scarcity (real caps, no countdowns) | §07 |
