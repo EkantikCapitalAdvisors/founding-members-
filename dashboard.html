@@ -153,6 +153,10 @@
         function render(){
             var sWin = EkantikParser.computeStats(TRADES, { window: WINDOW, pointValue: PV, workingUnit: WU });
             var sAll = EkantikParser.computeStats(TRADES, { pointValue: PV, workingUnit: WU });
+            // Annualised / cadence metrics are full-record context — like the chart and
+            // durability test — never window-scoped. Extrapolating a 7-day span (a few
+            // days of trades) to a yearly rate produces nonsense, so pin them to all-time.
+            ["annualR", "annualTrades", "tradesPerMonth", "months"].forEach(function (k) { sWin[k] = sAll[k]; });
             var c = document.getElementById("content");
             c.classList.remove("loading");
             c.innerHTML = winbarHTML(sWin) + kpiHTML(sWin) + chartHTML() + durabilityHTML(sAll) + logHTML() + discHTML();
@@ -167,7 +171,7 @@
             return '<div class="kpihead"><span class="lbl">Key performance indicators</span>' +
                    '<span class="rng">'+ s.tradeCount +' trades · '+ (dateRange()||'—') +'</span></div>' +
                    '<div class="winbar"><span class="wl">Window</span>'+btns+
-                   '<span class="note">KPIs & table filter by window; charts and the durability test stay all-time.</span></div>';
+                   '<span class="note">KPIs &amp; table filter by window; charts, the durability test, and the annualized / cadence rates stay all-time.</span></div>';
         }
         function wireWindow(){
             document.querySelectorAll(".winbar button").forEach(function(b){
@@ -184,7 +188,7 @@
                 kpi("Win rate", (s.winRate*100).toFixed(1)+"%", "", s.wins+" W · "+s.losses+" L") +
                 kpi("Profit factor", s.profitFactor==null?"—":s.profitFactor.toFixed(2), "", "gross profit / gross loss") +
                 kpi("R-expectancy", s.rExpectancy==null?"—":(s.rExpectancy>0?"+":"")+s.rExpectancy.toFixed(2)+"R", "gold", "size-neutral per-trade") +
-                kpi("Annual R", s.annualR==null?"—":(s.annualR>0?"+":"")+s.annualR+"R", "gold", "~"+(s.annualTrades||"—")+" trades/yr extrapolated") +
+                kpi("Annual R", s.annualR==null?"—":(s.annualR>0?"+":"")+s.annualR+"R", "gold", "~"+(s.annualTrades||"—")+" trades/yr · full-record rate, extrapolated") +
                 kpi("EV / trade", dollar(s.ev$), netCls, "net "+dollar(s["net$"])+" over window") +
                 '</div><div class="kpis">' +
                 kpi("Avg win", "+"+dollarPlain(s["avgWin$"]), "pos", s.wins+" winning trades") +
@@ -193,7 +197,7 @@
                 kpi("Worst trade", dollar(s["worst$"]), "neg", "single deepest loss") +
                 kpi("Max drawdown", "−"+dollarPlain(s["maxDrawdown$"]), "neg", (s.maxDrawdownPct==null?"":s.maxDrawdownPct+"% of ")+dollarPlain(s.workingUnit)+" working unit") +
                 '</div><div class="kpis">' +
-                kpi("Trades / month", s.tradesPerMonth==null?"—":s.tradesPerMonth.toFixed(1), "", "avg over "+(s.months==null?"—":s.months.toFixed(1))+" months active") +
+                kpi("Trades / month", s.tradesPerMonth==null?"—":s.tradesPerMonth.toFixed(1), "", "full-record rate over "+(s.months==null?"—":s.months.toFixed(1))+" months") +
                 kpi("Recovery", s.recovery==null?"not yet":s.recovery+" trades", "", "trades to restore peak") +
                 kpi("Loss streak (max)", s.maxLossStreak+" in a row", "", "longest consecutive losses") +
                 kpi("Avg risk / trade", s["avgRisk$"]==null?"—":dollarPlain(s["avgRisk$"]), "", "1R · per-trade dollar risk") +
