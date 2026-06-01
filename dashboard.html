@@ -193,6 +193,7 @@
                 kpi("Worst trade", dollar(s["worst$"]), "neg", "single deepest loss") +
                 kpi("Max drawdown", "−"+dollarPlain(s["maxDrawdown$"]), "neg", (s.maxDrawdownPct==null?"":s.maxDrawdownPct+"% of ")+dollarPlain(s.workingUnit)+" working unit") +
                 '</div><div class="kpis">' +
+                kpi("Trades / month", s.tradesPerMonth==null?"—":s.tradesPerMonth.toFixed(1), "", "avg over "+(s.months==null?"—":s.months.toFixed(1))+" months active") +
                 kpi("Recovery", s.recovery==null?"not yet":s.recovery+" trades", "", "trades to restore peak") +
                 kpi("Loss streak (max)", s.maxLossStreak+" in a row", "", "longest consecutive losses") +
                 kpi("Avg risk / trade", s["avgRisk$"]==null?"—":dollarPlain(s["avgRisk$"]), "", "1R · per-trade dollar risk") +

@@ -62,8 +62,9 @@ properties. Four pieces:
 **KPI set** (computed in `parser.js`, displayed on the dashboard, filterable by
 window): win rate, profit factor, R-expectancy, annual R (extrapolated from the
 realised trade rate), EV/trade ($), avg win/loss ($), best/worst trade ($), max
-drawdown ($ and % of working unit), recovery (trades to restore peak), max loss
-streak, and avg risk/trade (1R, $). Dollars use `point_value`; R-multiples use
+drawdown ($ and % of working unit), trades/month (realised rate over the active
+span), recovery (trades to restore peak), max loss streak, and avg risk/trade
+(1R, $). Dollars use `point_value`; R-multiples use
 each trade's `|entry − stop|` as 1R (stop distances above 50 pts are treated as
 log typos and skipped). **Window filter:** 7d / 30d / 90d / MTD / YTD / All time
 — filters the KPIs and the trade table; the equity curve and durability test stay
