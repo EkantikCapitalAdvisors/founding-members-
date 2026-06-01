@@ -145,10 +145,8 @@
           cur.status = "no-trade"; cur.points = null; cur.review = true;
         } else {
           cur.points = c.value;
-          if (rest.indexOf("(") !== -1 ||
-              (cur.size && String(cur.size).toLowerCase().indexOf("half") !== -1)) {
-            cur.review = true; // ambiguous half / parenthetical result
-          }
+          // Size (half / 5mes / 2es …) is captured explicitly in cur.size and is
+          // NOT treated as ambiguous — the logged points stand as recorded.
         }
         cur.raw.push(m.line);
         openByLabel[label] = null;

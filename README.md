@@ -69,12 +69,12 @@ log typos and skipped). **Window filter:** 7d / 30d / 90d / MTD / YTD / All time
 — filters the KPIs and the trade table; the equity curve and durability test stay
 all-time as context.
 
-> **Note on headline $ figures:** a few early trades are logged half-size with
-> ambiguous results (e.g. `F1: 25 points ( 12.5 points)`). Until those flagged
-> rows are confirmed in `admin.html`, the dashboard counts the parser's literal
-> value, so figures that depend on the single biggest trades (best trade, net $,
-> EV, profit factor, R) will differ from the operator's reviewed numbers. The
-> drawdown, win rate, loss streak, and trade count are unaffected.
+**Position size is explicit, points stay as logged.** Where a trade is logged at
+a non-default size — `half`, `5mes`, `2es`, etc. — the parser captures that tag
+into `size` and the dashboard shows it in a **Size** column ("full" = untagged).
+Points are recorded exactly as logged; sizing is **not** used to re-scale results.
+Only two records carry a `review` flag — one no-trade (`F14`) and one unresolved
+entry with no result (`F56`) — and both are excluded from the counts.
 
 **One continuous record.** The page presents a single, unbroken, operator-executed
 log — every trade from February 2026 to now, in order. There is no "historical
