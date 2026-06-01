@@ -323,6 +323,58 @@
         footer .disc p { color: var(--slate); font-size: 0.72rem; margin-bottom: 0.9rem; }
         footer .legal { margin-top: 2.4rem; padding-top: 1.4rem; border-top: 1px solid var(--hair-cool); color: var(--slate-dim); }
 
+        /* ===== v3 MODULES (hero ribbon, 1.5, 2.5, 4.5, 4.7) ===== */
+        .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 0.6rem; }
+        .statband { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--hair-cool); border-radius: 8px; overflow: hidden; margin: 2rem 0 0.4rem; background: rgba(255,255,255,0.012); }
+        .statband .cell { padding: 1.3rem 1.4rem; border-right: 1px solid var(--hair-cool); }
+        .statband .cell:last-child { border-right: none; }
+        .statband .fig { font-family: var(--mono); font-size: 1.7rem; color: var(--gold); line-height: 1.1; }
+        .statband .lab { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); margin-top: 0.45rem; }
+        .statband .lab b { color: var(--ink); font-weight: 600; }
+        .statband-cap { font-family: var(--serif); font-style: italic; color: var(--slate); font-size: 1.05rem; margin: 0.4rem 0 1.6rem; max-width: 820px; }
+        .hero .statband { background: rgba(200,169,81,0.05); border-color: var(--hair); }
+        .ribbon-micro { font-family: var(--mono); font-size: 0.7rem; color: var(--slate); margin-top: 0.7rem; }
+        .motif { width: 14px; height: 14px; border-radius: 50%; background: var(--gold); display: inline-block; flex: 0 0 auto; }
+        .cardhead { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+        .cardhead h3 { margin: 0; font-size: 1.2rem; }
+        .relbox { font-family: var(--mono); font-size: 0.95rem; color: var(--ink); border-left: 2px solid var(--gold); padding: 0.6rem 0 0.6rem 1.2rem; margin: 1.6rem 0; line-height: 1.7; }
+        .relbox em { color: var(--gold); font-style: normal; }
+        .dial-track { position: relative; height: 4px; background: var(--hair-cool); border-radius: 2px; margin: 2.6rem 8% 2.8rem; }
+        .dial-detent { position: absolute; top: 50%; width: 12px; height: 12px; border-radius: 50%; background: var(--navy-deep); border: 1px solid var(--slate-dim); transform: translate(-50%, -50%); }
+        .dial-detent.on { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 5px rgba(200,169,81,0.16); }
+        .dial-detent.pos-lo { left: 8%; } .dial-detent.pos-mid { left: 50%; } .dial-detent.pos-hi { left: 92%; }
+        .dial-labels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .dial-labels .dl { text-align: center; }
+        .dial-labels .dl .nm { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
+        .dial-labels .dl.mid .nm { color: var(--gold); }
+        .dial-labels .dl p { font-size: 0.85rem; color: var(--slate); margin-top: 0.3rem; }
+        .lockstate { display: flex; align-items: center; gap: 0.7rem; justify-content: center; border: 1px dashed var(--hair); border-radius: 8px; padding: 1.1rem; margin-top: 1.8rem; font-family: var(--mono); font-size: 0.8rem; color: var(--slate); }
+        .lockstate .lock { color: var(--gold); }
+        .ring-core { text-align: center; padding: 1.5rem; border: 1px solid var(--hair); border-radius: 8px; background: var(--gold-soft); margin-bottom: 0.5rem; }
+        .ring-core .motif { width: 18px; height: 18px; margin: 0 auto 0.5rem; }
+        .ring-core .cl { font-family: var(--display); font-size: 1.3rem; color: var(--ink); }
+        .ring-core .cs { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-top: 0.3rem; }
+        .rings { display: grid; gap: 0.7rem; max-width: 820px; margin-top: 0.5rem; }
+        .ring { border: 1px solid var(--hair-cool); border-radius: 8px; padding: 1.2rem 1.3rem; }
+        .ring .rn { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold); }
+        .ring h4 { font-family: var(--display); font-size: 1.15rem; margin: 0.25rem 0 0.4rem; }
+        .ring .rd { font-style: italic; color: #C9D2DF; font-family: var(--serif); font-size: 1.05rem; margin-bottom: 0.5rem; }
+        .ring .ev { font-family: var(--mono); font-size: 0.74rem; color: var(--slate); }
+        .band-close { font-family: var(--serif); font-size: 1.2rem; color: var(--ink); border-top: 1px solid var(--hair); padding-top: 1.4rem; margin-top: 1.8rem; max-width: 840px; }
+        details.gate { border: 1px solid var(--hair-cool); border-radius: 8px; margin-top: 2rem; background: rgba(255,255,255,0.012); }
+        details.gate > summary { cursor: pointer; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--gold); padding: 1rem 1.3rem; list-style: none; }
+        details.gate > summary::-webkit-details-marker { display: none; }
+        details.gate[open] > summary { border-bottom: 1px solid var(--hair-cool); }
+        details.gate .gate-body { padding: 1.3rem; font-size: 0.95rem; }
+        details.gate .gate-body h4 { font-family: var(--display); font-size: 1.05rem; color: var(--ink); margin: 1rem 0 0.3rem; }
+        details.gate .gate-body h4:first-child { margin-top: 0; }
+        @media (max-width: 760px) {
+            .statband { grid-template-columns: 1fr; }
+            .statband .cell { border-right: none; border-bottom: 1px solid var(--hair-cool); }
+            .statband .cell:last-child { border-bottom: none; }
+            .dial-labels { grid-template-columns: 1fr; }
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 760px) {
             .cols-3, .cols-2, .caps, .op-grid, .next-steps { grid-template-columns: 1fr; }
@@ -363,6 +415,13 @@
             <h1>A capacity-limited edge. A founding cohort. One window.</h1>
             <p class="sub">An invitation to evaluate participation in a capacity-constrained strategy — for accredited investors, while the founding cohort is open. The constraint was never capital. It is capacity, and capacity closes.</p>
 
+            <div class="statband" id="heroRibbon">
+                <div class="cell"><div class="fig" id="hbWin">—</div><div class="lab"><b>Win rate</b> · live trades, by hand</div></div>
+                <div class="cell"><div class="fig" id="hbPf">—</div><div class="lab"><b>Profit factor</b> · won per $1.00 lost</div></div>
+                <div class="cell"><div class="fig">Holds</div><div class="lab"><b>Durability</b> · delete the top 3 trades</div></div>
+            </div>
+            <p class="ribbon-micro">Live, size-aware, posted by hand. The sample is pre-asymptotic.</p>
+
             <div class="hero-cta">
                 <button class="btn btn-primary" onclick="openModal()">Request the founding-cohort briefing →</button>
                 <a class="hero-tertiary" href="dashboard.html">First time here? See the live edge dashboard →</a>
@@ -389,17 +448,44 @@
         </div>
     </section>
 
+    <!-- ===================== 01.5 · THE EDGE, IN PLAIN ENGLISH ===================== -->
+    <section id="edge-plain">
+        <div class="wrap">
+            <span class="kicker"><span class="num">01.5</span> · The edge, in plain English</span>
+            <h2>When it wins and when it loses, the amounts are roughly equal — but it wins almost twice as often.</h2>
+            <p class="lede">That sentence is the whole strategy. Everything else on this page is either proof that it is true, or architecture that keeps it alive.</p>
+
+            <div class="statband">
+                <div class="cell"><div class="fig" id="e15Win">—</div><div class="lab"><b>When it wins</b> · average gain across <span id="e15WinN">—</span> winning trades</div></div>
+                <div class="cell"><div class="fig" id="e15Loss">—</div><div class="lab"><b>When it loses</b> · average loss across <span id="e15LossN">—</span> losing trades — nearly identical</div></div>
+                <div class="cell"><div class="fig" id="e15WL">—</div><div class="lab"><b>How often it wins</b> · about <span id="e15Ratio">—</span>× more wins than losses</div></div>
+            </div>
+            <p class="statband-cap">Same-sized punches. Nearly twice the connection rate. Historical, size-aware, across <span id="e15Count">—</span> live trades. The sample is pre-asymptotic.</p>
+
+            <div class="cols-2">
+                <div class="card">
+                    <div class="cardhead"><span class="motif"></span><h3>The casino, not the gambler.</h3></div>
+                    <p>A blackjack table doesn't win every hand. It wins about 51 of 100 and pays out the rest. That small, repeatable, structural advantage is what built Las Vegas. This edge is the same shape — an advantage expressed over many repetitions — only sharper. The house wins because of structure, not luck. Luck doesn't repeat. Structure does.</p>
+                </div>
+                <div class="card">
+                    <div class="cardhead"><span class="motif"></span><h3>A coin weighted to land heads about two times in three.</h3></div>
+                    <p>Lose about one unit on tails, win about one unit on heads — but heads lands roughly two times in three. The expected value of every flip is positive: win more often than you lose, by about the same amount each time. Measured live, that edge is <strong><span id="e15Ev">—</span> per trade</strong> — size-aware, historical. It is a measurement, not a model.</p>
+                </div>
+            </div>
+            <p class="compliance-bar">Historical, size-aware, across the live record; the sample is pre-asymptotic. These describe the strategy's measured behavior, not a forecast of any investor's outcome.</p>
+        </div>
+    </section>
+
     <!-- ===================== 02 · THE PROOF, COMPRESSED ===================== -->
     <section id="proof">
         <div class="wrap">
             <span class="kicker"><span class="num">02</span> · The proof, compressed</span>
             <h2>Don't take the number. Watch it print.</h2>
 
-            <p class="pull">Delete the three best trades and the edge still stands — expectancy holds, profit factor stays above breakeven. <em>That one fact dismantles "you just got lucky" before it's spoken.</em></p>
+            <p style="max-width:820px;">An edge can be validated three ways: watch it print, try to break it, and publish the condition that would kill it. The first two are below. The third is §04.</p>
 
-            <p style="max-width:820px;">What survives a small sample is not a win rate — it's the architecture beneath it: a published <strong>falsifiability gate</strong>, a <strong>witness countersignature</strong>, and <strong>operator capital on every fill</strong>. Those are the durable facts. The raw figures live — and accumulate — in the open.</p>
-
-            <div class="note-box">
+            <span class="eyebrow" style="margin-top:1.6rem;">Validation 1 · Live, by hand, no restatements.</span>
+            <div class="note-box" style="margin-top:0;">
                 <div class="t">One continuous record</div>
                 <p>One operator, one strategy, one unbroken log — <strong>every trade from February 2026 to now</strong>, posted by hand as it happened. No restatements, no separate "track records," no quiet resets. What you see below is the whole record, computed live from the same file that drives the dashboard.</p>
             </div>
@@ -411,6 +497,12 @@
                 <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr">—</h3><p>Across <span id="kpiCount">—</span> countable trades in the full record.</p></div>
                 <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur">—</h3><p>Delete the three best trades; the edge still stands.</p></div>
             </div>
+
+            <span class="eyebrow" style="margin-top:2.6rem;">Validation 2 · The durability test.</span>
+            <p class="pull" style="margin-top:0;">Delete the three best trades and the edge still stands — expectancy holds, profit factor stays above breakeven. <em>That one fact dismantles "you just got lucky" before it's spoken.</em></p>
+            <p style="max-width:820px;color:var(--slate);">Delete the three best trades — the most common way a small sample flatters itself — and expectancy still holds, profit factor still clears breakeven.</p>
+
+            <p style="max-width:820px;margin-top:1.4rem;">What survives a small sample is not a win rate — it's the architecture beneath it: a published <strong>falsifiability gate</strong>, a <strong>witness countersignature</strong>, and <strong>operator capital on every fill</strong>. Those are the durable facts. The raw figures live — and accumulate — in the open.</p>
 
             <div class="hero-cta" style="margin-top:1.6rem;">
                 <a class="btn btn-ghost" href="dashboard.html">Open the full edge dashboard →</a>
@@ -438,6 +530,25 @@
         </div>
     </section>
 
+    <!-- ===================== 02.5 · WHY A SMALL EDGE IS THE WHOLE POINT ===================== -->
+    <section id="repeat">
+        <div class="wrap">
+            <span class="kicker"><span class="num">02.5</span> · Why a small edge is the whole point</span>
+            <h2>A few dollars of edge per trade is a rounding error. Run it twenty-seven times a month, and it stops being one.</h2>
+            <p class="lede">The edge isn't large. It's repeatable. That's the difference between a savings account and a snowball.</p>
+
+            <ol class="chain">
+                <li><p><strong>One trade</strong> — Risk one unit; on average, expect a small positive edge on top. Invisible to the naked eye.</p></li>
+                <li><p><strong>One month (~27 trades)</strong> — The same small edge, many times over. It begins to show up against the capital at risk.</p></li>
+                <li><p><strong>One year (~330 trades)</strong> <span class="muted">(extrapolated, illustrative — not a forecast)</span> — Many repetitions of one small edge. Then position-sizing on a growing base bends the line further: the math stops being linear.</p></li>
+            </ol>
+
+            <p class="pull"><span class="motif" style="vertical-align:middle;margin-right:0.6rem;"></span>"Find a long hill of wet snow." The edge is the snowball. The repetitions are the hill.</p>
+
+            <p class="compliance-bar">Cadence is context, not a forecast. The roughly twenty-seven trades a month and roughly three hundred thirty a year are extrapolated and illustrative. No return is promised or implied.</p>
+        </div>
+    </section>
+
     <!-- ===================== 03 · THE FOUNDING THESIS ===================== -->
     <section id="thesis">
         <div class="wrap">
@@ -458,6 +569,8 @@
     <section id="how">
         <div class="wrap">
             <span class="kicker"><span class="num">04</span> · How it survives</span>
+            <span class="eyebrow" style="margin-bottom:0.8rem;">Validation 3 · Publish the condition that would kill it.</span>
+            <p style="max-width:860px;margin-bottom:1.4rem;">Anyone can show a good record. Almost no one will tell you, in advance and in code, the exact condition under which they will admit it stopped working — and hand the off-switch to someone else.</p>
             <h2>Three mechanisms against the three ways capital dies.</h2>
 
             <p class="pull">The <em>buffer</em> means a loss can't ruin you. The <em>Sit-Out</em> means a bad streak can't compound. The <em>Gate</em> means a dead edge can't bleed you.</p>
@@ -500,7 +613,100 @@
                 <p>A competitor could copy every word and won't — because each element demands a cost they refuse. Pre-committing a kill-condition means accepting you might be publicly wrong. Locking it against yourself means surrendering the escape hatch. A binding witness means handing someone else authority over your own book. The barrier to copying is willingness, not capability.</p>
             </div>
 
+            <details class="gate">
+                <summary>Read the gate →</summary>
+                <div class="gate-body">
+                    <h4>Gate 01 · Expression Layer — is the edge still alive?</h4>
+                    <p>Stand-down trigger: rolling-100-trade expectancy falls to $0 per trade. New entries go to zero size next session; status moves to research-only; public notice within 24 hours. Re-deploy gate: ≥ +$50/trade across ≥ 50 paper trades, a written re-derivation, and a 48-hour cool-off.</p>
+                    <h4>Gate 02 · Fidelity Layer — am I running my own method?</h4>
+                    <p>Every trade tagged process vs. variance before the next entry; zero unannounced or un-countersigned rule changes; daily routine adherence at or above 95 of every 100 sessions.</p>
+                    <h4>The Sit-Out ladder — graduated, not binary.</h4>
+                    <p>Tier 1 (yellow): a single logged breach — logged within 24h, corrective action within 7 days, no size change. Tier 2 (orange): 3+ breaches in 30 trades or adherence below 95 of every 100 over 30 days — position cut to minimum for 20 trades, daily witness oversight. Tier 3 (red): any rule-integrity breach, or a second Tier 2 inside 100 trades — immediate cessation, witness convenes a structural review, public disclosure within 24h.</p>
+                    <h4>Witness</h4>
+                    <p>Manish Dharod countersigns modifications, tier classifications, and resumptions; monthly audits are posted. The full protocol is public at <a href="https://accelerator.ekantikcapital.com" target="_blank" rel="noopener">accelerator.ekantikcapital.com</a>.</p>
+                </div>
+            </details>
+
             <p class="compliance-bar">The Sit-Out and the Gate are process commitments, not guarantees. The Sit-Out bounds drawdown by design and adherence; it does not guarantee a maximum — markets gap. The Gate manages the risk of riding a decayed edge; it does not eliminate the risk of loss.</p>
+        </div>
+    </section>
+
+    <!-- ===================== 04.5 · THE ONLY DECISION YOU MAKE ===================== -->
+    <section id="dial">
+        <div class="wrap">
+            <span class="kicker"><span class="num">04.5</span> · The only decision you make</span>
+            <h2>The operator runs the engine. You set the dial. Two separate decisions.</h2>
+            <p class="lede">The edge produces what it produces. Your outcome is governed by one variable you control — how much capital rides on each trade. Return is a function of that dial. It is not a forecast, and it is not the operator's promise.</p>
+
+            <div class="relbox">
+                Your outcome ≈ ( the edge, run with discipline ) <em>×</em> ( the risk per trade you choose )<br><br>
+                Turn the dial down: a steadier ride, shallower drawdowns, a smaller slice of the edge. Turn it up: more of the edge, deeper drawdown nights, more conviction required. Same engine — your hand on the dial.
+            </div>
+
+            <div class="dial-track">
+                <span class="dial-detent pos-lo"></span>
+                <span class="dial-detent on pos-mid"></span>
+                <span class="dial-detent pos-hi"></span>
+            </div>
+            <div class="dial-labels">
+                <div class="dl"><div class="nm">Conservative</div><p>steadier ride, shallower drawdowns</p></div>
+                <div class="dl mid"><div class="nm">Balanced</div><p>the setting most members choose</p></div>
+                <div class="dl"><div class="nm">Assertive</div><p>more of the edge, deeper drawdown nights</p></div>
+            </div>
+
+            <div class="lockstate"><span class="lock">⬚</span> Return &amp; drawdown per setting · <strong style="color:var(--ink)">Verify to view</strong></div>
+
+            <div class="note-box">
+                <div class="t">Why the numbers aren't here</div>
+                <p>The exact return and drawdown for each setting — including the live setting that produced this record, and the settings most members choose — are in the verified briefing. We don't publish them here, by choice: specific return figures belong in offering documents shown only to verified investors, not on an open page.</p>
+            </div>
+
+            <p class="band-close">The investor picks the dial. The operator runs the engine. The drawdown you are willing to sit through is the only real input you bring.</p>
+        </div>
+    </section>
+
+    <!-- ===================== 04.7 · RULE NO. 1 ===================== -->
+    <section id="rule-one">
+        <div class="wrap">
+            <span class="kicker"><span class="num">04.7</span> · Rule No. 1</span>
+            <h2>Everyone quotes Buffett's first rule. Almost no one operationalizes it.</h2>
+            <p class="pull">"Rule No. 1: Never lose money. Rule No. 2: Never forget Rule No. 1." <em>— Warren Buffett</em></p>
+            <p class="lede">"Never lose money" is not a feeling — it is a set of disciplines. Below are the four we operate by. Each is evidenced earlier on this page, not asserted here. They are how we <em>pursue</em> Rule No. 1; they bound and manage the risk of loss — they do not eliminate it.</p>
+
+            <div class="ring-core">
+                <span class="motif"></span>
+                <div class="cl">Never lose money</div>
+                <div class="cs">Buffett's rule · our operating discipline</div>
+            </div>
+            <div class="rings">
+                <div class="ring">
+                    <div class="rn">PRINCIPLE 01</div>
+                    <h4>Positive Expectancy</h4>
+                    <div class="rd">Only play games you can mathematically prove you win.</div>
+                    <div class="ev">Evidence: a measured per-trade edge of <span id="p47Ev">—</span> across <span id="p47Count">—</span> live trades · win rate <span id="p47Win">—</span> · profit factor <span id="p47Pf">—</span>. The edge is a statistical artifact, not an assertion. <span class="muted">(Shown in §01.5 and §02.)</span></div>
+                </div>
+                <div class="ring">
+                    <div class="rn">PRINCIPLE 02</div>
+                    <h4>Expected Value</h4>
+                    <div class="rd">Compute EV before every decision; proceed only if it's positive.</div>
+                    <div class="ev">Evidence: the coin math — win more often than you lose, by about the same amount each time, for a positive expected value of <span id="p47Ev2">—</span> per trade, live-measured. Pre-decision logging is a protocol requirement, not a habit. <span class="muted">(Shown in §01.5, Card B; enforced by the Fidelity Layer in §04.)</span></div>
+                </div>
+                <div class="ring">
+                    <div class="rn">PRINCIPLE 03</div>
+                    <h4>Position Sizing</h4>
+                    <div class="rd">Never risk so much that a streak can end the game.</div>
+                    <div class="ev">Evidence: fixed-fractional sizing on the live record, plus the strategy's capital architecture — only a defined slice of allocated capital is exposed to margin trading; the remainder sits in money-market liquidity. The exposed slice is what trades, at the risk-per-trade you choose. This structure <strong>bounds, it does not guarantee</strong> — capital can still be impaired (§06). <span class="muted">(You set this in §04.5.)</span></div>
+                </div>
+                <div class="ring">
+                    <div class="rn">PRINCIPLE 04</div>
+                    <h4>Risk Management</h4>
+                    <div class="rd">Define how you lose, in advance, in public.</div>
+                    <div class="ev">Evidence: the witness-locked Falsifiability Gate and the three-tier Sit-Out ladder, with an independent witness holding the off-switch. <span class="muted">(Detailed in §04.)</span></div>
+                </div>
+            </div>
+
+            <p class="band-close">Each ring protects the inner core. Survival is the precondition for compounding. These four disciplines are how we pursue Rule No. 1 — and the very next section states plainly where loss remains possible.</p>
+            <p class="compliance-bar">"Never lose money" appears here only as Buffett's rule and the firm's operating discipline — never as a statement about your capital's safety, and never a promise that losses won't happen. The exposure structure bounds risk on the exposed slice; it does not remove it, and capital can still be impaired — see §06.</p>
         </div>
     </section>
 
@@ -537,6 +743,12 @@
                 <div class="item">
                     <h3>The honest ceiling, named.</h3>
                     <p>The edge is currently short-biased — it earns most of its return catching downside exhaustion. Its hostile regime is therefore a relentless gap-up melt-up with no pullbacks. And it is, today, operator-executed.</p>
+                    <div class="statband">
+                        <div class="cell"><div class="fig" id="r6Streak">—</div><div class="lab"><b>Worst losing streak</b> · consecutive losses, ever</div></div>
+                        <div class="cell"><div class="fig" id="r6Dd">—</div><div class="lab"><b>Deepest drawdown</b> · at the worst moment</div></div>
+                        <div class="cell"><div class="fig" id="r6Rec">—</div><div class="lab"><b>Trades to recover</b> · trough back to peak</div></div>
+                    </div>
+                    <p class="statband-cap">Already lived, inside the <span id="r6Count">—</span>-trade record. A four-loss streak and a few trades back to peak is a short round, not a knockout. Already lived; real outcomes will vary — the Sit-Out and the Gate exist precisely so a streak cannot compound past them.</p>
                 </div>
                 <div class="item">
                     <h3>The failure case, openly.</h3>
@@ -748,16 +960,44 @@
                     const full = EkantikParser.computeStats(trades, { pointValue: doc.point_value, workingUnit: doc.working_unit });
                     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
                     const usd = n => (n < 0 ? "−$" : "+$") + Math.abs(n).toLocaleString("en-US", { maximumFractionDigits: 0 });
+                    const usdPlain = n => "$" + Math.abs(Math.round(n)).toLocaleString("en-US");
+                    const pf = full.profitFactor == null ? "—" : full.profitFactor.toFixed(2);
+                    const winOfN = full.wins + " of " + full.tradeCount;   // win rate with no percent sign (compliance)
+                    const evTrade = "+" + usdPlain(full.ev$);
 
-                    // Hero datum — total trades logged
+                    // Hero datum + ribbon
                     if (full.count) set("liveVal", full.count + " trades");
+                    set("hbWin", winOfN);
+                    set("hbPf", pf);
 
-                    // §02 KPI strip — full record (size-aware $) + durability test
+                    // §01.5 — the edge, in plain English (dollars/points, live)
+                    set("e15Win", "+" + usdPlain(full["avgWin$"]));
+                    set("e15Loss", "−" + usdPlain(full["avgLoss$"]));
+                    set("e15WinN", full.wins);
+                    set("e15LossN", full.losses);
+                    set("e15WL", full.wins + " : " + full.losses);
+                    set("e15Ratio", full.losses ? (full.wins / full.losses).toFixed(2) : "—");
+                    set("e15Count", full.tradeCount);
+                    set("e15Ev", evTrade);
+
+                    // §02 KPI strip — size-aware $, no percent
                     set("kpiNet", usd(full["net$"]));
-                    set("kpiWr", (full.winRate * 100).toFixed(0) + "% · " + (full.profitFactor == null ? "—" : full.profitFactor.toFixed(2)));
+                    set("kpiWr", winOfN + " · PF " + pf);
                     set("kpiCount", full.count);
                     set("kpiDur", "net " + usd(full.durability["netExTop3$"]) + " · PF " +
                         (full.durability.pfExTop3 == null ? "—" : full.durability.pfExTop3.toFixed(2)));
+
+                    // §04.7 — Rule No. 1 evidence
+                    set("p47Ev", evTrade); set("p47Ev2", evTrade);
+                    set("p47Count", full.tradeCount);
+                    set("p47Win", winOfN);
+                    set("p47Pf", pf);
+
+                    // §06 — behaviour through a bad patch (dollars, no percent)
+                    set("r6Streak", full.maxLossStreak);
+                    set("r6Dd", "−" + usdPlain(full["maxDrawdown$"]));
+                    set("r6Rec", full.recovery == null ? "—" : full.recovery);
+                    set("r6Count", full.tradeCount);
                 })
                 .catch(() => { /* leave placeholders; never fabricate */ });
         })();
