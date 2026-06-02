@@ -320,6 +320,35 @@
     return basePV;
   }
 
+  /* Per-calendar-month breakdown (size-aware $). Returns rows oldest→newest:
+     { month:"YYYY-MM", trades, wins, losses, winRate, net$, ev$, best$, worst$ }
+     trades = wins+losses (scratch excluded from the count; its $0 doesn't move net). */
+  function monthlyBreakdown(trades, opts) {
+    opts = opts || {};
+    var pv = opts.pointValue != null ? opts.pointValue : 50;
+    var by = {};
+    trades.forEach(function (t) {
+      if (t.status !== "win" && t.status !== "loss" && t.status !== "scratch") return;
+      var mo = (t.date || "").slice(0, 7); if (!mo) return;
+      if (!by[mo]) by[mo] = { month: mo, wins: 0, losses: 0, net: 0, best: -Infinity, worst: Infinity };
+      var pnl = t.points * dollarPerPoint(t.size, pv);
+      by[mo].net += pnl;
+      if (pnl > by[mo].best) by[mo].best = pnl;
+      if (pnl < by[mo].worst) by[mo].worst = pnl;
+      if (t.status === "win") by[mo].wins++; else if (t.status === "loss") by[mo].losses++;
+    });
+    return Object.keys(by).sort().map(function (mo) {
+      var o = by[mo], wl = o.wins + o.losses;
+      return {
+        month: mo, trades: wl, wins: o.wins, losses: o.losses,
+        winRate: wl ? o.wins / wl : 0,
+        "net$": round(o.net), "ev$": wl ? round(o.net / wl) : 0,
+        "best$": round(o.best === -Infinity ? 0 : o.best),
+        "worst$": round(o.worst === Infinity ? 0 : o.worst)
+      };
+    });
+  }
+
   /* Filter a countable list by a trailing/anchored window. */
   function filterWindow(list, window, asOf) {
     if (!window || window === "all") return list;
@@ -366,7 +395,8 @@
   function round(x){ return Math.round(x*100)/100; }
 
   var api = { parse: parse, parseMessages: parseMessages, extractFromHTML: extractFromHTML,
-              extractFromText: extractFromText, computeStats: computeStats, filterWindow: filterWindow };
+              extractFromText: extractFromText, computeStats: computeStats, filterWindow: filterWindow,
+              monthlyBreakdown: monthlyBreakdown };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.EkantikParser = api;

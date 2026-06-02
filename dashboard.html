@@ -173,7 +173,7 @@
             return dated[0] + " → " + dated[dated.length-1];
         }
 
-        var chart = null;
+        var chart = null, monthlyChart = null;
         function render(){
             var sWin = EkantikParser.computeStats(TRADES, { window: WINDOW, pointValue: PV, workingUnit: WU });
             var sAll = EkantikParser.computeStats(TRADES, { pointValue: PV, workingUnit: WU });
@@ -182,12 +182,51 @@
             // days of trades) to a yearly rate produces nonsense, so pin them to all-time.
             ["annualR", "annualTrades", "tradesPerMonth", "months"].forEach(function (k) { sWin[k] = sAll[k]; });
             var proto = computeProtocol(sAll);
+            var monthly = EkantikParser.monthlyBreakdown(TRADES, { pointValue: PV });
             var c = document.getElementById("content");
             c.classList.remove("loading");
-            c.innerHTML = winbarHTML(sWin) + kpiHTML(sWin) + protocolHTML(proto) + chartHTML() + durabilityHTML(sAll) + logHTML(proto) + discHTML();
+            c.innerHTML = winbarHTML(sWin) + kpiHTML(sWin) + protocolHTML(proto) + chartHTML() + monthlyHTML(monthly) + durabilityHTML(sAll) + logHTML(proto) + discHTML();
             wireWindow();
             wireDownloads();
             drawChart(sAll);
+            drawMonthly(monthly);
+        }
+
+        /* Profit by month — net P&L and per-trade EV for each calendar month. */
+        function monthName(ym){
+            var M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            var p = ym.split("-"); return M[(+p[1]) - 1] + " " + p[0];
+        }
+        function monthlyHTML(rows){
+            var body = rows.map(function(r){
+                var nc = r["net$"] >= 0 ? "pos" : "neg", ec = r["ev$"] >= 0 ? "pos" : "neg";
+                return '<tr><td>'+monthName(r.month)+'</td><td>'+r.trades+'</td><td>'+(r.winRate*100).toFixed(0)+'%</td>'+
+                    '<td class="'+nc+'">'+dollar(r["net$"])+'</td><td class="'+ec+'">'+dollar(r["ev$"])+'</td></tr>';
+            }).join("");
+            return '<section class="block"><h2>Profit by month</h2>' +
+                '<p class="note">Net P&amp;L (size-aware $) and per-trade expectancy for each calendar month — the edge, month over month. All-time; not window-filtered.</p>' +
+                '<div class="chart-card"><div class="chart-wrap" style="height:260px"><canvas id="moChart"></canvas></div></div>' +
+                '<div class="table-scroll" style="margin-top:14px"><table><thead><tr><th>Month</th><th>Trades</th><th>Win rate</th><th>Net $</th><th>EV / trade</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
+        }
+        function drawMonthly(rows){
+            var ctx = document.getElementById("moChart"); if(!ctx) return;
+            if(monthlyChart) monthlyChart.destroy();
+            monthlyChart = new Chart(ctx, {
+                type:"bar",
+                data:{ labels: rows.map(function(r){return monthName(r.month);}),
+                    datasets:[{ label:"Net $", data: rows.map(function(r){return r["net$"];}),
+                        backgroundColor: rows.map(function(r){return r["net$"]>=0 ? "rgba(200,169,81,.55)" : "rgba(201,85,78,.55)";}),
+                        borderColor: rows.map(function(r){return r["net$"]>=0 ? "#C8A951" : "#C9554E";}),
+                        borderWidth:1 }]},
+                options:{ responsive:true, maintainAspectRatio:false,
+                    plugins:{ legend:{display:false},
+                        tooltip:{callbacks:{label:function(c){var r=rows[c.dataIndex];return ["Net "+dollar(r["net$"]),"EV/trade "+dollar(r["ev$"]),r.trades+" trades · "+(r.winRate*100).toFixed(0)+"% win"];}}}},
+                    scales:{
+                        x:{ grid:{display:false}, ticks:{color:"#8A97AD",font:{family:"'JetBrains Mono'",size:10}} },
+                        y:{ grid:{color:"rgba(138,151,173,.10)"}, ticks:{color:"#8A97AD",font:{family:"'JetBrains Mono'",size:10},callback:function(v){return "$"+v;}} }
+                    }
+                }
+            });
         }
 
         /* Protocol status — the published kill-condition + sit-out ladder, evaluated
