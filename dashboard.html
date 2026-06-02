@@ -91,6 +91,30 @@
         .pill.flag{color:var(--gold);border-color:var(--hair);}
 
         .disc{font-family:var(--mono);font-size:.7rem;color:var(--slate);line-height:1.8;max-width:880px;padding:40px 0 80px;}
+        /* protocol status */
+        .proto-banner{display:flex;align-items:center;gap:.9rem;border-radius:8px;padding:1.1rem 1.3rem;margin-top:6px;border:1px solid var(--hair-cool);}
+        .proto-banner.ok{background:rgba(79,178,134,.10);border-color:rgba(79,178,134,.45);}
+        .proto-banner.flag{background:rgba(201,85,78,.10);border-color:rgba(201,85,78,.5);}
+        .proto-banner .big-dot{width:14px;height:14px;border-radius:50%;flex:0 0 auto;}
+        .proto-banner.ok .big-dot{background:var(--pos);box-shadow:0 0 0 5px rgba(79,178,134,.18);}
+        .proto-banner.flag .big-dot{background:var(--neg);box-shadow:0 0 0 5px rgba(201,85,78,.18);}
+        .proto-banner .pb-txt .t{font-family:var(--display);font-size:1.25rem;color:var(--ink);}
+        .proto-banner .pb-txt .s{font-family:var(--mono);font-size:.72rem;color:var(--slate);margin-top:.2rem;}
+        .proto-checks{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin-top:.9rem;}
+        .pcheck{display:flex;gap:.7rem;align-items:flex-start;border:1px solid var(--hair-cool);border-radius:8px;padding:.9rem 1rem;}
+        .pcheck .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:0 0 auto;}
+        .pcheck.pass .dot{background:var(--pos);}
+        .pcheck.warn .dot{background:#C8A951;}
+        .pcheck.fail .dot{background:var(--neg);}
+        .pcheck .pc-t{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);}
+        .pcheck .pc-d{font-family:var(--mono);font-size:.72rem;color:var(--slate);margin-top:.25rem;line-height:1.55;}
+        .pcheck .pc-s{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;margin-left:auto;}
+        .pcheck.pass .pc-s{color:var(--pos);} .pcheck.warn .pc-s{color:#C8A951;} .pcheck.fail .pc-s{color:var(--neg);}
+        .dl-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin:0 0 4px;}
+        .dl-btns button{font-family:var(--mono);font-size:.7rem;letter-spacing:.04em;background:transparent;color:var(--gold);border:1px solid var(--hair);border-radius:5px;padding:.5rem .9rem;cursor:pointer;}
+        .dl-btns button:hover{background:var(--gold-soft);}
+        tr.breach td{background:rgba(201,85,78,.10);}
+        .pill.breach{color:var(--neg);border-color:rgba(201,85,78,.45);}
         .loading{padding:60px 0;text-align:center;color:var(--slate);font-family:var(--mono);}
         @media(max-width:760px){.kpis{grid-template-columns:1fr 1fr;}}
     </style>
@@ -157,11 +181,57 @@
             // durability test — never window-scoped. Extrapolating a 7-day span (a few
             // days of trades) to a yearly rate produces nonsense, so pin them to all-time.
             ["annualR", "annualTrades", "tradesPerMonth", "months"].forEach(function (k) { sWin[k] = sAll[k]; });
+            var proto = computeProtocol(sAll);
             var c = document.getElementById("content");
             c.classList.remove("loading");
-            c.innerHTML = winbarHTML(sWin) + kpiHTML(sWin) + chartHTML() + durabilityHTML(sAll) + logHTML() + discHTML();
+            c.innerHTML = winbarHTML(sWin) + kpiHTML(sWin) + protocolHTML(proto) + chartHTML() + durabilityHTML(sAll) + logHTML(proto) + discHTML();
             wireWindow();
+            wireDownloads();
             drawChart(sAll);
+        }
+
+        /* Protocol status — the published kill-condition + sit-out ladder, evaluated
+           live against the record. Breaches flip the banner red and flag trades. */
+        function computeProtocol(s){
+            var eq = s.equity, n = eq.length, W = Math.min(100, n);
+            var minExp = Infinity, curExp = 0, everBelow = false, breachIds = {};
+            for (var i = W - 1; i < n; i++) {
+                var sum = 0; for (var j = i - W + 1; j <= i; j++) sum += eq[j]["pnl$"];
+                var m = sum / W; if (m < minExp) minExp = m; curExp = m;
+                if (m <= 0) { everBelow = true; breachIds[eq[i].id] = true; }
+            }
+            var unresolved = TRADES.filter(function(t){ return t.status === "unresolved"; }).length;
+            var noTrade = TRADES.filter(function(t){ return t.status === "no-trade"; }).length;
+            var ddPct = s.maxDrawdownPct;
+            var checks = [
+                { status: everBelow ? "fail" : "pass", t: "Expression Gate · is the edge alive?",
+                  d: everBelow
+                     ? "Rolling-" + W + " expectancy reached the $0 stand-down line — the edge would have stood down."
+                     : "Rolling-" + W + " per-trade expectancy never reached the $0 stand-down line (lowest window " + dollar(minExp) + "/trade · current " + dollar(curExp) + "/trade)." },
+                { status: (ddPct == null || ddPct < 40) ? "pass" : "warn", t: "Drawdown · within the working unit",
+                  d: "Deepest drawdown −$" + fmtInt(s["maxDrawdown$"]) + " (" + (ddPct == null ? "—" : ddPct) + "% of $" + fmtInt(s.workingUnit) + "). The Sit-Out exists so a streak can't compound past it." },
+                { status: "pass", t: "Loss streak · no compounding spiral",
+                  d: "Worst run " + s.maxLossStreak + " in a row" + (s.recovery != null ? ", recovered to peak in " + s.recovery + " trades" : "") + ". No catastrophic streak." },
+                { status: unresolved === 0 ? "pass" : "warn", t: "Record integrity · every result logged",
+                  d: unresolved === 0
+                     ? "All " + s.count + " countable results resolved and logged" + (noTrade ? " (" + noTrade + " logged no-trade)" : "") + "."
+                     : unresolved + " result(s) still unresolved — confirm in admin." }
+            ];
+            var fails = checks.filter(function(c){ return c.status === "fail"; }).length;
+            return { checks: checks, ok: fails === 0, fails: fails, breachIds: breachIds, minExp: minExp, curExp: curExp };
+        }
+
+        function protocolHTML(p){
+            var rows = p.checks.map(function(c){
+                var s = c.status === "pass" ? "clear" : c.status === "warn" ? "watch" : "flag";
+                return '<div class="pcheck ' + c.status + '"><span class="dot"></span><div><div class="pc-t">' + c.t + '</div><div class="pc-d">' + c.d + '</div></div><span class="pc-s">' + s + '</span></div>';
+            }).join("");
+            var banner = p.ok
+                ? '<div class="proto-banner ok"><span class="big-dot"></span><div class="pb-txt"><div class="t">No protocol breaches detected</div><div class="s">Edge alive · within every defined bound · all results logged. The kill-condition and sit-out ladder are witness-locked at accelerator.ekantikcapital.com.</div></div></div>'
+                : '<div class="proto-banner flag"><span class="big-dot"></span><div class="pb-txt"><div class="t">' + p.fails + ' protocol flag' + (p.fails > 1 ? "s" : "") + ' — see below</div><div class="s">A defined protocol condition was crossed. The check and the trades involved are flagged in red.</div></div></div>';
+            return '<section class="block"><h2>Protocol status</h2>' +
+                '<p class="note">The published kill-condition and sit-out ladder, evaluated live against this record. A breach turns this red and flags the trades involved; "clear" means every defined bound held.</p>' +
+                banner + '<div class="proto-checks">' + rows + '</div></section>';
         }
 
         function winbarHTML(s){
@@ -224,21 +294,47 @@
                 '</div></section>';
         }
 
-        function logHTML(){
+        function logHTML(proto){
+            var breachIds = (proto && proto.breachIds) || {};
             var rows = EkantikParser.filterWindow(TRADES, WINDOW).slice().sort(function(a,b){return a.seq-b.seq;});
             var body = rows.map(function(t){
                 var pts = t.points==null ? "—" : (t.points>0?"+":"") + t.points;
                 var cls = t.points>0?"pos":t.points<0?"neg":"";
-                var flag = t.review ? ' <span class="pill flag">review</span>' : '';
+                var isBreach = !!breachIds[t.id];
+                var flag = (isBreach ? ' <span class="pill breach">breach</span>' : '') + (t.review ? ' <span class="pill flag">review</span>' : '');
                 var size = t.size ? '<span class="pill">'+esc(t.size)+'</span>' : '<span style="color:var(--slate-dim)">full</span>';
-                return '<tr><td>'+esc(t.id)+'</td><td>'+esc(t.date||"")+'</td><td>'+(t.direction||"—")+
+                return '<tr'+(isBreach?' class="breach"':'')+'><td>'+esc(t.id)+'</td><td>'+esc(t.date||"")+'</td><td>'+(t.direction||"—")+
                     '</td><td>'+size+'</td><td>'+(t.entry==null?"—":t.entry)+'</td><td>'+(t.stop==null?"—":t.stop)+'</td><td>'+(t.target==null?"—":t.target)+
                     '</td><td class="'+cls+'">'+pts+'</td><td>'+esc(t.status||"")+flag+'</td></tr>';
             }).join("");
+            var breachNote = (proto && !proto.ok)
+                ? '<b style="color:var(--neg)">breach</b> marks a trade where a protocol bound was crossed. '
+                : 'No <b>breach</b> flags in this record — every protocol bound held. ';
             return '<section class="block"><h2>Trade log</h2>' +
-                '<p class="note">Every record from the export, in order. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged); points are recorded as logged. "review" marks only genuine gaps — an unresolved result or a no-trade — which are excluded from the counts above.</p>' +
+                '<div class="dl-btns"><button onclick="downloadCSV()">⬇ Download CSV</button><button onclick="downloadJSON()">⬇ Download JSON</button></div>' +
+                '<p class="note">' + breachNote + 'Every record from the export, in order. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged); points are recorded as logged. "review" marks genuine gaps — an unresolved result or a no-trade — excluded from the counts above.</p>' +
                 '<div class="table-scroll"><table><thead><tr><th>ID</th><th>Date</th><th>Dir</th><th>Size</th><th>Entry</th><th>Stop</th><th>Target</th><th>Points</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
         }
+
+        /* ---- Downloads ---- */
+        function wireDownloads(){ /* handlers are inline onclick; nothing to bind */ }
+        function downloadFile(name, text, mime){
+            var blob = new Blob([text], { type: mime });
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(blob); a.download = name; a.click();
+            setTimeout(function(){ URL.revokeObjectURL(a.href); }, 0);
+        }
+        function downloadJSON(){
+            downloadFile("ekantik-trades.json", JSON.stringify(DOC, null, 2), "application/json");
+        }
+        function downloadCSV(){
+            var cols = ["id","date","time","series","direction","size","entry","stop","target","points","status","review","raw"];
+            var esc = function(v){ if(v==null) return ""; v = String(v); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
+            var lines = [cols.join(",")];
+            (DOC.trades || TRADES).forEach(function(t){ lines.push(cols.map(function(k){ return esc(t[k]); }).join(",")); });
+            downloadFile("ekantik-trades.csv", lines.join("\n"), "text/csv");
+        }
+        function fmtInt(n){ return Math.abs(Math.round(n)).toLocaleString("en-US"); }
 
         function discHTML(){
             return '<div class="disc">Pure demonstration of an operator-logged record; not an offer or solicitation. ' +
