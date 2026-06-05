@@ -30,6 +30,7 @@ spec (§1.3).
 | `#thesis` | The founding thesis (why early is rational) | §03 |
 | `#how` | How it survives — buffer → Sit-Out → Gate (+ Validation 3, gate drawer) | §04 |
 | `#dial` | The only decision you make — the risk-per-trade dial (static, no numbers) | §04.5 |
+| `#exploit` | How the edge can be exploited — the two live vehicles (cash-flow strategy, core-portfolio program) | §04.6 |
 | `#rule-one` | Rule No. 1 — Buffett's rule operationalized into four disciplines | §04.7 |
 | `#receives` | What a founding member receives (described, not priced) | §05 |
 | `#risk` | The risk, stated first | §06 |
