@@ -280,7 +280,7 @@
             return '<div class="kpihead"><span class="lbl">Key performance indicators</span>' +
                    '<span class="rng">'+ s.tradeCount +' trades · '+ (dateRange()||'—') +'</span></div>' +
                    '<div class="winbar"><span class="wl">Window</span>'+btns+
-                   '<span class="note">KPIs &amp; table filter by window; charts, the durability test, and the annualized / cadence rates stay all-time.</span></div>';
+                   '<span class="note">The window filters the KPI tiles only. The trade log, charts, durability test, monthly view and cadence rates always show the full record.</span></div>';
         }
         function wireWindow(){
             document.querySelectorAll(".winbar button").forEach(function(b){
@@ -335,7 +335,8 @@
 
         function logHTML(proto){
             var breachIds = (proto && proto.breachIds) || {};
-            var rows = EkantikParser.filterWindow(TRADES, WINDOW).slice().sort(function(a,b){return a.seq-b.seq;});
+            // The trade log always shows the complete record, independent of the window.
+            var rows = TRADES.slice().sort(function(a,b){return a.seq-b.seq;});
             var body = rows.map(function(t){
                 var pts = t.points==null ? "—" : (t.points>0?"+":"") + t.points;
                 var cls = t.points>0?"pos":t.points<0?"neg":"";
@@ -351,7 +352,7 @@
                 : 'No <b>breach</b> flags in this record — every protocol bound held. ';
             return '<section class="block"><h2>Trade log</h2>' +
                 '<div class="dl-btns"><button onclick="downloadCSV()">⬇ Download CSV</button><button onclick="downloadJSON()">⬇ Download JSON</button></div>' +
-                '<p class="note">' + breachNote + 'Every record from the export, in order. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged); points are recorded as logged. "review" marks genuine gaps — an unresolved result or a no-trade — excluded from the counts above.</p>' +
+                '<p class="note">' + breachNote + 'All ' + rows.length + ' records from the export, in order — the complete log, independent of the window above. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged); points are recorded as logged. "review" marks genuine gaps — an unresolved result or a no-trade — excluded from the counts above.</p>' +
                 '<div class="table-scroll"><table><thead><tr><th>ID</th><th>Date</th><th>Dir</th><th>Size</th><th>Entry</th><th>Stop</th><th>Target</th><th>Points</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
         }
 
