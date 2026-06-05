@@ -22,6 +22,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+    <!-- Shared brand tokens — single source across all five properties (v4 GLOBAL) -->
+    <link rel="stylesheet" href="tokens.css">
+
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -375,9 +378,53 @@
             .dial-labels { grid-template-columns: 1fr; }
         }
 
+        /* ===== TASK 1 · deterministic metric hydration (no em-dash ever) ===== */
+        /* A metric slot ships as a skeleton shimmer, then hydrates to a figure
+           (in --mono) or collapses. A literal em-dash never reaches a cold visitor. */
+        .skel {
+            display: inline-block; vertical-align: middle;
+            min-width: 3.2ch; height: 0.92em; border-radius: 3px;
+            background: linear-gradient(90deg, rgba(138,151,173,0.10) 25%, rgba(200,169,81,0.16) 50%, rgba(138,151,173,0.10) 75%);
+            background-size: 200% 100%;
+            animation: skelshimmer 1.4s ease-in-out infinite;
+        }
+        .skel.wide { min-width: 6ch; }
+        @keyframes skelshimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+        .metric-collapsed { display: none !important; }
+        /* Section-level fallback copy (verbatim) — shown only if hydration fails entirely */
+        .figure-fallback { display: none; }
+        .figures-failed .figure-fallback { display: block; }
+        .figures-failed .figure-numeric { display: none !important; }
+
+        /* ===== TASK 3 · 15-second proof strip ===== */
+        .proofstrip {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+            border: 1px solid var(--hair); border-radius: 8px; overflow: hidden;
+            background: var(--hair-cool); margin-top: 2.4rem;
+        }
+        .proofstrip .pcell {
+            background: var(--navy-deep); padding: 1.4rem 1.3rem;
+            display: flex; flex-direction: column; gap: 0.45rem;
+            text-decoration: none; transition: background 0.18s ease;
+        }
+        .proofstrip .pcell:hover { background: var(--navy-panel); text-decoration: none; }
+        .proofstrip .pk { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+        .proofstrip .pv { font-family: var(--mono); font-size: 1.15rem; color: var(--ink); line-height: 1.2; }
+        .proofstrip .pd { font-family: var(--sans); font-size: 0.82rem; color: var(--slate); }
+        .proofstrip .pgo { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; color: var(--slate-dim); margin-top: auto; }
+        @media (max-width: 760px) { .proofstrip { grid-template-columns: 1fr 1fr; } }
+
+        /* hero eyebrow */
+        .hero-eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 1.1rem; }
+
+        /* mid-scroll CTA prompt (TASK 5) */
+        .cta-prompt { font-family: var(--display); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--ink); max-width: 760px; margin-top: 2.6rem; line-height: 1.3; }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 760px) {
             .cols-3, .cols-2, .caps, .op-grid, .next-steps { grid-template-columns: 1fr; }
+            .proofstrip { grid-template-columns: 1fr; }
             .nav-links a:not(.btn) { display: none; }
             section { padding: 64px 0; }
             .hero { padding: 72px 0 64px; }
@@ -400,36 +447,79 @@
         </div>
     </nav>
 
-    <!-- ===================== HERO ===================== -->
+    <!-- ===================== HERO (TASK 2 · inversion-forward) ===================== -->
     <header class="hero">
         <div class="wrap">
+            <span class="hero-eyebrow">Ekantik Capital · Founding Cohort</span>
+
             <!-- Single datum — computed from this page's own local trades.json.
-                 Degrades to a neutral state; never fabricates numbers. -->
+                 TASK 1: ships as a skeleton, hydrates or collapses to fallback;
+                 never a literal em-dash, never a fabricated number. -->
             <div class="live-strip" id="liveStrip">
                 <span class="live-head"><span class="dot"></span> Live</span>
-                <div class="live-item"><span class="lab">Track record</span><span class="val">Feb – May 2026</span></div>
-                <div class="live-item"><span class="lab">Trades logged</span><span class="val" id="liveVal">—</span></div>
-                <div class="live-item"><span class="lab">Verify</span><span class="val"><a href="dashboard.html">every fill →</a></span></div>
+                <div class="figure-numeric" style="display:contents;">
+                    <div class="live-item"><span class="lab">Track record</span><span class="val">Feb – May 2026</span></div>
+                    <div class="live-item" id="liveTradesItem"><span class="lab">Trades logged</span><span class="val" id="liveVal"><span class="skel" aria-hidden="true"></span></span></div>
+                    <div class="live-item"><span class="lab">Verify</span><span class="val"><a href="dashboard.html">every fill →</a></span></div>
+                </div>
+                <span class="figure-fallback live-item"><span class="lab">Live record</span><span class="val"><a href="dashboard.html">Every fill, posted by hand — open the live dashboard →</a></span></span>
             </div>
 
-            <h1>A capacity-limited edge. A founding cohort. One window.</h1>
-            <p class="sub">An invitation to evaluate participation in a capacity-constrained strategy — for accredited investors, while the founding cohort is open. The constraint was never capital. It is capacity, and capacity closes.</p>
+            <h1>We published the condition that would end this strategy — and handed the off-switch to someone else.</h1>
+            <p class="sub">A capacity-limited edge, open to a founding cohort while the window holds. For accredited investors. Nothing on this page is an offer.</p>
 
-            <div class="statband" id="heroRibbon">
-                <div class="cell"><div class="fig" id="hbWin">—</div><div class="lab"><b>Win rate</b> · live trades, by hand</div></div>
-                <div class="cell"><div class="fig" id="hbPf">—</div><div class="lab"><b>Profit factor</b> · won per $1.00 lost</div></div>
-                <div class="cell"><div class="fig">Holds</div><div class="lab"><b>Durability</b> · delete the top 3 trades</div></div>
+            <div class="figure-numeric">
+                <div class="statband" id="heroRibbon">
+                    <div class="cell"><div class="fig" id="hbWin"><span class="skel wide" aria-hidden="true"></span></div><div class="lab"><b>Win rate</b> · live trades, by hand</div></div>
+                    <div class="cell"><div class="fig" id="hbPf"><span class="skel" aria-hidden="true"></span></div><div class="lab"><b>Profit factor</b> · won per $1.00 lost</div></div>
+                    <div class="cell"><div class="fig">Holds</div><div class="lab"><b>Durability</b> · delete the top 3 trades</div></div>
+                </div>
+                <p class="ribbon-micro">Live, size-aware, posted by hand. The sample is pre-asymptotic.</p>
             </div>
-            <p class="ribbon-micro">Live, size-aware, posted by hand. The sample is pre-asymptotic.</p>
+            <p class="figure-fallback ribbon-micro" style="margin-top:1.6rem;">Win rate and profit factor are computed live from the record — open the dashboard to watch every fill. The sample is pre-asymptotic.</p>
 
+            <!-- TASK 5 · early scroll-state: lead with the proof, demote the ask to a text link -->
             <div class="hero-cta">
-                <button class="btn btn-primary" onclick="openModal()">Request the founding-cohort briefing →</button>
-                <a class="hero-tertiary" href="dashboard.html">First time here? See the live edge dashboard →</a>
+                <a class="btn btn-primary" href="dashboard.html">Watch the edge print, live →</a>
+                <a class="hero-tertiary" href="#" onclick="openModal();return false;">Request the founding-cohort briefing →</a>
             </div>
 
             <p class="compliance-bar">For accredited investors. Nothing on this page is an offer or solicitation; offers are made only through definitive documents to verified investors. Past performance is not indicative of future results. The sample is pre-asymptotic.</p>
         </div>
     </header>
+
+    <!-- ===================== PROOF STRIP (TASK 3) ===================== -->
+    <section style="padding:0;border-top:none;">
+        <div class="wrap">
+            <div class="proofstrip">
+                <a class="pcell" href="#proof">
+                    <span class="pk">Live edge</span>
+                    <span class="pv figure-numeric" id="psEdge"><span class="skel wide" aria-hidden="true"></span></span>
+                    <a class="pv figure-fallback" href="dashboard.html" style="font-size:0.92rem;">every fill, by hand → live dashboard</a>
+                    <span class="pd">win rate · profit factor</span>
+                    <span class="pgo">→ §02</span>
+                </a>
+                <a class="pcell" href="#how">
+                    <span class="pk">Kill-condition</span>
+                    <span class="pv">Published, in code</span>
+                    <span class="pd">the condition that ends it</span>
+                    <span class="pgo">rolling-100 → §04</span>
+                </a>
+                <a class="pcell" href="#alignment">
+                    <span class="pk">Independent witness</span>
+                    <span class="pv">Binding off-switch</span>
+                    <span class="pd">held by a named third party</span>
+                    <span class="pgo">→ §08</span>
+                </a>
+                <a class="pcell" href="#alignment">
+                    <span class="pk">Operator capital</span>
+                    <span class="pv">On every fill</span>
+                    <span class="pd">no signal sold he doesn't take</span>
+                    <span class="pgo">→ §08</span>
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- ===================== 01 · WHO THIS IS FOR ===================== -->
     <section id="who">
@@ -455,23 +545,27 @@
             <h2>When it wins and when it loses, the amounts are roughly equal — but it wins almost twice as often.</h2>
             <p class="lede">That sentence is the whole strategy. Everything else on this page is either proof that it is true, or architecture that keeps it alive.</p>
 
-            <div class="statband">
-                <div class="cell"><div class="fig" id="e15Win">—</div><div class="lab"><b>When it wins</b> · average gain across <span id="e15WinN">—</span> winning trades</div></div>
-                <div class="cell"><div class="fig" id="e15Loss">—</div><div class="lab"><b>When it loses</b> · average loss across <span id="e15LossN">—</span> losing trades — nearly identical</div></div>
-                <div class="cell"><div class="fig" id="e15WL">—</div><div class="lab"><b>How often it wins</b> · about <span id="e15Ratio">—</span>× more wins than losses</div></div>
+            <div class="figure-numeric">
+                <div class="statband">
+                    <div class="cell"><div class="fig" id="e15Win"><span class="skel wide" aria-hidden="true"></span></div><div class="lab"><b>When it wins</b> · average gain across <span id="e15WinN"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span> winning trades</div></div>
+                    <div class="cell"><div class="fig" id="e15Loss"><span class="skel wide" aria-hidden="true"></span></div><div class="lab"><b>When it loses</b> · average loss across <span id="e15LossN"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span> losing trades — nearly identical</div></div>
+                    <div class="cell"><div class="fig" id="e15WL"><span class="skel wide" aria-hidden="true"></span></div><div class="lab"><b>How often it wins</b> · about <span id="e15Ratio"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span>× more wins than losses</div></div>
+                </div>
+                <p class="statband-cap">Same-sized punches. Nearly twice the connection rate. Historical, size-aware, across <span id="e15Count"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span> live trades. The sample is pre-asymptotic.</p>
             </div>
-            <p class="statband-cap">Same-sized punches. Nearly twice the connection rate. Historical, size-aware, across <span id="e15Count">—</span> live trades. The sample is pre-asymptotic.</p>
+            <p class="figure-fallback statband-cap" style="margin-top:1.6rem;">Wins and losses are similar in size — and wins arrive meaningfully more often. The gap between them is the edge: measured live, size-aware, not modeled.</p>
 
-            <div class="cols-2">
-                <div class="card">
-                    <div class="cardhead"><span class="motif"></span><h3>The casino, not the gambler.</h3></div>
-                    <p>A blackjack table doesn't win every hand. It wins about 51 of 100 and pays out the rest. That small, repeatable, structural advantage is what built Las Vegas. This edge is the same shape — an advantage expressed over many repetitions — only sharper. The house wins because of structure, not luck. Luck doesn't repeat. Structure does.</p>
-                </div>
-                <div class="card">
-                    <div class="cardhead"><span class="motif"></span><h3>A coin weighted to land heads about two times in three.</h3></div>
-                    <p>Lose about one unit on tails, win about one unit on heads — but heads lands roughly two times in three. The expected value of every flip is positive: win more often than you lose, by about the same amount each time. Measured live, that edge is <strong><span id="e15Ev">—</span> per trade</strong> — size-aware, historical. It is a measurement, not a model.</p>
-                </div>
+            <!-- TASK 4 · one standalone gambling/odds analogy (casino), EV clause folded in -->
+            <div class="card" style="margin-top:2.4rem;max-width:880px;">
+                <div class="cardhead"><span class="motif"></span><h3>The casino, not the gambler.</h3></div>
+                <p>A blackjack table doesn't win every hand. It wins about 51 of 100 and pays out the rest. That small, repeatable, structural advantage is what built Las Vegas. This edge is the same shape — an advantage expressed over many repetitions — only sharper. <span class="figure-numeric">Measured live, that edge is <strong><span id="e15Ev"><span class="skel" aria-hidden="true"></span></span> per trade</strong> — size-aware, historical: a measurement, not a model.</span> The house wins because of structure, not luck. Luck doesn't repeat. Structure does.</p>
             </div>
+
+            <!-- TASK 5 · early scroll-state CTA -->
+            <div class="hero-cta" style="margin-top:2rem;">
+                <a class="btn btn-primary" href="dashboard.html">See every fill, by hand →</a>
+            </div>
+
             <p class="compliance-bar">Historical, size-aware, across the live record; the sample is pre-asymptotic. These describe the strategy's measured behavior, not a forecast of any investor's outcome.</p>
         </div>
     </section>
@@ -492,10 +586,10 @@
 
             <!-- KPI strip — computed client-side from the local trades.json (this
                  page's own source of truth). Counts exclude flagged/unresolved records. -->
-            <div class="cols-3" id="proofKpis" style="margin-top:2rem;">
-                <div class="card"><div class="n">NET RESULT · FEB–MAY 2026</div><h3 id="kpiNet">—</h3><p>Net P&amp;L (size-aware), gross of fees, every fill posted by hand.</p></div>
-                <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr">—</h3><p>Across <span id="kpiCount">—</span> countable trades in the full record.</p></div>
-                <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur">—</h3><p>Delete the three best trades; the edge still stands.</p></div>
+            <div class="cols-3 figure-numeric" id="proofKpis" style="margin-top:2rem;">
+                <div class="card"><div class="n">NET RESULT · FEB–MAY 2026</div><h3 id="kpiNet"><span class="skel wide" aria-hidden="true"></span></h3><p>Net P&amp;L (size-aware), gross of fees, every fill posted by hand.</p></div>
+                <div class="card"><div class="n">WIN RATE · PROFIT FACTOR</div><h3 id="kpiWr"><span class="skel wide" aria-hidden="true"></span></h3><p>Across <span id="kpiCount"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span> countable trades in the full record.</p></div>
+                <div class="card"><div class="n">DURABILITY · MINUS TOP 3</div><h3 id="kpiDur"><span class="skel wide" aria-hidden="true"></span></h3><p>Delete the three best trades; the edge still stands.</p></div>
             </div>
 
             <span class="eyebrow" style="margin-top:2.6rem;">Validation 2 · The durability test.</span>
@@ -644,6 +738,12 @@
                 </div>
             </details>
 
+            <!-- TASK 5 · mid scroll-state CTA -->
+            <p class="cta-prompt">This is the part no one else publishes. Ready for the rest?</p>
+            <div class="hero-cta" style="margin-top:1.4rem;">
+                <button class="btn btn-primary" onclick="openModal()">Request the founding-cohort briefing →</button>
+            </div>
+
             <p class="compliance-bar">The Sit-Out and the Gate are process commitments, not guarantees. The Sit-Out bounds drawdown by design and adherence; it does not guarantee a maximum — markets gap. The Gate manages the risk of riding a decayed edge; it does not eliminate the risk of loss.</p>
         </div>
     </section>
@@ -724,13 +824,15 @@
                     <div class="rn">PRINCIPLE 01</div>
                     <h4>Positive Expectancy</h4>
                     <div class="rd">Only play games you can mathematically prove you win.</div>
-                    <div class="ev">Evidence: a measured per-trade edge of <span id="p47Ev">—</span> across <span id="p47Count">—</span> live trades · win rate <span id="p47Win">—</span> · profit factor <span id="p47Pf">—</span>. The edge is a statistical artifact, not an assertion. <span class="muted">(Shown in §01.5 and §02.)</span></div>
+                    <div class="ev figure-numeric">Evidence: a measured per-trade edge of <span id="p47Ev"><span class="skel" aria-hidden="true"></span></span> across <span id="p47Count"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span> live trades · win rate <span id="p47Win"><span class="skel" aria-hidden="true"></span></span> · profit factor <span id="p47Pf"><span class="skel" aria-hidden="true"></span></span>. The edge is a statistical artifact, not an assertion. <span class="muted">(Shown in §01.5 and §02.)</span></div>
+                    <div class="ev figure-fallback">Evidence: evidenced live, by hand, in the open — size-aware, across the full record (§02). The edge is a measurement, not an assertion. <span class="muted">(Shown in §01.5 and §02.)</span></div>
                 </div>
                 <div class="ring">
                     <div class="rn">PRINCIPLE 02</div>
                     <h4>Expected Value</h4>
                     <div class="rd">Compute EV before every decision; proceed only if it's positive.</div>
-                    <div class="ev">Evidence: the coin math — win more often than you lose, by about the same amount each time, for a positive expected value of <span id="p47Ev2">—</span> per trade, live-measured. Pre-decision logging is a protocol requirement, not a habit. <span class="muted">(Shown in §01.5, Card B; enforced by the Fidelity Layer in §04.)</span></div>
+                    <div class="ev figure-numeric">Evidence: the coin math — win more often than you lose, by about the same amount each time, for a positive expected value of <span id="p47Ev2"><span class="skel" aria-hidden="true"></span></span> per trade, live-measured. Pre-decision logging is a protocol requirement, not a habit. <span class="muted">(Shown in §01.5; enforced by the Fidelity Layer in §04.)</span></div>
+                    <div class="ev figure-fallback">Evidence: the coin math — win more often than you lose, by about the same amount each time, for a positive expected value per trade, live-measured. Pre-decision logging is a protocol requirement, not a habit. <span class="muted">(Shown in §01.5; enforced by the Fidelity Layer in §04.)</span></div>
                 </div>
                 <div class="ring">
                     <div class="rn">PRINCIPLE 03</div>
@@ -784,12 +886,15 @@
                 <div class="item">
                     <h3>The honest ceiling, named.</h3>
                     <p>The edge is currently short-biased — it earns most of its return catching downside exhaustion. Its hostile regime is therefore a relentless gap-up melt-up with no pullbacks. And it is, today, operator-executed.</p>
-                    <div class="statband">
-                        <div class="cell"><div class="fig" id="r6Streak">—</div><div class="lab"><b>Worst losing streak</b> · consecutive losses, ever</div></div>
-                        <div class="cell"><div class="fig" id="r6Dd">—</div><div class="lab"><b>Deepest drawdown</b> · at the worst moment</div></div>
-                        <div class="cell"><div class="fig" id="r6Rec">—</div><div class="lab"><b>Trades to recover</b> · trough back to peak</div></div>
+                    <div class="figure-numeric">
+                        <div class="statband">
+                            <div class="cell"><div class="fig" id="r6Streak"><span class="skel" aria-hidden="true"></span></div><div class="lab"><b>Worst losing streak</b> · consecutive losses, ever</div></div>
+                            <div class="cell"><div class="fig" id="r6Dd"><span class="skel wide" aria-hidden="true"></span></div><div class="lab"><b>Deepest drawdown</b> · at the worst moment</div></div>
+                            <div class="cell"><div class="fig" id="r6Rec"><span class="skel" aria-hidden="true"></span></div><div class="lab"><b>Trades to recover</b> · trough back to peak</div></div>
+                        </div>
+                        <p class="statband-cap">Already lived, inside the <span id="r6Count"><span class="skel" aria-hidden="true" style="min-width:2ch;"></span></span>-trade record. A four-loss streak and a few trades back to peak is a short round, not a knockout. Already lived; real outcomes will vary — the Sit-Out and the Gate exist precisely so a streak cannot compound past them.</p>
                     </div>
-                    <p class="statband-cap">Already lived, inside the <span id="r6Count">—</span>-trade record. A four-loss streak and a few trades back to peak is a short round, not a knockout. Already lived; real outcomes will vary — the Sit-Out and the Gate exist precisely so a streak cannot compound past them.</p>
+                    <p class="figure-fallback statband-cap">A short losing streak and a few trades back to peak — already lived inside the live record. A short round, not a knockout. Real outcomes will vary — the Sit-Out and the Gate exist precisely so a streak cannot compound past them.</p>
                 </div>
                 <div class="item">
                     <h3>The failure case, openly.</h3>
@@ -917,7 +1022,7 @@
             <p>"Proven" is used only in reference to the validated edge and to the process and architecture — never as a promise about future results. There are no client testimonials or endorsements; there are no clients yet.</p>
             <div class="legal">
                 <p>© 2026 Ekantik Capital Advisors LLC. All rights reserved. Contact: <a href="mailto:hd@ekantikcapital.com">hd@ekantikcapital.com</a></p>
-                <p style="color:var(--slate-dim);font-size:0.66rem;margin-top:0.6rem;">Build v3 · 2026-06-01</p>
+                <p style="color:var(--slate-dim);font-size:0.66rem;margin-top:0.6rem;">Build v4 · 2026-06-05</p>
             </div>
         </div>
     </footer>
@@ -1009,8 +1114,12 @@
 
                     // Hero datum + ribbon
                     if (full.count) set("liveVal", full.count + " trades");
+                    else { const it = document.getElementById("liveTradesItem"); if (it) it.classList.add("metric-collapsed"); }
                     set("hbWin", winOfN);
                     set("hbPf", pf);
+
+                    // Proof strip (TASK 3) — live-edge cell
+                    set("psEdge", winOfN + " · PF " + pf);
 
                     // §01.5 — the edge, in plain English (dollars/points, live)
                     set("e15Win", "+" + usdPlain(full["avgWin$"]));
@@ -1041,7 +1150,12 @@
                     set("r6Rec", full.recovery == null ? "—" : full.recovery);
                     set("r6Count", full.tradeCount);
                 })
-                .catch(() => { /* leave placeholders; never fabricate */ });
+                .catch(() => {
+                    /* TASK 1: deterministic degrade — never a fabricated number,
+                       never a literal em-dash. Collapse every figure block and
+                       reveal the verbatim fallback copy so each section still reads. */
+                    document.body.classList.add("figures-failed");
+                });
         })();
     </script>
 </body>

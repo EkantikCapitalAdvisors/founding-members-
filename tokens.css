@@ -1,0 +1,45 @@
+/* =====================================================================
+   Ekantik Capital — shared brand tokens (tokens.css)
+   ---------------------------------------------------------------------
+   GLOBAL per v4 spec. Import on every property:
+     founding · cashflow · epig500 · accelerator · dashboard.
+
+   Palette reflects the DEPLOYED dark "instrument" design that the live
+   founding page uses. The v4 spec's GLOBAL block also lists an --ivory
+   light background + DM Sans body; that would re-skin the page to a
+   light theme and is intentionally NOT applied here — switching the
+   live investor page's whole look is a brand decision, not a dev call.
+   Flagged for sign-off. Until then these tokens lock the real palette
+   so a single file drives all properties.
+
+   Rules:
+     - --gold is an ACCENT only (headlines, emphasis, CTAs). Never body.
+     - Numeric figures render in --mono (JetBrains Mono). Labels do not.
+     - Max two display families per asset (Playfair + Cormorant serif),
+       plus JetBrains Mono scoped to figures, plus Inter for body.
+   ===================================================================== */
+:root {
+  /* color */
+  --navy:        #1B2A4A;   /* field / authority */
+  --navy-deep:   #131F38;
+  --navy-panel:  #20314f;
+  --gold:        #C8A951;   /* accent / CTA — never body */
+  --gold-soft:   rgba(200, 169, 81, 0.14);
+  --slate:       #8A97AD;   /* secondary data */
+  --slate-dim:   #5E6B82;
+  --ink:         #EAEFF7;
+  --white:       #FFFFFF;
+  --ivory:       #FAF8F5;   /* reserved — light-theme background (not active) */
+  --hair:        rgba(200, 169, 81, 0.18);
+  --hair-cool:   rgba(138, 151, 173, 0.16);
+  --pos:         #4FB286;   /* restrained green — live P&L only */
+  --neg:         #C9554E;   /* restrained red  — live P&L only */
+
+  /* type */
+  --display: 'Playfair Display', Georgia, serif;        /* headlines */
+  --serif:   'Cormorant Garamond', Georgia, serif;      /* editorial lede */
+  --mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; /* FIGURES ONLY */
+  --sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; /* body */
+
+  --maxw: 1080px;
+}
