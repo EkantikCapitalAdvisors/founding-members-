@@ -473,6 +473,76 @@
     };
   }
 
+  /* Reservation / position-sizing math — pure, node-testable like battery().
+     Maps a chosen fraction of the Kelly criterion to a contract count and the
+     drawdown that sizing has historically REQUIRED. Returns sizing + risk only;
+     it never computes or returns an expected return, profit, or EV.
+
+       stats  a computeStats() result (reads winRate, avgWin$, avgLoss$,
+              avgRiskPts, maxDrawdown, recovery, tradesPerMonth, pointValue)
+       opts   { riskCapital, kellyFraction, capContracts? (default 500) }
+
+     Formulas:
+       b   = avgWin$ / avgLoss$                 payoff ratio
+       f*  = p - (1 - p) / b                    full-Kelly fraction (a ceiling)
+       riskPct = kellyFraction * f*             fraction of capital risked / trade
+       oneR_perContract = avgRiskPts * pointValue
+       N   = clamp(floor(riskCapital * riskPct / oneR_perContract), 0, cap)
+       ddR = maxDrawdown / avgRiskPts           worst drawdown ALREADY LIVED, in R
+     Guards return { valid:false } rather than throwing. */
+  function sizing(stats, opts) {
+    opts = opts || {};
+    var cap = opts.capContracts != null ? opts.capContracts : 500;
+    var riskCapital = +opts.riskCapital;
+    var kf = +opts.kellyFraction;
+    var p = stats ? stats.winRate : NaN;
+    var aw = stats ? stats["avgWin$"] : NaN;
+    var al = stats ? stats["avgLoss$"] : NaN;
+    var arp = stats ? stats.avgRiskPts : null;
+    var pv = stats && stats.pointValue != null ? stats.pointValue : NaN;
+
+    var invalid = function (extra) {
+      var base = { valid: false, p: p, b: null, fStar: null, kellyFraction: kf,
+                   riskPct: 0, oneR_perContract: null, N: 0, oneR_dollars: 0,
+                   ddR: null, drawdown_dollars: 0, drawdown_pct: null,
+                   recoveryTrades: stats ? stats.recovery : null, recoveryMonths: null,
+                   capContracts: cap, capShare: 0, riskCapital: riskCapital };
+      if (extra) for (var k in extra) base[k] = extra[k];
+      return base;
+    };
+
+    if (!isFinite(riskCapital) || riskCapital <= 0) return invalid();
+    if (!isFinite(aw) || aw <= 0 || !isFinite(al) || al <= 0) return invalid();
+    if (arp == null || !(arp > 0) || !isFinite(pv) || !(pv > 0)) return invalid();
+    if (!isFinite(kf) || kf <= 0) return invalid();
+
+    var b = aw / al;
+    if (!(b > 0)) return invalid();
+    var fStar = p - (1 - p) / b;
+    var oneR_perContract = arp * pv;
+    // No positive-edge sizing: report f* but no allocation.
+    if (!(fStar > 0)) return invalid({ b: b, fStar: fStar, oneR_perContract: oneR_perContract });
+
+    var riskPct = kf * fStar;
+    var N = Math.floor(riskCapital * riskPct / oneR_perContract);
+    if (N < 0) N = 0; if (N > cap) N = cap;
+    var oneR_dollars = N * oneR_perContract;
+    var ddR = stats.maxDrawdown != null && arp > 0 ? stats.maxDrawdown / arp : null;
+    var drawdown_dollars = ddR != null ? ddR * oneR_dollars : 0;
+    var drawdown_pct = ddR != null ? drawdown_dollars / riskCapital : null;
+    var recoveryTrades = stats.recovery != null ? stats.recovery : null;
+    var recoveryMonths = (recoveryTrades != null && stats.tradesPerMonth)
+      ? recoveryTrades / stats.tradesPerMonth : null;
+
+    return {
+      valid: true, p: p, b: b, fStar: fStar, kellyFraction: kf, riskPct: riskPct,
+      oneR_perContract: oneR_perContract, N: N, oneR_dollars: oneR_dollars,
+      ddR: ddR, drawdown_dollars: drawdown_dollars, drawdown_pct: drawdown_pct,
+      recoveryTrades: recoveryTrades, recoveryMonths: recoveryMonths,
+      capContracts: cap, capShare: N / cap, riskCapital: riskCapital
+    };
+  }
+
   /* Standard-normal CDF via Abramowitz–Stegun 7.1.26 erf approximation. */
   function normalCdf(z) {
     var s = z < 0 ? -1 : 1, x = Math.abs(z) / Math.SQRT2;
@@ -506,7 +576,8 @@
 
   var api = { parse: parse, parseMessages: parseMessages, extractFromHTML: extractFromHTML,
               extractFromText: extractFromText, computeStats: computeStats, filterWindow: filterWindow,
-              monthlyBreakdown: monthlyBreakdown, battery: battery, pnlFromText: pnlFromText };
+              monthlyBreakdown: monthlyBreakdown, battery: battery, sizing: sizing,
+              pnlFromText: pnlFromText };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.EkantikParser = api;
