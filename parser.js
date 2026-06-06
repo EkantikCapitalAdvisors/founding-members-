@@ -414,9 +414,9 @@
     var sd = Math.sqrt(variance);
     var se = n > 0 ? sd / Math.sqrt(n) : 0;
 
-    // 1 · one-sample, one-sided t/z test that the mean edge > 0
+    // 1 · one-sample, two-sided t/z test that the mean edge differs from 0
     var tStat = se > 0 ? mean / se : 0;
-    var pValue = 1 - normalCdf(tStat);            // P(edge ≤ 0)
+    var pValue = 2 * (1 - normalCdf(Math.abs(tStat)));   // two-sided
     if (pValue < 0) pValue = 0; if (pValue > 1) pValue = 1;
 
     // 2 · 95% confidence interval on mean per-trade $
@@ -462,12 +462,14 @@
 
     return {
       n: n, wl: wl, wins: wins.length, losses: losses.length,
-      mean: mean, sd: sd, se: se,
+      mean: mean, sd: sd, se: se, tStat: tStat,
       pValue: pValue, ciLow: ciLow, ciHigh: ciHigh,
-      profitFactor: profitFactor, net: net, netExTop3: netExTop3,
-      winRate: winRate, avgWin: avgWin, avgLoss: avgLoss,
-      rExpectancy: rExpectancy, breakevenBufferPp: breakevenBufferPp,
-      maxLossStreak: maxLossStreak, bootstrapPProfit: bootstrapPProfit
+      profitFactor: profitFactor, grossProfit: gp, grossLoss: gl,
+      net: net, netExTop3: netExTop3, top3Sum: sum(top3),
+      winRate: winRate, avgWin: avgWin, avgLoss: avgLoss, ev: ev,
+      rExpectancy: rExpectancy, breakevenWR: breakevenWR, breakevenBufferPp: breakevenBufferPp,
+      maxLossStreak: maxLossStreak,
+      bootstrapPProfit: bootstrapPProfit, bootstrapProfitable: profitable, bootstrapB: B
     };
   }
 
