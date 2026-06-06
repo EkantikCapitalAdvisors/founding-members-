@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Consistent with the cohort page: noindex until the 506(b)/506(c)
+         decision is resolved by counsel. -->
+    <meta name="robots" content="noindex,nofollow">
+
+    <title>Ekantik Capital — Edge Sustainability</title>
+    <meta name="description" content="Eight independent robustness tests, recomputed live from the trade record — or from your own data, in your browser. Nothing on this page is an offer.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Shared brand tokens (single source across properties) -->
+    <link rel="stylesheet" href="tokens.css">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Light "instrument-on-paper" theme — local to this tool page. */
+        :root {
+            --paper:    #FAF8F5;
+            --paper-2:  #F3EFE9;
+            --line:     #E3DCD1;
+            --line-2:   rgba(27, 42, 74, 0.10);
+            --text:     #243149;
+            --text-dim: #5E6B82;
+            --gold-deep:#9A7B2E;   /* readable gold for figures on paper */
+            --pass:     #2F6B46;
+            --pass-bg:  #E7F1EA;
+            --fail:     #B23A33;
+            --fail-bg:  #F7E9E8;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--paper);
+            color: var(--text);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wrap { max-width: 920px; margin: 0 auto; padding: 0 28px; }
+
+        h1 { font-family: var(--display); font-weight: 600; color: var(--navy); line-height: 1.12; letter-spacing: 0.2px; font-size: clamp(2rem, 5vw, 3rem); }
+        a { color: var(--gold-deep); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        strong { color: var(--navy); font-weight: 600; }
+
+        /* nav */
+        .nav { border-bottom: 1px solid var(--line); background: rgba(250,248,245,0.9); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 20; }
+        .nav-inner { max-width: 920px; margin: 0 auto; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+        .brand { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--navy); }
+        .brand span { color: var(--gold-deep); }
+        .nav-links { display: flex; gap: 1.4rem; }
+        .nav-links a { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+        .nav-links a:hover { color: var(--navy); text-decoration: none; }
+
+        /* header block */
+        header { padding: 64px 0 8px; }
+        .eyebrow { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-deep); display: block; margin-bottom: 1.1rem; }
+        .intro { max-width: 640px; margin-top: 1.2rem; color: var(--text); }
+        .intro .hi { color: var(--gold-deep); font-weight: 500; }
+        .own-line { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--gold-deep); margin-top: 1.4rem; }
+        .verdict { font-family: var(--mono); font-size: 0.92rem; color: var(--navy); margin-top: 1.6rem; letter-spacing: 0.02em; }
+        .verdict b { color: var(--gold-deep); }
+
+        /* control bar */
+        .ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 1.2rem; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 1.1rem 1.3rem; margin-top: 1.8rem; }
+        .ctrl .meta { font-family: var(--mono); font-size: 0.76rem; color: var(--text-dim); }
+        .ctrl .meta b { color: var(--navy); font-weight: 600; }
+        .ctrl .spacer { flex: 1 1 auto; }
+        .btn { font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.05em; padding: 0.6rem 1rem; border-radius: 5px; border: 1px solid var(--navy); background: #fff; color: var(--navy); cursor: pointer; transition: all 0.15s ease; }
+        .btn:hover { background: var(--navy); color: #fff; }
+        .btn-gold { border-color: var(--gold-deep); color: var(--gold-deep); }
+        .btn-gold:hover { background: var(--gold-deep); color: #fff; }
+        .reset-link { font-family: var(--mono); font-size: 0.74rem; color: var(--text-dim); border: none; background: none; cursor: pointer; text-decoration: underline; padding: 0; }
+        .reset-link:hover { color: var(--navy); }
+        .reset-wrap { display: none; }
+        .reset-wrap.show { display: inline; }
+
+        .src-banner { display: none; font-family: var(--mono); font-size: 0.74rem; color: var(--gold-deep); border-left: 2px solid var(--gold-deep); padding: 0.3rem 0 0.3rem 0.9rem; margin-top: 1.2rem; }
+        .src-banner.show { display: block; }
+
+        /* table */
+        .table-scroll { overflow-x: auto; margin-top: 1.6rem; border: 1px solid var(--line); border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; min-width: 640px; }
+        thead th { background: var(--navy); color: #EAEFF7; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; text-align: left; padding: 0.95rem 1.2rem; }
+        thead th.c-thr, thead th.c-stat { text-align: right; }
+        thead th.c-stat { text-align: center; }
+        tbody td { padding: 1rem 1.2rem; border-bottom: 1px solid var(--line-2); vertical-align: middle; }
+        tbody tr:nth-child(even) td { background: var(--paper-2); }
+        tbody tr:last-child td { border-bottom: none; }
+        .t-name { color: var(--navy); font-weight: 600; font-size: 0.95rem; }
+        .t-name .num { color: var(--gold-deep); }
+        .t-res { font-family: var(--mono); font-size: 0.9rem; color: var(--gold-deep); font-weight: 600; }
+        .t-thr { font-family: var(--mono); font-size: 0.82rem; color: var(--text-dim); text-align: right; }
+        .c-stat { text-align: center; }
+        .pill { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; font-weight: 600; padding: 0.28rem 0.8rem; border-radius: 999px; display: inline-block; }
+        .pill.pass { background: var(--pass-bg); color: var(--pass); }
+        .pill.fail { background: var(--fail-bg); color: var(--fail); }
+
+        /* own-data */
+        .owncta { display: flex; align-items: center; gap: 0.6rem; width: 100%; border: 1px dashed var(--line); border-radius: 8px; background: #fff; padding: 1.1rem 1.3rem; margin-top: 1.4rem; font-family: var(--mono); font-size: 0.82rem; color: var(--navy); cursor: pointer; }
+        .owncta:hover { border-color: var(--gold-deep); }
+        .owncta .arr { color: var(--gold-deep); }
+        .ownpanel { display: none; border: 1px solid var(--line); border-radius: 8px; background: #fff; padding: 1.4rem; margin-top: 0.9rem; }
+        .ownpanel.show { display: block; }
+        .ownpanel label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); display: block; margin-bottom: 0.5rem; }
+        .ownpanel textarea { width: 100%; min-height: 150px; resize: vertical; border: 1px solid var(--line); border-radius: 5px; padding: 0.8rem; font-family: var(--mono); font-size: 0.82rem; color: var(--text); background: var(--paper); }
+        .ownpanel textarea:focus { outline: none; border-color: var(--gold-deep); }
+        .own-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
+        .privacy { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); }
+        .privacy b { color: var(--pass); }
+        .own-err { display: none; font-family: var(--mono); font-size: 0.74rem; color: var(--fail); margin-top: 0.8rem; }
+        .own-err.show { display: block; }
+        .filewrap { position: relative; overflow: hidden; display: inline-block; }
+        .filewrap input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        /* methods */
+        details.methods { margin-top: 2rem; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+        details.methods > summary { cursor: pointer; font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.06em; color: var(--gold-deep); padding: 1rem 1.3rem; list-style: none; }
+        details.methods > summary::-webkit-details-marker { display: none; }
+        details.methods[open] > summary { border-bottom: 1px solid var(--line); }
+        .methods-body { padding: 0.5rem 1.3rem 1.3rem; }
+        .methods-body dt { font-family: var(--mono); font-size: 0.8rem; color: var(--navy); font-weight: 600; margin-top: 1rem; }
+        .methods-body dd { font-size: 0.9rem; color: var(--text-dim); margin: 0.2rem 0 0; }
+
+        .compliance { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); line-height: 1.8; border-top: 1px solid var(--line); margin-top: 3rem; padding: 1.6rem 0 4rem; }
+        .compliance p { margin-bottom: 0.7rem; }
+        .compliance strong { color: var(--navy); }
+
+        @media (max-width: 640px) { .nav-links a:first-child { display: none; } }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <div class="brand">EKANTIK CAPITAL · <span>Edge sustainability</span></div>
+            <div class="nav-links">
+                <a href="index.html">Founding cohort</a>
+                <a href="dashboard.html">Edge dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="wrap">
+            <span class="eyebrow">Sustainability · Verified eight ways</span>
+            <h1>Edge sustainability. Verified eight ways.</h1>
+
+            <p class="intro">Every edge can look real in a small sample. <span class="hi">This is the battery we re-run against live trade data to prove it isn't.</span> The edge claim is only credible if the battery says it is. <span class="hi">Run it on our data. Run it on yours.</span></p>
+
+            <p class="own-line">Or run it on your own trade data. Your file never leaves your device.</p>
+
+            <p class="verdict" id="verdict"><b>Loading…</b> recomputing the battery from the live record.</p>
+
+            <div class="ctrl">
+                <span class="meta">Last recalculated: <b id="lastCalc">—</b></span>
+                <span class="meta">Sample size: <b id="sampleN">—</b> trades</span>
+                <span class="spacer"></span>
+                <button class="btn" id="recalcBtn">Recalculate now</button>
+                <span class="reset-wrap" id="resetWrap"><button class="reset-link" id="resetBtn">Reset to Ekantik sample</button></span>
+            </div>
+
+            <div class="src-banner" id="srcBanner"></div>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="c-name">Test</th>
+                        <th class="c-res">Current result</th>
+                        <th class="c-thr">Threshold</th>
+                        <th class="c-stat">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="batteryRows"><!-- rendered by JS --></tbody>
+            </table>
+        </div>
+
+        <div class="owncta" id="ownToggle"><span class="arr">↓</span> Run the battery on your own data</div>
+        <div class="ownpanel" id="ownPanel">
+            <label for="ownInput">Per-trade results — one trade per line (use a minus sign for losses). Paste, or upload a .csv / .txt below.</label>
+            <textarea id="ownInput" placeholder="+45&#10;-30&#10;+12.5&#10;wash&#10;..."></textarea>
+            <div class="own-row">
+                <button class="btn btn-gold" id="runOwnBtn">Run the battery on this data</button>
+                <span class="filewrap"><button class="btn" type="button">Choose file…</button><input type="file" id="ownFile" accept=".csv,.txt,.tsv,text/plain"></span>
+                <span class="privacy"><b>Stays on your device.</b> Parsed in your browser; nothing is uploaded.</span>
+            </div>
+            <p class="own-err" id="ownErr"></p>
+        </div>
+
+        <details class="methods">
+            <summary>How each test works →</summary>
+            <div class="methods-body">
+                <dl>
+                    <dt>1 · Statistical Significance</dt><dd>One-sample, one-sided t-test that the mean per-trade P&amp;L is greater than zero. We report p — the chance of seeing this record if the true edge were zero. Pass below 0.05.</dd>
+                    <dt>2 · Confidence Interval (95%)</dt><dd>The 95% interval around the mean per-trade dollar result. Passes when the lower bound is still above $0 — the edge holds even at the pessimistic end of the interval.</dd>
+                    <dt>3 · Profit Factor</dt><dd>Gross dollars won ÷ gross dollars lost. Pass above 1.50.</dd>
+                    <dt>4 · Outlier Independence</dt><dd>Delete the three largest winners and re-total. Passes if the record is still net positive — the edge isn't carried by a few lucky prints.</dd>
+                    <dt>5 · R-Expectancy</dt><dd>Expected dollars per trade expressed in units of the average loss (1R). Pass above +0.20R.</dd>
+                    <dt>6 · Breakeven Buffer</dt><dd>How far the actual win rate sits above the win rate a profit factor of 1.0 would demand, in percentage points. Pass above 10 pp.</dd>
+                    <dt>7 · Streak Resilience</dt><dd>The longest run of consecutive losses in the record. Pass at or below 4.</dd>
+                    <dt>8 · Bootstrap P(profit)</dt><dd>Resample the trades 2,000 times with replacement (seeded, reproducible); the share of resampled records that finish profitable. Pass above 85%.</dd>
+                </dl>
+            </div>
+        </details>
+
+        <div class="compliance">
+            <p><strong>Nothing on this page constitutes an offer to sell or a solicitation of an offer to buy any security.</strong> Any offer is made solely to verified accredited investors through definitive offering documents. These are diagnostic statistics computed from a trade record; they are not a forecast and not a promise of any investor's outcome.</p>
+            <p>Past performance is not indicative of future results. The sample is pre-asymptotic — statistical confidence grows with the number of trades, and every test on this page is sensitive to sample size. Figures are size-aware dollar P&amp;L, gross of fees unless noted. "Your own data" is parsed entirely in your browser and is never transmitted.</p>
+            <p style="color:var(--text-dim);font-size:0.66rem;margin-top:1rem;">Build v4 · 2026-06-06</p>
+        </div>
+    </main>
+
+    <script src="parser.js"></script>
+    <script>
+        /* ---------- test definitions: threshold + pass rule + formatting ---------- */
+        const num0 = x => Math.round(x).toLocaleString("en-US");
+        const dollars = x => (x < 0 ? "−$" : "$") + num0(Math.abs(x));
+        const signed = (x, suf, dp) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(dp) + suf;
+
+        const TESTS = [
+            { name: "Statistical Significance", thr: "p < 0.05",
+              res: b => "p = " + b.pValue.toFixed(4), pass: b => b.pValue < 0.05 },
+            { name: "Confidence Interval (95%)", thr: "lower bound > $0",
+              res: b => "[" + dollars(b.ciLow) + ", " + dollars(b.ciHigh) + "]", pass: b => b.ciLow > 0 },
+            { name: "Profit Factor", thr: "> 1.50",
+              res: b => b.profitFactor == null ? "n/a" : b.profitFactor.toFixed(2),
+              pass: b => b.profitFactor != null && b.profitFactor > 1.50 },
+            { name: "Outlier Independence", thr: "> $0 after removing top 3 winners",
+              res: b => dollars(b.netExTop3), pass: b => b.netExTop3 > 0 },
+            { name: "R-Expectancy", thr: "> +0.20R",
+              res: b => b.rExpectancy == null ? "n/a" : signed(b.rExpectancy, "R", 2),
+              pass: b => b.rExpectancy != null && b.rExpectancy > 0.20 },
+            { name: "Breakeven Buffer", thr: "> 10 percentage points",
+              res: b => b.breakevenBufferPp == null ? "n/a" : signed(b.breakevenBufferPp, " pp", 1),
+              pass: b => b.breakevenBufferPp != null && b.breakevenBufferPp > 10 },
+            { name: "Streak Resilience", thr: "≤ 4 consecutive losses",
+              res: b => b.maxLossStreak + " consecutive", pass: b => b.maxLossStreak <= 4 },
+            { name: "Bootstrap P(profit)", thr: "> 85%",
+              res: b => b.bootstrapPProfit.toFixed(1) + "%", pass: b => b.bootstrapPProfit > 85 }
+        ];
+
+        const $ = id => document.getElementById(id);
+        let ekantikPnl = null;   // cached Ekantik sample vector
+
+        function stamp() {
+            return new Date().toLocaleString("en-US",
+                { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+        }
+
+        function render(b, label) {
+            const rows = TESTS.map((t, i) => {
+                const ok = t.pass(b);
+                return '<tr>'
+                    + '<td class="t-name"><span class="num">' + (i + 1) + '.</span> ' + t.name + '</td>'
+                    + '<td class="t-res">' + t.res(b) + '</td>'
+                    + '<td class="t-thr">' + t.thr + '</td>'
+                    + '<td class="c-stat"><span class="pill ' + (ok ? 'pass' : 'fail') + '">' + (ok ? 'PASS' : 'FAIL') + '</span></td>'
+                    + '</tr>';
+            }).join("");
+            $("batteryRows").innerHTML = rows;
+
+            const passes = TESTS.filter(t => t.pass(b)).length;
+            const all = passes === TESTS.length;
+            $("verdict").innerHTML = all
+                ? '<b>Edge validated</b> — all ' + TESTS.length + ' tests pass on a sample of <b>' + b.n + '</b> trades.'
+                : '<b>' + passes + ' of ' + TESTS.length + '</b> tests pass on a sample of <b>' + b.n + '</b> trades.';
+
+            $("sampleN").textContent = b.n;
+            $("lastCalc").textContent = stamp();
+
+            const banner = $("srcBanner");
+            if (label) {
+                banner.textContent = label + (b.n < 20 ? "  ·  small sample — these tests need ~30+ trades to be meaningful." : "");
+                banner.classList.add("show");
+                $("resetWrap").classList.add("show");
+            } else {
+                banner.classList.remove("show");
+                $("resetWrap").classList.remove("show");
+            }
+        }
+
+        function runEkantik() {
+            render(EkantikParser.battery(ekantikPnl, { seed: 1234 }), null);
+        }
+
+        /* ---- load the live Ekantik record ---- */
+        fetch("trades.json", { cache: "no-store" })
+            .then(r => r.ok ? r.json() : Promise.reject(new Error("trades.json")))
+            .then(doc => {
+                const trades = doc.trades || doc;
+                if (!window.EkantikParser || !Array.isArray(trades)) throw new Error("parser");
+                const full = EkantikParser.computeStats(trades,
+                    { pointValue: doc.point_value, workingUnit: doc.working_unit });
+                ekantikPnl = full.equity.map(e => e["pnl$"]);
+                runEkantik();
+            })
+            .catch(() => {
+                $("verdict").innerHTML = 'The live record could not be loaded right now. '
+                    + 'You can still run the battery on your own data below — it computes entirely in your browser.';
+                $("ownPanel").classList.add("show");
+            });
+
+        /* ---- controls ---- */
+        $("recalcBtn").addEventListener("click", () => {
+            // re-run against whatever source is active
+            if ($("resetWrap").classList.contains("show")) runOwn(); else if (ekantikPnl) runEkantik();
+        });
+        $("resetBtn").addEventListener("click", () => { if (ekantikPnl) runEkantik(); });
+
+        $("ownToggle").addEventListener("click", () => $("ownPanel").classList.toggle("show"));
+
+        function parseOwn() {
+            const txt = $("ownInput").value;
+            // "wash"/"scratch" → 0; otherwise last signed number per line
+            const lines = txt.split(/[\r\n]+/);
+            const vals = [];
+            lines.forEach(ln => {
+                const low = ln.toLowerCase();
+                if (/\b(wash|scratch|flat|breakeven|be)\b/.test(low) && !/-?\d/.test(ln)) { vals.push(0); return; }
+                const m = ln.match(/-?\d+(?:\.\d+)?/g);
+                if (m && m.length) { const v = parseFloat(m[m.length - 1]); if (isFinite(v)) vals.push(v); }
+            });
+            return vals;
+        }
+
+        function runOwn() {
+            const vals = parseOwn();
+            const err = $("ownErr");
+            if (vals.length < 5) {
+                err.textContent = "Need at least 5 numeric per-trade results to run the battery. Found " + vals.length + ".";
+                err.classList.add("show");
+                return;
+            }
+            if (!vals.some(v => v > 0) || !vals.some(v => v < 0)) {
+                err.textContent = "Found no wins or no losses — include a minus sign on losing trades so the battery can separate them.";
+                err.classList.add("show");
+                return;
+            }
+            err.classList.remove("show");
+            render(EkantikParser.battery(vals, { seed: 1234 }), "Showing YOUR data — " + vals.length + " trades, computed in your browser.");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        $("runOwnBtn").addEventListener("click", runOwn);
+        $("ownFile").addEventListener("change", e => {
+            const f = e.target.files[0];
+            if (!f) return;
+            const reader = new FileReader();
+            reader.onload = () => { $("ownInput").value = reader.result; runOwn(); };
+            reader.readAsText(f);
+        });
+    </script>
+</body>
+</html>
