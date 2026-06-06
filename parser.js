@@ -394,9 +394,117 @@
   function mean(a){ return a.length ? sum(a)/a.length : 0; }
   function round(x){ return Math.round(x*100)/100; }
 
+  /* =====================================================================
+     Edge-sustainability battery — eight independent robustness tests on a
+     vector of per-trade P&L (size-aware dollars; wins > 0, losses < 0,
+     scratch = 0). Pure and deterministic: the bootstrap uses a seeded PRNG
+     so the same sample always yields the same numbers (honest re-runs).
+
+     Returns raw numbers only; the page owns thresholds + formatting.
+     ===================================================================== */
+  function battery(pnl, opts) {
+    opts = opts || {};
+    var B = opts.bootstrap != null ? opts.bootstrap : 2000;
+    var pnlArr = (pnl || []).filter(function (x) { return typeof x === "number" && isFinite(x); });
+    var n = pnlArr.length;
+    if (!n) return null;
+
+    var mean = sum(pnlArr) / n;
+    var variance = n > 1 ? sum(pnlArr.map(function (x) { return (x - mean) * (x - mean); })) / (n - 1) : 0;
+    var sd = Math.sqrt(variance);
+    var se = n > 0 ? sd / Math.sqrt(n) : 0;
+
+    // 1 · one-sample, one-sided t/z test that the mean edge > 0
+    var tStat = se > 0 ? mean / se : 0;
+    var pValue = 1 - normalCdf(tStat);            // P(edge ≤ 0)
+    if (pValue < 0) pValue = 0; if (pValue > 1) pValue = 1;
+
+    // 2 · 95% confidence interval on mean per-trade $
+    var ciLow = mean - 1.96 * se, ciHigh = mean + 1.96 * se;
+
+    // win/loss decomposition
+    var wins = pnlArr.filter(function (x) { return x > 0; });
+    var losses = pnlArr.filter(function (x) { return x < 0; });
+    var wl = wins.length + losses.length;
+    var gp = sum(wins), gl = -sum(losses), net = sum(pnlArr);
+    var avgWin = wins.length ? gp / wins.length : 0;
+    var avgLoss = losses.length ? gl / losses.length : 0;
+    var winRate = wl ? wins.length / wl : 0;
+
+    // 3 · profit factor
+    var profitFactor = gl > 0 ? gp / gl : null;
+
+    // 4 · outlier independence — net after deleting the three biggest winners
+    var top3 = wins.slice().sort(function (a, b) { return b - a; }).slice(0, 3);
+    var netExTop3 = net - sum(top3);
+
+    // 5 · R-expectancy — expected $ per trade expressed in average-loss units (1R)
+    var ev = wl ? net / wl : 0;
+    var rExpectancy = avgLoss > 0 ? ev / avgLoss : null;
+
+    // 6 · breakeven buffer — actual win rate over the win rate PF=1 demands, in pp
+    var breakevenWR = (avgWin + avgLoss) > 0 ? avgLoss / (avgWin + avgLoss) : null;
+    var breakevenBufferPp = breakevenWR != null ? (winRate - breakevenWR) * 100 : null;
+
+    // 7 · streak resilience — longest run of consecutive losses, in order
+    var maxLossStreak = 0, run = 0;
+    pnlArr.forEach(function (x) { if (x < 0) { run++; if (run > maxLossStreak) maxLossStreak = run; } else run = 0; });
+
+    // 8 · bootstrap P(profit) — share of seeded resamples whose total is positive
+    var rng = mulberry32(opts.seed != null ? opts.seed : 0x9E3779B9);
+    var profitable = 0;
+    for (var b = 0; b < B; b++) {
+      var s = 0;
+      for (var i = 0; i < n; i++) s += pnlArr[(rng() * n) | 0];
+      if (s > 0) profitable++;
+    }
+    var bootstrapPProfit = B ? (profitable / B) * 100 : null;
+
+    return {
+      n: n, wl: wl, wins: wins.length, losses: losses.length,
+      mean: mean, sd: sd, se: se,
+      pValue: pValue, ciLow: ciLow, ciHigh: ciHigh,
+      profitFactor: profitFactor, net: net, netExTop3: netExTop3,
+      winRate: winRate, avgWin: avgWin, avgLoss: avgLoss,
+      rExpectancy: rExpectancy, breakevenBufferPp: breakevenBufferPp,
+      maxLossStreak: maxLossStreak, bootstrapPProfit: bootstrapPProfit
+    };
+  }
+
+  /* Standard-normal CDF via Abramowitz–Stegun 7.1.26 erf approximation. */
+  function normalCdf(z) {
+    var s = z < 0 ? -1 : 1, x = Math.abs(z) / Math.SQRT2;
+    var t = 1 / (1 + 0.3275911 * x);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return 0.5 * (1 + s * y);
+  }
+  /* Seeded PRNG (mulberry32) → deterministic bootstrap. */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* Extract a per-trade P&L vector from free-form pasted/uploaded text:
+     one trade per line, taking the last signed number on each line
+     (so "2026-02-03, ES short, +45" → 45). Blank/headerless lines ignored. */
+  function pnlFromText(text) {
+    var out = [];
+    String(text || "").split(/[\r\n]+/).forEach(function (ln) {
+      var m = ln.match(/-?\d+(?:\.\d+)?/g);
+      if (!m || !m.length) return;
+      var v = parseFloat(m[m.length - 1]);
+      if (isFinite(v)) out.push(v);
+    });
+    return out;
+  }
+
   var api = { parse: parse, parseMessages: parseMessages, extractFromHTML: extractFromHTML,
               extractFromText: extractFromText, computeStats: computeStats, filterWindow: filterWindow,
-              monthlyBreakdown: monthlyBreakdown };
+              monthlyBreakdown: monthlyBreakdown, battery: battery, pnlFromText: pnlFromText };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.EkantikParser = api;
