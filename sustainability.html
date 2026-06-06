@@ -133,6 +133,85 @@
         .compliance p { margin-bottom: 0.7rem; }
         .compliance strong { color: var(--navy); }
 
+        /* ===== radial "eight attributes" diagram ===== */
+        .attrs { margin-top: 3.4rem; }
+        .attrs-h { font-family: var(--display); font-weight: 600; color: var(--navy); font-size: clamp(1.5rem, 3.4vw, 2.1rem); }
+        .attrs-sub { max-width: 640px; color: var(--text-dim); margin-top: 0.6rem; font-size: 0.95rem; }
+        .hubwrap { position: relative; max-width: 720px; margin: 2.4rem auto 1rem; aspect-ratio: 1 / 1; }
+        .spokes { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .attrgrid {
+            position: relative; z-index: 1; height: 100%;
+            display: grid; gap: 0.6rem;
+            grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+            grid-template-areas: "c8 c1 c2" "c7 hub c3" "c6 c5 c4";
+        }
+        .hub {
+            grid-area: hub; border-radius: 50%; background: var(--navy);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 1.2rem; aspect-ratio: 1/1; align-self: center; justify-self: center;
+            width: 100%; max-width: 200px; box-shadow: 0 10px 30px rgba(27,42,74,0.18);
+        }
+        .hub .hl { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); opacity: 0.85; }
+        .hub .ht { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--gold); margin-top: 0.4rem; line-height: 1.2; }
+        .acard {
+            background: #fff; border: 1px solid var(--line); border-radius: 7px; padding: 0.85rem 0.95rem;
+            cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+            align-self: center; user-select: none;
+        }
+        .acard:hover { border-color: var(--gold-deep); box-shadow: 0 6px 18px rgba(27,42,74,0.08); }
+        .acard.sel { border-color: var(--gold-deep); border-left-width: 3px; box-shadow: 0 6px 18px rgba(27,42,74,0.12); }
+        .acard .an { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; color: var(--gold-deep); }
+        .acard .at { font-family: var(--serif); font-weight: 600; font-size: 1.02rem; color: var(--navy); line-height: 1.15; margin: 0.15rem 0 0.3rem; }
+        .acard .ab { font-size: 0.74rem; color: var(--text-dim); line-height: 1.35; }
+        .dblhint { text-align: center; font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); margin-top: 0.4rem; }
+
+        /* ===== per-attribute explainers ===== */
+        .details { margin-top: 2.4rem; display: grid; gap: 0.7rem; }
+        .adetail { border: 1px solid var(--line); border-radius: 8px; background: #fff; scroll-margin-top: 76px; }
+        .adetail.sel { border-color: var(--gold-deep); }
+        .adetail-head {
+            width: 100%; text-align: left; cursor: pointer; background: none; border: none;
+            font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--navy);
+            padding: 1.1rem 1.3rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        }
+        .adetail-head .chev { font-family: var(--mono); color: var(--gold-deep); font-size: 1.2rem; line-height: 1; }
+        .adetail-body { display: none; padding: 0 1.3rem 1.4rem; }
+        .adetail.open .adetail-body { display: block; }
+        .adetail.open .adetail-head { border-bottom: 1px solid var(--line); margin-bottom: 1.2rem; }
+        .aq { font-family: var(--serif); font-style: italic; font-size: 1.3rem; color: var(--navy); border-left: 2px solid var(--gold-deep); padding-left: 1rem; margin-bottom: 1.1rem; }
+        .aexplain p { color: var(--text); margin-bottom: 0.9rem; font-size: 0.98rem; }
+        .aexplain em { font-style: italic; color: var(--gold-deep); }
+        .aex-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.2rem 0; }
+        .aex { border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.1rem; }
+        .aex.pass { border-left: 3px solid var(--pass); background: var(--pass-bg); }
+        .aex.fail { border-left: 3px solid var(--fail); background: var(--fail-bg); }
+        .aex .aexh { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 0.5rem; }
+        .aex.pass .aexh { color: var(--pass); }
+        .aex.fail .aexh { color: var(--fail); }
+        .aex p { font-size: 0.86rem; color: var(--text); line-height: 1.5; }
+        .athr { background: var(--paper-2); border-radius: 6px; padding: 0.9rem 1.1rem; font-family: var(--mono); font-size: 0.8rem; color: var(--text-dim); margin: 1.2rem 0; }
+        .athr-l { letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.66rem; margin-right: 0.6rem; }
+        .athr b { color: var(--navy); margin-right: 0.6rem; }
+        .acur { font-family: var(--mono); font-size: 0.92rem; color: var(--navy); margin: 1rem 0; }
+        .acur b { color: var(--gold-deep); }
+        .acalc { background: var(--paper-2); border-radius: 6px; padding: 0.9rem 1.1rem; margin: 1rem 0; }
+        .acalc-h { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.4rem; }
+        .acalc code { font-family: var(--mono); font-size: 0.84rem; color: var(--text); }
+        details.ahow { margin: 1rem 0; }
+        details.ahow > summary { cursor: pointer; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--gold-deep); list-style: none; }
+        details.ahow > summary::-webkit-details-marker { display: none; }
+        details.ahow > summary::before { content: "→ "; }
+        details.ahow[open] > summary::before { content: "↓ "; }
+        details.ahow p { font-size: 0.88rem; color: var(--text-dim); margin-top: 0.5rem; }
+        .aquote { font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--gold-deep); border-top: 1px solid var(--line); padding-top: 1.1rem; margin-top: 1.2rem; }
+
+        @media (max-width: 760px) {
+            .hubwrap { aspect-ratio: auto; }
+            .spokes, .hub { display: none; }
+            .attrgrid { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-template-areas: none; }
+            .aex-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 460px) { .attrgrid { grid-template-columns: 1fr; } }
         @media (max-width: 640px) { .nav-links a:first-child { display: none; } }
     </style>
 </head>
@@ -197,21 +276,32 @@
             <p class="own-err" id="ownErr"></p>
         </div>
 
-        <details class="methods">
-            <summary>How each test works →</summary>
-            <div class="methods-body">
-                <dl>
-                    <dt>1 · Statistical Significance</dt><dd>One-sample, one-sided t-test that the mean per-trade P&amp;L is greater than zero. We report p — the chance of seeing this record if the true edge were zero. Pass below 0.05.</dd>
-                    <dt>2 · Confidence Interval (95%)</dt><dd>The 95% interval around the mean per-trade dollar result. Passes when the lower bound is still above $0 — the edge holds even at the pessimistic end of the interval.</dd>
-                    <dt>3 · Profit Factor</dt><dd>Gross dollars won ÷ gross dollars lost. Pass above 1.50.</dd>
-                    <dt>4 · Outlier Independence</dt><dd>Delete the three largest winners and re-total. Passes if the record is still net positive — the edge isn't carried by a few lucky prints.</dd>
-                    <dt>5 · R-Expectancy</dt><dd>Expected dollars per trade expressed in units of the average loss (1R). Pass above +0.20R.</dd>
-                    <dt>6 · Breakeven Buffer</dt><dd>How far the actual win rate sits above the win rate a profit factor of 1.0 would demand, in percentage points. Pass above 10 pp.</dd>
-                    <dt>7 · Streak Resilience</dt><dd>The longest run of consecutive losses in the record. Pass at or below 4.</dd>
-                    <dt>8 · Bootstrap P(profit)</dt><dd>Resample the trades 2,000 times with replacement (seeded, reproducible); the share of resampled records that finish profitable. Pass above 85%.</dd>
-                </dl>
+        <section class="attrs">
+            <h2 class="attrs-h">The eight attributes of a sustainable edge</h2>
+            <p class="attrs-sub">Each test guards against one way a track record can lie. <strong>Double-click any attribute</strong> to open its full explanation — the plain-English version, a passing and a failing example, the threshold, and the actual math on the current sample.</p>
+
+            <div class="hubwrap">
+                <svg class="spokes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                    <g stroke="#9A7B2E" stroke-width="0.3" stroke-opacity="0.45">
+                        <line x1="50" y1="50" x2="50"    y2="16.67"></line>
+                        <line x1="50" y1="50" x2="83.33" y2="16.67"></line>
+                        <line x1="50" y1="50" x2="83.33" y2="50"></line>
+                        <line x1="50" y1="50" x2="83.33" y2="83.33"></line>
+                        <line x1="50" y1="50" x2="50"    y2="83.33"></line>
+                        <line x1="50" y1="50" x2="16.67" y2="83.33"></line>
+                        <line x1="50" y1="50" x2="16.67" y2="50"></line>
+                        <line x1="50" y1="50" x2="16.67" y2="16.67"></line>
+                    </g>
+                </svg>
+                <div class="attrgrid" id="attrGrid">
+                    <div class="hub"><span class="hl">The eight attributes of</span><span class="ht">A Sustainable Edge</span></div>
+                    <!-- attribute cards rendered by JS -->
+                </div>
             </div>
-        </details>
+            <p class="dblhint">Double-click an attribute to read the full explanation ↓</p>
+
+            <div class="details" id="attrDetails"><!-- explainers rendered by JS --></div>
+        </section>
 
         <div class="compliance">
             <p><strong>Nothing on this page constitutes an offer to sell or a solicitation of an offer to buy any security.</strong> Any offer is made solely to verified accredited investors through definitive offering documents. These are diagnostic statistics computed from a trade record; they are not a forecast and not a promise of any investor's outcome.</p>
@@ -227,26 +317,106 @@
         const dollars = x => (x < 0 ? "−$" : "$") + num0(Math.abs(x));
         const signed = (x, suf, dp) => (x >= 0 ? "+" : "−") + Math.abs(x).toFixed(dp) + suf;
 
+        const pct1 = x => x.toFixed(1) + "%";
         const TESTS = [
             { name: "Statistical Significance", thr: "p < 0.05",
-              res: b => "p = " + b.pValue.toFixed(4), pass: b => b.pValue < 0.05 },
+              res: b => "p = " + b.pValue.toFixed(4), pass: b => b.pValue < 0.05,
+              blurb: "Rules out pure luck as the explanation.",
+              q: "Could this just be luck?",
+              explain: "<p>Every streak of winning trades has two possible explanations: skill, or the particular way randomness happened to shake out this time. The <strong>p-value</strong> puts a number on the second one.</p><p>Think of a coin you suspect is weighted. Flip it 20 times and get 13 heads — a fair coin does that about 13% of the time, not rare enough to be sure. Flip it 200 times and get 130 heads, and a fair coin produces that less than 1 in 1,000 times. <em>Now</em> you're confident the coin is biased.</p>",
+              pass: "100 trades, 65% win rate, winners slightly larger than losers. Computed p = 0.001 — less than a 1-in-1,000 chance this came from a coin flip. The edge is almost certainly real.",
+              fail: "50 trades, 52% win rate, thin edge. Computed p = 0.40 — forty percent of the time, random guessing produces results this good. Nothing proven.",
+              thrNote: "Below 0.05 is the long-standing convention for “statistically significant” — the observed mean has less than a 5% chance of arising under the null.",
+              how: "One-sample t-test of mean per-trade P&L against zero: t = mean ÷ (sd ÷ √n), converted to a two-sided p-value.",
+              quote: "Your strategy might have an edge. Or you might just have gotten lucky. This test is the first firewall.",
+              calc: b => "t = " + b.tStat.toFixed(2) + ", df = " + (b.n - 1) + ", two-sided" },
+
             { name: "Confidence Interval (95%)", thr: "lower bound > $0",
-              res: b => "[" + dollars(b.ciLow) + ", " + dollars(b.ciHigh) + "]", pass: b => b.ciLow > 0 },
+              res: b => "[" + dollars(b.ciLow) + ", " + dollars(b.ciHigh) + "]", pass: b => b.ciLow > 0,
+              blurb: "Profitable even in the worst plausible replay.",
+              q: "If we could replay this period, how bad could the truth be?",
+              explain: "<p>A single average hides a range. The 95% confidence interval is the band the <em>true</em> per-trade edge most plausibly lives in, given the sample.</p><p>We don't ask whether the average is positive — we ask whether the <strong>pessimistic end</strong> of the band is still positive. If even the worst plausible replay makes money, the edge isn't balanced on a knife's edge.</p>",
+              pass: "Mean +$78/trade, interval [+$22, +$134]. Even the bottom of the range is comfortably above zero — profitable in the worst plausible replay.",
+              fail: "Mean +$30/trade, interval [−$15, +$75]. The average looks fine, but the band crosses zero — a losing strategy is still plausible. Not proven.",
+              thrNote: "The 95% interval is mean ± 1.96 standard errors. We require its lower edge to stay above $0.",
+              how: "CI = mean ± 1.96 × (sd ÷ √n), in size-aware dollars per trade.",
+              quote: "An average is a point. The truth is a range. We insist the whole plausible range pays.",
+              calc: b => "mean = " + dollars(b.mean) + "/trade · SE = " + dollars(b.se) + " · CI = mean ± 1.96·SE" },
+
             { name: "Profit Factor", thr: "> 1.50",
               res: b => b.profitFactor == null ? "n/a" : b.profitFactor.toFixed(2),
-              pass: b => b.profitFactor != null && b.profitFactor > 1.50 },
+              pass: b => b.profitFactor != null && b.profitFactor > 1.50,
+              blurb: "Winners dwarf losers by a comfortable margin.",
+              q: "When it wins, does it win enough to matter?",
+              explain: "<p>Win rate alone says nothing about size. A strategy can win 70% of the time and still bleed if the 30% of losses are huge. Profit factor fixes that: total dollars won divided by total dollars lost.</p><p>At 1.0 you break even. At 1.5, every $1 lost is matched by <strong>$1.50 won</strong> — a margin that survives slippage, fees, and a few bad fills.</p>",
+              pass: "Gross won $12,400, gross lost $6,360. Profit factor 1.95 — winners nearly double losers in aggregate.",
+              fail: "Gross won $5,200, gross lost $4,900. Profit factor 1.06 — technically positive, but one bad week erases it.",
+              thrNote: "Above 1.0 is profitable; we require 1.50 so the margin survives real-world frictions.",
+              how: "Gross profit ÷ gross loss across all countable trades (size-aware dollars).",
+              quote: "Winning often is a feeling. Winning big enough is arithmetic.",
+              calc: b => dollars(b.grossProfit) + " won ÷ " + dollars(b.grossLoss) + " lost = " + (b.profitFactor == null ? "n/a" : b.profitFactor.toFixed(2)) },
+
             { name: "Outlier Independence", thr: "> $0 after removing top 3 winners",
-              res: b => dollars(b.netExTop3), pass: b => b.netExTop3 > 0 },
+              res: b => dollars(b.netExTop3), pass: b => b.netExTop3 > 0,
+              blurb: "The edge survives without its three biggest wins.",
+              q: "Is the whole edge just three lucky trades?",
+              explain: "<p>Small samples get flattered by a handful of monster wins. If deleting your three best trades turns the record negative, you don't have an edge — you have <strong>three good days</strong>.</p><p>So we delete them and re-total. What's left is the edge stripped of its luckiest prints.</p>",
+              pass: "Net +$8,900. Remove the top 3 winners and it's still +$5,788. The edge is broad, not carried by outliers.",
+              fail: "Net +$4,200. Remove the top 3 winners and it falls to −$600. Three trades were the entire strategy.",
+              thrNote: "Net P&L recomputed with the three largest winners deleted must remain positive.",
+              how: "Net dollars minus the sum of the three largest winning trades.",
+              quote: "Delete your best three trades. If the edge dies with them, it was never an edge.",
+              calc: b => "net " + dollars(b.net) + " − top 3 winners " + dollars(b.top3Sum) + " = " + dollars(b.netExTop3) },
+
             { name: "R-Expectancy", thr: "> +0.20R",
               res: b => b.rExpectancy == null ? "n/a" : signed(b.rExpectancy, "R", 2),
-              pass: b => b.rExpectancy != null && b.rExpectancy > 0.20 },
+              pass: b => b.rExpectancy != null && b.rExpectancy > 0.20,
+              blurb: "Every dollar of risk returns meaningful profit.",
+              q: "What does each dollar of risk actually return?",
+              explain: "<p>Profit is only meaningful relative to what you risked to get it. R-expectancy measures expected profit per trade in units of the <strong>average loss</strong> — your natural unit of risk.</p><p>+0.30R means that for every dollar put at risk, you expect thirty cents back, on average, every single trade. That is the engine of compounding.</p>",
+              pass: "Expected +$25/trade against an average loss of $78 — that's +0.32R, meaningful return per unit risked.",
+              fail: "Expected +$4/trade against an average loss of $80 — that's +0.05R, positive but too thin to outrun costs and variance.",
+              thrNote: "Expected value per trade divided by the average loss; we require at least +0.20R.",
+              how: "EV per trade ÷ average losing trade (both size-aware dollars).",
+              quote: "Return without risk-adjustment is a number. R-expectancy is the truth behind it.",
+              calc: b => "EV " + dollars(b.ev) + "/trade ÷ avg loss " + dollars(b.avgLoss) + " = " + (b.rExpectancy == null ? "n/a" : signed(b.rExpectancy, "R", 2)) },
+
             { name: "Breakeven Buffer", thr: "> 10 percentage points",
               res: b => b.breakevenBufferPp == null ? "n/a" : signed(b.breakevenBufferPp, " pp", 1),
-              pass: b => b.breakevenBufferPp != null && b.breakevenBufferPp > 10 },
+              pass: b => b.breakevenBufferPp != null && b.breakevenBufferPp > 10,
+              blurb: "Enough cushion above breakeven to survive a regime shift.",
+              q: "How much room is there before the edge disappears?",
+              explain: "<p>Given how big your wins and losses are, there's a minimum win rate you need just to break even. Your actual win rate sits above it — and that gap is your <strong>margin of safety</strong>.</p><p>A regime shift can shave a few points off any win rate. The wider the buffer, the more punishment the edge absorbs before it stops paying.</p>",
+              pass: "Win rate 65%, breakeven 49%. A 16-point cushion — the edge survives a meaningful deterioration.",
+              fail: "Win rate 54%, breakeven 50%. A 4-point cushion — one rough month and you're underwater.",
+              thrNote: "Actual win rate minus the breakeven win rate implied by your payoff ratio.",
+              how: "Win rate − [avgLoss ÷ (avgWin + avgLoss)], in percentage points.",
+              quote: "Every edge erodes. The question is how much erosion it can take and still pay.",
+              calc: b => "win rate " + pct1(b.winRate * 100) + " − breakeven " + pct1(b.breakevenWR * 100) + " = " + (b.breakevenBufferPp == null ? "n/a" : signed(b.breakevenBufferPp, " pp", 1)) },
+
             { name: "Streak Resilience", thr: "≤ 4 consecutive losses",
-              res: b => b.maxLossStreak + " consecutive", pass: b => b.maxLossStreak <= 4 },
+              res: b => b.maxLossStreak + " consecutive", pass: b => b.maxLossStreak <= 4,
+              blurb: "Losing streaks short enough to keep discipline intact.",
+              q: "Will a losing streak break you — or just bruise you?",
+              explain: "<p>Even a real edge loses several in a row eventually; that's variance, not failure. The danger isn't the math — it's the human running it <strong>abandoning the plan mid-streak</strong>.</p><p>So we measure the worst run of consecutive losses the record has actually produced. Short streaks keep discipline — and capital — intact long enough for the edge to reassert.</p>",
+              pass: "Worst losing streak: 3 in a row. Uncomfortable, survivable, and well inside the risk budget.",
+              fail: "Worst losing streak: 9 in a row. Few operators hold the line through nine straight losses — discipline breaks before the edge returns.",
+              thrNote: "The longest observed run of back-to-back losing trades must stay at or below four.",
+              how: "Longest consecutive run of losing trades, in chronological order.",
+              quote: "The edge doesn't break you. The streak that makes you abandon it does.",
+              calc: b => "longest losing run = " + b.maxLossStreak + " · cap = 4" },
+
             { name: "Bootstrap P(profit)", thr: "> 85%",
-              res: b => b.bootstrapPProfit.toFixed(1) + "%", pass: b => b.bootstrapPProfit > 85 }
+              res: b => b.bootstrapPProfit.toFixed(1) + "%", pass: b => b.bootstrapPProfit > 85,
+              blurb: "Wins in almost every reshuffle of its own trades.",
+              q: "If the same trades happened in a different order, would it still work?",
+              explain: "<p>Your record is one particular sequence out of countless equally-valid ones. A <strong>bootstrap</strong> reshuffles your own trades — same trades, drawn at random with replacement — thousands of times, and asks how often the reshuffled record finishes profitable.</p><p>If 99 of 100 reshuffles make money, the result barely depends on luck of sequence. If only 60 do, your profit was riding on order.</p>",
+              pass: "2,000 reshuffles, 1,998 finished positive — 99.9%. The edge is nearly order-independent.",
+              fail: "2,000 reshuffles, 1,300 finished positive — 65%. A third of the time, the same trades in a different order lose money.",
+              thrNote: "Share of seeded bootstrap resamples (2,000 draws) whose total P&L is positive.",
+              how: "Resample n trades with replacement, 2,000 times (seeded for reproducibility); the fraction with positive total.",
+              quote: "Real edges survive a reshuffle. Lucky ones only worked in the order they happened.",
+              calc: b => num0(b.bootstrapProfitable) + " of " + num0(b.bootstrapB) + " reshuffles positive = " + b.bootstrapPProfit.toFixed(1) + "%" }
         ];
 
         const $ = id => document.getElementById(id);
@@ -277,6 +447,7 @@
 
             $("sampleN").textContent = b.n;
             $("lastCalc").textContent = stamp();
+            updateDetails(b);
 
             const banner = $("srcBanner");
             if (label) {
@@ -293,7 +464,77 @@
             render(EkantikParser.battery(ekantikPnl, { seed: 1234 }), null);
         }
 
-        /* ---- load the live Ekantik record ---- */
+        /* ---- radial diagram + per-attribute explainers ---- */
+        function buildAttrs() {
+            const esc = s => String(s);
+            // radial cards (grid-area c1..c8)
+            const grid = $("attrGrid");
+            TESTS.forEach((t, i) => {
+                const n = i + 1, nn = (n < 10 ? "0" : "") + n;
+                const c = document.createElement("div");
+                c.className = "acard"; c.style.gridArea = "c" + n;
+                c.dataset.i = i; c.tabIndex = 0;
+                c.setAttribute("role", "button");
+                c.setAttribute("aria-label", t.name + " — double-click to open");
+                c.innerHTML = '<div class="an">' + nn + '</div><div class="at">' + esc(t.name) + '</div><div class="ab">' + esc(t.blurb) + '</div>';
+                c.addEventListener("dblclick", () => openDetail(i, true));
+                c.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDetail(i, true); } });
+                grid.appendChild(c);
+            });
+            // explainer accordions
+            const wrap = $("attrDetails");
+            wrap.innerHTML = TESTS.map((t, i) => {
+                const n = i + 1;
+                return '<div class="adetail" id="ad-' + n + '" data-i="' + i + '">'
+                    + '<button class="adetail-head" data-i="' + i + '">' + n + '. ' + esc(t.name) + '<span class="chev">+</span></button>'
+                    + '<div class="adetail-body">'
+                    +   '<p class="aq">' + esc(t.q) + '</p>'
+                    +   '<div class="aexplain">' + t.explain + '</div>'
+                    +   '<div class="aex-row">'
+                    +     '<div class="aex pass"><div class="aexh">PASS · REAL EDGE</div><p>' + esc(t.pass) + '</p></div>'
+                    +     '<div class="aex fail"><div class="aexh">FAIL · FRAGILE OR FAKE</div><p>' + esc(t.fail) + '</p></div>'
+                    +   '</div>'
+                    +   '<div class="athr"><span class="athr-l">Threshold</span><b>' + esc(t.thr) + '</b><span class="athr-n">' + esc(t.thrNote) + '</span></div>'
+                    +   '<p class="acur">Current value: <b class="cv"></b> <span class="cvpill"></span></p>'
+                    +   '<div class="acalc"><div class="acalc-h">Calculation on current sample</div><code class="calc"></code></div>'
+                    +   '<details class="ahow"><summary>How it\'s computed</summary><p>' + esc(t.how) + '</p></details>'
+                    +   '<p class="aquote">“' + esc(t.quote) + '”</p>'
+                    + '</div></div>';
+            }).join("");
+            wrap.querySelectorAll(".adetail-head").forEach(h => {
+                h.addEventListener("click", () => toggleDetail(+h.dataset.i));
+            });
+        }
+
+        function toggleDetail(i) {
+            const d = $("ad-" + (i + 1));
+            const open = d.classList.toggle("open");
+            d.querySelector(".chev").textContent = open ? "−" : "+";
+        }
+
+        function openDetail(i, scroll) {
+            const d = $("ad-" + (i + 1));
+            if (!d.classList.contains("open")) toggleDetail(i);
+            // highlight the matching card + panel briefly
+            document.querySelectorAll(".acard").forEach(c => c.classList.toggle("sel", +c.dataset.i === i));
+            document.querySelectorAll(".adetail").forEach(x => x.classList.toggle("sel", x === d));
+            if (scroll) d.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        function updateDetails(b) {
+            TESTS.forEach((t, i) => {
+                const d = $("ad-" + (i + 1)); if (!d) return;
+                const ok = t.pass(b);
+                d.querySelector(".cv").textContent = t.res(b);
+                const pill = d.querySelector(".cvpill");
+                pill.className = "cvpill pill " + (ok ? "pass" : "fail");
+                pill.textContent = ok ? "PASS" : "FAIL";
+                d.querySelector(".calc").textContent = t.calc(b);
+            });
+        }
+
+        /* ---- build the diagram + explainers, then load the live record ---- */
+        buildAttrs();
         fetch("trades.json", { cache: "no-store" })
             .then(r => r.ok ? r.json() : Promise.reject(new Error("trades.json")))
             .then(doc => {
