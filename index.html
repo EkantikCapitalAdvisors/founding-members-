@@ -353,6 +353,27 @@
         .dial-labels .dl p { font-size: 0.85rem; color: var(--slate); margin-top: 0.3rem; }
         .lockstate { display: flex; align-items: center; gap: 0.7rem; justify-content: center; border: 1px dashed var(--hair); border-radius: 8px; padding: 1.1rem; margin-top: 1.8rem; font-family: var(--mono); font-size: 0.8rem; color: var(--slate); }
         .lockstate .lock { color: var(--gold); }
+        /* §04.5 reservation / Kelly calculator — risk-sizing only, no return shown */
+        .calc { border: 1px solid var(--hair); border-radius: 10px; padding: 1.5rem 1.5rem 1.2rem; margin-top: 1.8rem; background: rgba(255,255,255,0.012); }
+        .calc-head { font-family: var(--serif); font-size: 1.12rem; color: var(--ink); line-height: 1.5; margin-bottom: 1.3rem; max-width: 720px; }
+        .calc-row { margin-bottom: 1.2rem; }
+        .calc-row label, .calc-label { display: block; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); margin-bottom: 0.55rem; }
+        .calc-input { display: inline-flex; align-items: center; border: 1px solid var(--hair-cool); border-radius: 7px; background: var(--navy-panel); padding: 0 0.9rem; }
+        .calc-input .cur { font-family: var(--mono); color: var(--gold); font-size: 1rem; }
+        .calc-input input { background: transparent; border: none; outline: none; color: var(--ink); font-family: var(--mono); font-size: 1.15rem; padding: 0.7rem 0.4rem; width: 11ch; }
+        .toggle { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .toggle button { font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.04em; color: var(--slate); background: transparent; border: 1px solid var(--hair-cool); border-radius: 7px; padding: 0.6rem 0.9rem; cursor: pointer; transition: color .15s, border-color .15s, background .15s; }
+        .toggle button:hover { color: var(--ink); border-color: var(--hair); }
+        .toggle button.active { color: var(--navy); background: var(--gold); border-color: var(--gold); font-weight: 600; }
+        .calc-out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; margin-top: 1.6rem; }
+        .calc-out .co { border: 1px solid var(--hair-cool); border-radius: 8px; padding: 0.85rem 0.95rem; }
+        .calc-out .co .k { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate); line-height: 1.4; min-height: 2.5em; }
+        .calc-out .co .v { font-family: var(--display); font-size: 1.5rem; color: var(--ink); margin-top: 0.35rem; }
+        .calc-out .co .v.neg { color: var(--neg); }
+        .calc-empty { display: none; font-family: var(--mono); font-size: 0.78rem; color: var(--slate); margin-top: 1.2rem; }
+        .calc.invalid .calc-out { opacity: 0.32; }
+        .calc.invalid .calc-empty { display: block; }
+        @media (max-width: 760px) { .calc-out { grid-template-columns: 1fr 1fr; } .calc-out .co .k { min-height: 0; } }
         .ring-core { text-align: center; padding: 1.5rem; border: 1px solid var(--hair); border-radius: 8px; background: var(--gold-soft); margin-bottom: 0.5rem; }
         .ring-core .motif { width: 18px; height: 18px; margin: 0 auto 0.5rem; }
         .ring-core .cl { font-family: var(--display); font-size: 1.3rem; color: var(--ink); }
@@ -772,12 +793,39 @@
                 <div class="dl"><div class="nm">Assertive</div><p>more of the edge, deeper drawdown nights</p></div>
             </div>
 
-            <div class="lockstate"><span class="lock">⬚</span> Return &amp; drawdown per setting · <strong style="color:var(--ink)">Verify to view</strong></div>
-
-            <div class="note-box">
-                <div class="t">Why the numbers aren't here</div>
-                <p>The exact return and drawdown for each setting — including the live setting that produced this record, and the settings most members choose — are in the verified briefing. We don't publish them here, by choice: specific return figures belong in offering documents shown only to verified investors, not on an open page.</p>
+            <div class="calc figure-numeric" id="sizeCalc">
+                <div class="calc-head">Set the dial yourself. This sizes <strong>risk</strong>, not reward — contracts and drawdown, never a projected return.</div>
+                <div class="calc-row">
+                    <label for="calcCapital">Risk capital — the slice that trades</label>
+                    <div class="calc-input"><span class="cur">$</span><input type="number" id="calcCapital" value="250000" min="0" step="1000" inputmode="numeric"></div>
+                </div>
+                <div class="calc-row">
+                    <span class="calc-label">Dial — fraction of full Kelly</span>
+                    <div class="toggle" id="calcKelly" role="group" aria-label="Kelly fraction">
+                        <button type="button" data-frac="0.05">1/20 · cautious</button>
+                        <button type="button" data-frac="0.10" class="active">1/10 · recommended</button>
+                        <button type="button" data-frac="0.25">1/4 · live setting</button>
+                        <button type="button" data-frac="0.50">1/2 · assertive</button>
+                    </div>
+                </div>
+                <div class="calc-out">
+                    <div class="co"><div class="k">ES contracts</div><div class="v" id="oN">—</div></div>
+                    <div class="co"><div class="k">Share of the 500-contract ceiling</div><div class="v" id="oCap">—</div></div>
+                    <div class="co"><div class="k">Risk per trade, at this dial</div><div class="v" id="oRiskPct">—</div></div>
+                    <div class="co"><div class="k">Your 1R, in dollars</div><div class="v" id="oOneR">—</div></div>
+                    <div class="co"><div class="k">Worst drawdown already lived, in R</div><div class="v" id="oDdR">—</div></div>
+                    <div class="co"><div class="k">That drawdown, in dollars</div><div class="v neg" id="oDd$">—</div></div>
+                    <div class="co"><div class="k">…as % of your risk capital</div><div class="v neg" id="oDdPct">—</div></div>
+                    <div class="co"><div class="k">Trades to recover (lived)</div><div class="v" id="oRecover">—</div></div>
+                    <div class="co"><div class="k">Full-Kelly fraction (a ceiling, not a setting)</div><div class="v" id="oFstar">—</div></div>
+                </div>
+                <p class="calc-empty" id="calcEmpty">Enter a risk-capital figure above to size the dial.</p>
             </div>
+            <div class="figure-fallback note-box">
+                <div class="t">The calculator needs the live record</div>
+                <p>The dial calculator computes from this page's own live trade log. With the record unavailable it stays hidden — open the <a href="dashboard.html">live dashboard</a> to see every fill, and the exact sizing per setting is walked through in the verified briefing.</p>
+            </div>
+            <p class="compliance-bar figure-numeric">This tool sizes risk, not reward. It maps a chosen fraction of the Kelly criterion to a contract count and the drawdown that sizing has historically required — it does not project, forecast, or imply any return or profit, and none is shown. Figures derive from a young, pre-asymptotic live record; the Kelly fraction is computed from a payoff ratio and win frequency that will vary, and full Kelly is shown only as a mathematical ceiling no disciplined operator runs. Drawdown is scaled from the worst loss the record has <em>already lived</em>, not a maximum — deeper is possible and capital can be impaired (§06). Nothing here is an offer or solicitation; offers are made only through definitive documents to verified investors.
 
             <p class="band-close">The investor picks the dial. The operator runs the engine. The drawdown you are willing to sit through is the only real input you bring.</p>
         </div>
@@ -914,22 +962,24 @@
         <div class="wrap">
             <span class="kicker"><span class="num">07</span> · Structural scarcity</span>
             <h2>Real scarcity. Nothing invented.</h2>
-            <p class="lede">No countdowns, no "act now," no manufactured spots remaining. Two caps, both structural.</p>
+            <p class="lede">No countdowns, no "act now," no manufactured spots remaining. Two caps, both structural — and one of them is a hard number.</p>
 
             <div class="caps">
                 <div class="cap">
-                    <div class="lab">Cap one — strategy</div>
-                    <div class="big">Capacity ceiling</div>
-                    <p>The edge degrades past a size the market can absorb. The strategy has a structural ceiling on assets — stated honestly, behind the gate.</p>
+                    <div class="lab">Cap one — strategy capacity</div>
+                    <div class="big">500 ES contracts</div>
+                    <p>The edge degrades past the size the market can absorb. The structural ceiling is roughly 500 ES-equivalent contracts of working exposure — a fixed property of the strategy, not a sales lever. Founding capital reserves a share of that ceiling the way you reserve compute: AWS Reserved Instances, OpenAI Provisioned Throughput, a Medallion-style closed book. The capacity is finite and stated; what you pay for it is confirmed in the briefing.</p>
                 </div>
                 <div class="cap">
                     <div class="lab">Cap two — cohort</div>
                     <div class="big">Founding seats</div>
-                    <p>A specific, small number of founding seats with a genuine closing condition — closing at a set member count or committed-AUM threshold, whichever comes first.</p>
+                    <p>A specific, small number of founding seats with a genuine closing condition — closing at a set member count or committed-AUM threshold, whichever comes first. Those exact thresholds stay behind the gate.</p>
                 </div>
             </div>
 
-            <p class="closing-line">"The founding cohort closes at a fixed number of members or a committed-capital threshold, whichever comes first. After that, terms reset to standard. This is not a promotion; it is the structure." <span class="muted" style="font-size:1rem;">The specific caps are confirmed in the briefing.</span></p>
+            <p class="closing-line">"Capacity is roughly 500 ES-equivalent contracts. Founding members reserve a slice of a finite book before it fills — provisioned throughput, not a promotion. After the cohort closes at a fixed member or committed-capital threshold, terms reset to standard. This is the structure, not a countdown." <span class="muted" style="font-size:1rem;">The cohort thresholds are confirmed in the briefing.</span></p>
+
+            <p class="compliance-bar">The 500-contract figure is an operational capacity limit on the strategy — the size the market can absorb before the edge degrades — not a performance claim, a target, or a statement of assets under management. Member-count and committed-capital thresholds are disclosed only in the verified briefing. Nothing here is an offer or solicitation.</p>
         </div>
     </section>
 
@@ -1150,6 +1200,45 @@
                     set("r6Dd", "−" + usdPlain(full["maxDrawdown$"]));
                     set("r6Rec", full.recovery == null ? "—" : full.recovery);
                     set("r6Count", full.tradeCount);
+
+                    // §04.5 — interactive risk-sizing dial (sizing + risk only, no return)
+                    wireCalc(full);
+
+                    function wireCalc(stats) {
+                        const box = document.getElementById("sizeCalc");
+                        const capEl = document.getElementById("calcCapital");
+                        if (!box || !capEl) return;
+                        const pct1 = x => (x == null ? "—" : (x * 100).toFixed(1) + "%");
+                        let frac = 0.10;
+                        function recompute() {
+                            const cap = parseFloat(capEl.value);
+                            const s = EkantikParser.sizing(stats, { riskCapital: cap, kellyFraction: frac });
+                            box.classList.toggle("invalid", !s.valid || s.N === 0);
+                            set("oN", s.valid ? s.N : "—");
+                            set("oCap", s.valid ? s.N + " of " + s.capContracts + " · " + pct1(s.capShare) : "—");
+                            set("oRiskPct", s.valid ? pct1(s.riskPct) : "—");
+                            set("oOneR", s.valid ? usdPlain(s.oneR_dollars) : "—");
+                            set("oDdR", s.valid && s.ddR != null ? s.ddR.toFixed(1) + "R" : "—");
+                            set("oDd$", s.valid && s.drawdown_dollars ? "−" + usdPlain(s.drawdown_dollars) : "—");
+                            set("oDdPct", s.valid ? pct1(s.drawdown_pct) : "—");
+                            set("oRecover", s.valid && s.recoveryTrades != null ? s.recoveryTrades : "—");
+                            set("oFstar", s.fStar != null ? pct1(s.fStar) : "—");
+                            const empty = document.getElementById("calcEmpty");
+                            if (empty) empty.textContent = (s.valid && s.N === 0)
+                                ? "At this capital and dial, sizing rounds below a single contract — turn the dial up or add capital."
+                                : "Enter a risk-capital figure above to size the dial.";
+                        }
+                        capEl.addEventListener("input", recompute);
+                        box.querySelectorAll("#calcKelly button").forEach(b => {
+                            b.addEventListener("click", () => {
+                                box.querySelectorAll("#calcKelly button").forEach(x => x.classList.remove("active"));
+                                b.classList.add("active");
+                                frac = parseFloat(b.getAttribute("data-frac"));
+                                recompute();
+                            });
+                        });
+                        recompute();
+                    }
                 })
                 .catch(() => {
                     /* TASK 1: deterministic degrade — never a fabricated number,
