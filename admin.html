@@ -120,6 +120,16 @@
                 <span id="exportMsg" class="msg"></span>
             </div>
             <p class="hint">Commit the downloaded <span class="mono">trades.json</span> to the repo root. The live page serves whatever is committed there.</p>
+
+            <h2 style="margin-top:1.6rem;">4 · Publish to live site</h2>
+            <p class="hint">Commits <span class="mono">trades.json</span> straight to the repo through the publish service; GitHub Pages then redeploys in ~1 min. The service holds the GitHub token server-side — it is never in this page. Set the endpoint once (saved in this browser) and enter the publish password each time.</p>
+            <div class="row" style="margin-top:.7rem;">
+                <input id="pubEndpoint" type="url" placeholder="https://ekantik-publish.<you>.workers.dev" style="flex:1;min-width:280px;background:var(--navy-deep);color:var(--ink);border:1px solid var(--hair-cool);border-radius:5px;padding:.55rem .7rem;font-family:var(--mono);font-size:.74rem;">
+                <input id="pubPassword" type="password" placeholder="publish password" autocomplete="off" style="background:var(--navy-deep);color:var(--ink);border:1px solid var(--hair-cool);border-radius:5px;padding:.55rem .7rem;font-family:var(--mono);font-size:.74rem;">
+                <button class="btn primary" id="publishBtn">Publish to live</button>
+                <span id="publishMsg" class="msg"></span>
+            </div>
+            <p class="hint" style="margin-top:.5rem;">This goes live. Records currently excluded keep their data but are marked <span class="mono">excluded</span> and drop out of the public counts.</p>
         </section>
     </div>
 
@@ -152,7 +162,9 @@
         $("loadCurrent").addEventListener("click", function(){
             fetch("trades.json",{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("not found"); return r.json(); })
             .then(function(doc){
-                META = { schema:doc.schema, source:doc.source, instrument:doc.instrument, point_value:doc.point_value, working_unit:doc.working_unit, note:doc.note };
+                // preserve EVERY top-level field (cost_per_contract, cost_basis, and
+                // any future metadata) — never cherry-pick, or export silently drops them.
+                META = {}; Object.keys(doc).forEach(function(k){ if(k!=="trades") META[k]=doc[k]; });
                 ROWS = (doc.trades||doc).map(function(t){ t._incl = (t.status!=="no-trade" && t.status!=="unresolved"); return t; });
                 renderRows(); renderStats();
                 $("reviewCard").style.display=""; $("exportCard").style.display="";
@@ -166,6 +178,8 @@
                 instrument:"ES / MES index futures (points)",
                 point_value:50,
                 working_unit:5000,
+                cost_per_contract:6,
+                cost_basis:"Logged points are gross realized fills; cost_per_contract is a round-trip $ per ES-equivalent contract (Tradovate ES all-in ~$6) used to show net figures. Set to 0 for gross only.",
                 note:"One continuous, operator-executed record. point_value = $/point (50 = one ES contract); working_unit = $ base for drawdown %. 'review:true' marks records needing confirmation; counts exclude no-trade and unresolved records." };
         }
 
@@ -238,6 +252,40 @@
         $("saveLocal").addEventListener("click", function(){
             localStorage.setItem("ekantik_trades", buildJSON());
             flash("exportMsg","Saved to this browser (localStorage).","ok");
+        });
+
+        // Remember the publish endpoint (NOT the password) in this browser.
+        $("pubEndpoint").value = localStorage.getItem("ekantik_pub_endpoint") || "";
+        $("pubEndpoint").addEventListener("change", function(){
+            localStorage.setItem("ekantik_pub_endpoint", $("pubEndpoint").value.trim());
+        });
+        $("publishBtn").addEventListener("click", function(){
+            var endpoint = $("pubEndpoint").value.trim();
+            var password = $("pubPassword").value;
+            if(!endpoint){ flash("publishMsg","Set the publish endpoint URL first.","err"); return; }
+            if(!password){ flash("publishMsg","Enter the publish password.","err"); return; }
+            var content = buildJSON();
+            var count = ROWS.filter(function(t){ return t._incl; }).length;
+            if(!confirm("Publish "+ROWS.length+" records ("+count+" included) to the LIVE site now?")) return;
+            var btn = $("publishBtn"); btn.disabled = true;
+            flash("publishMsg","Publishing…","");
+            fetch(endpoint, {
+                method:"POST",
+                headers:{ "Content-Type":"application/json" },
+                body: JSON.stringify({ password:password, content:content,
+                    message:"Update trades.json ("+count+" included of "+ROWS.length+") via admin publish" })
+            })
+            .then(function(r){ return r.json().then(function(j){ return { ok:r.ok, j:j }; }); })
+            .then(function(res){
+                if(res.ok && res.j.ok){
+                    flash("publishMsg","Published — Pages will redeploy shortly.","ok");
+                    if(res.j.commit){ var m=$("publishMsg"); m.innerHTML += ' <a href="'+res.j.commit+'" target="_blank" rel="noopener">view commit →</a>'; }
+                } else {
+                    flash("publishMsg","Failed: "+((res.j&&res.j.error)||("HTTP "+(res.j&&res.j.status||"?"))),"err");
+                }
+            })
+            .catch(function(e){ flash("publishMsg","Network error: "+e.message,"err"); })
+            .then(function(){ btn.disabled = false; });
         });
 
         function buildJSON(){
