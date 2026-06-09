@@ -5,8 +5,8 @@
   "instrument": "ES / MES index futures (points)",
   "point_value": 50,
   "working_unit": 5000,
-  "cost_per_contract": 25,
-  "cost_basis": "Logged points are GROSS (raw price differences). 'cost_per_contract' is an editable round-trip cost assumption in $ per ES-equivalent contract (commission + slippage) used only to show a net-of-cost edge alongside the gross figure; ~$25 reflects ES commission plus ~0.4pt slippage and should be set to the operator's actual all-in. Set to 0 to show gross only.",
+  "cost_per_contract": 6,
+  "cost_basis": "Logged points are GROSS realized fills (the recorded result already reflects actual exit prices / slippage, e.g. F1 planned 39pt but realized 25pt). The only cost NOT in the data is broker commission + exchange/clearing/NFA fees. 'cost_per_contract' models that as a round-trip $ per ES-equivalent contract: $6 reflects Tradovate's retail all-in for ES (~$1.29 commission + ~$1.48 exchange/clearing/NFA per side; paid plans run ~$4). Micro (MES) trades are charged proportionally to position dollar-size, which is slightly conservative since MES all-in is only ~$1.20 round-trip. Do NOT add a separate slippage term — it would double-count fills already in the points. Set to the operator's actual plan, or 0 to show gross only.",
   "note": "One continuous, operator-executed record \u2014 every trade from February 2026 to the present, in order. 'review:true' marks records needing human confirmation (half-size / parenthetical results, unresolved, or no-trade). Counts in the dashboard exclude no-trade and unresolved records. The F/S labels are the operator's own sequence tags and carry no separate-track-record meaning.",
   "trades": [
     {
