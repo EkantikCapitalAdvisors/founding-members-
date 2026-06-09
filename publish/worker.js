@@ -21,8 +21,9 @@
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
+    const allowAny = !env.ALLOWED_ORIGIN || env.ALLOWED_ORIGIN === "*";
     const cors = {
-      "Access-Control-Allow-Origin": env.ALLOWED_ORIGIN || "*",
+      "Access-Control-Allow-Origin": allowAny ? "*" : env.ALLOWED_ORIGIN,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Vary": "Origin",
@@ -30,8 +31,9 @@ export default {
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
     if (request.method !== "POST") return json({ error: "POST only" }, 405, cors);
 
-    // Defence-in-depth: the password is the real auth; origin is a secondary gate.
-    if (env.ALLOWED_ORIGIN && origin && origin !== env.ALLOWED_ORIGIN)
+    // Defence-in-depth: the password is the real auth; origin is a secondary gate
+    // (skipped entirely when ALLOWED_ORIGIN is "*" / unset).
+    if (!allowAny && origin && origin !== env.ALLOWED_ORIGIN)
       return json({ error: "origin not allowed" }, 403, cors);
 
     let body;
