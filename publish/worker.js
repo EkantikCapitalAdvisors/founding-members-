@@ -56,7 +56,8 @@ export default {
     if (!repo || !env.GITHUB_TOKEN) return json({ error: "server missing GH_REPO or GITHUB_TOKEN" }, 500, cors);
     const api = `https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}`;
     const gh = {
-      "Authorization": `Bearer ${env.GITHUB_TOKEN}`,
+      // trim() guards against a trailing newline/space slipping into the secret
+      "Authorization": `Bearer ${String(env.GITHUB_TOKEN).trim()}`,
       "Accept": "application/vnd.github+json",
       "User-Agent": "ekantik-publish-worker",
       "X-GitHub-Api-Version": "2022-11-28",

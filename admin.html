@@ -281,7 +281,9 @@
                     flash("publishMsg","Published — Pages will redeploy shortly.","ok");
                     if(res.j.commit){ var m=$("publishMsg"); m.innerHTML += ' <a href="'+res.j.commit+'" target="_blank" rel="noopener">view commit →</a>'; }
                 } else {
-                    flash("publishMsg","Failed: "+((res.j&&res.j.error)||("HTTP "+(res.j&&res.j.status||"?"))),"err");
+                    var j = res.j || {};
+                    var msg = (j.error||"failed") + (j.status?(" [github "+j.status+"]"):"") + (j.detail?(" — "+String(j.detail).slice(0,200)):"");
+                    flash("publishMsg","Failed: "+msg,"err");
                 }
             })
             .catch(function(e){ flash("publishMsg","Network error: "+e.message,"err"); })
