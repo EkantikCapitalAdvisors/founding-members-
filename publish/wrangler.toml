@@ -1,0 +1,12 @@
+name = "ekantik-publish"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Safe-to-commit config. SECRETS are NOT here — set them with:
+#   wrangler secret put GITHUB_TOKEN
+#   wrangler secret put ADMIN_PASSWORD
+[vars]
+GH_REPO = "EkantikCapitalAdvisors/founding-members-"
+GH_BRANCH = "main"
+GH_PATH = "trades.json"
+ALLOWED_ORIGIN = "https://founding.ekantikcapital.com"
