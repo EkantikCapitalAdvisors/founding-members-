@@ -5,6 +5,8 @@
   "instrument": "ES / MES index futures (points)",
   "point_value": 50,
   "working_unit": 5000,
+  "cost_per_contract": 25,
+  "cost_basis": "Logged points are GROSS (raw price differences). 'cost_per_contract' is an editable round-trip cost assumption in $ per ES-equivalent contract (commission + slippage) used only to show a net-of-cost edge alongside the gross figure; ~$25 reflects ES commission plus ~0.4pt slippage and should be set to the operator's actual all-in. Set to 0 to show gross only.",
   "note": "One continuous, operator-executed record \u2014 every trade from February 2026 to the present, in order. 'review:true' marks records needing human confirmation (half-size / parenthetical results, unresolved, or no-trade). Counts in the dashboard exclude no-trade and unresolved records. The F/S labels are the operator's own sequence tags and carry no separate-track-record meaning.",
   "trades": [
     {

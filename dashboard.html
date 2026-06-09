@@ -140,7 +140,7 @@
 
     <script src="parser.js"></script>
     <script>
-        var TRADES = [], DOC = null, WINDOW = "all", PV = 50, WU = 5000;
+        var TRADES = [], DOC = null, WINDOW = "all", PV = 50, WU = 5000, COST = null;
         var WINDOWS = [["7d","7d"],["30d","30d"],["90d","90d"],["mtd","MTD"],["ytd","YTD"],["all","All time"]];
 
         fetch("trades.json", { cache: "no-store" })
@@ -150,6 +150,7 @@
                 TRADES = doc.trades || doc; // tolerate bare array
                 if (doc.point_value != null) PV = doc.point_value;
                 if (doc.working_unit != null) WU = doc.working_unit;
+                if (doc.cost_per_contract != null) COST = doc.cost_per_contract;
                 renderMeta();
                 render();
             })
@@ -177,8 +178,8 @@
 
         var chart = null, monthlyChart = null;
         function render(){
-            var sWin = EkantikParser.computeStats(TRADES, { window: WINDOW, pointValue: PV, workingUnit: WU });
-            var sAll = EkantikParser.computeStats(TRADES, { pointValue: PV, workingUnit: WU });
+            var sWin = EkantikParser.computeStats(TRADES, { window: WINDOW, pointValue: PV, workingUnit: WU, costPerContract: COST });
+            var sAll = EkantikParser.computeStats(TRADES, { pointValue: PV, workingUnit: WU, costPerContract: COST });
             // Annualised / cadence metrics are full-record context — like the chart and
             // durability test — never window-scoped. Extrapolating a 7-day span (a few
             // days of trades) to a yearly rate produces nonsense, so pin them to all-time.
@@ -249,8 +250,10 @@
                   d: everBelow
                      ? "Rolling-" + W + " expectancy reached the $0 stand-down line — the edge would have stood down."
                      : "Rolling-" + W + " per-trade expectancy never reached the $0 stand-down line (lowest window " + dollar(minExp) + "/trade · current " + dollar(curExp) + "/trade)." },
-                { status: (ddPct == null || ddPct < 40) ? "pass" : "warn", t: "Drawdown · within the working unit",
-                  d: "Deepest drawdown −$" + fmtInt(s["maxDrawdown$"]) + " (" + (ddPct == null ? "—" : ddPct) + "% of $" + fmtInt(s.workingUnit) + "). The Sit-Out exists so a streak can't compound past it." },
+                { status: (ddPct == null || ddPct < 40) ? "pass" : "warn", t: "Drawdown · depth and duration",
+                  d: "Deepest drawdown −$" + fmtInt(s["maxDrawdown$"]) + " (" + (ddPct == null ? "—" : ddPct) + "% of $" + fmtInt(s.workingUnit) + ")"
+                     + (s.maxDDDuration == null ? ", not yet recovered" : ", " + s.maxDDDuration + " trades peak-to-recovery")
+                     + "; longest stretch below a prior high " + (s.longestUnderwater||0) + " trades. The Sit-Out exists so a streak can't compound past it." },
                 { status: "pass", t: "Loss streak · no compounding spiral",
                   d: "Worst run " + s.maxLossStreak + " in a row" + (s.recovery != null ? ", recovered to peak in " + s.recovery + " trades" : "") + ". No catastrophic streak." },
                 { status: unresolved === 0 ? "pass" : "warn", t: "Record integrity · every result logged",
@@ -295,12 +298,29 @@
 
         function kpiHTML(s){
             var netCls = s["net$"]>0?"pos":s["net$"]<0?"neg":"";
+            var sgnR = function(x){ return (x>0?"+":"")+x.toFixed(2)+"R"; };
+            var rGross = s.rExpectancy==null ? "—" : sgnR(s.rExpectancy);
+            var rNet   = s.rExpectancyNet==null ? null : sgnR(s.rExpectancyNet);
+            // R-expectancy sub: it runs on the stop-logged subsample, not the full record.
+            var rSub = "gross · "+(s.rSampleN||0)+" of "+s.tradeCount+" trades w/ a logged stop"
+                     + (rNet!=null ? " · net "+rNet+" after $"+s.costPerContract+"/ct costs" : "");
+            var evSub = rNet!=null && s.evNet$!=null
+                     ? "gross · net "+dollar(s.evNet$)+" after costs"
+                     : "net "+dollar(s["net$"])+" over window";
+            var ddDurSub = "peak→recovery of the deepest drawdown"
+                     + (s.maxDDToTrough!=null ? " ("+s.maxDDToTrough+" down · "+(s.maxDDRecover==null?"not yet":s.maxDDRecover+" back")+")" : "");
             return '<div class="kpis">' +
-                kpi("Win rate", (s.winRate*100).toFixed(1)+"%", "", s.wins+" W · "+s.losses+" L") +
+                kpi("Win rate", (s.winRate*100).toFixed(1)+"%", "", s.wins+" W · "+s.losses+" L of "+s.tradeCount) +
                 kpi("Profit factor", s.profitFactor==null?"—":s.profitFactor.toFixed(2), "", "gross profit / gross loss") +
-                kpi("R-expectancy", s.rExpectancy==null?"—":(s.rExpectancy>0?"+":"")+s.rExpectancy.toFixed(2)+"R", "gold", "size-neutral per-trade") +
-                kpi("Annual R", s.annualR==null?"—":(s.annualR>0?"+":"")+s.annualR+"R", "gold", "~"+(s.annualTrades||"—")+" trades/yr · full-record rate, extrapolated") +
-                kpi("EV / trade", dollar(s.ev$), netCls, "net "+dollar(s["net$"])+" over window") +
+                kpi("EV / trade", dollar(s.ev$), netCls, evSub) +
+                kpi("R-expectancy", rGross, "gold", rSub) +
+                kpi("Annual R", s.annualR==null?"—":(s.annualR>0?"+":"")+s.annualR+"R", "gold", "~"+(s.annualTrades||"—")+" trades/yr · extrapolated, gross") +
+                '</div><div class="kpis">' +
+                kpi("Avg winner (R)", s.avgWinR==null?"—":sgnR(s.avgWinR), "pos", (s.rWins||0)+" winners w/ a stop") +
+                kpi("Avg loser (R)", s.avgLossR==null?"—":sgnR(s.avgLossR), "neg", (s.rLosses||0)+" losers w/ a stop") +
+                kpi("Payoff (R)", s.payoffR==null?"—":s.payoffR.toFixed(2)+"×", "gold", "avg winner ÷ avg loser, in R") +
+                kpi("R-model win rate", s.rWinRate==null?"—":(s.rWinRate*100).toFixed(1)+"%", "", "within the "+(s.rSampleN||0)+"-trade stop subsample") +
+                kpi("Avg risk / trade", s["avgRisk$"]==null?"—":dollarPlain(s["avgRisk$"]), "", "1R · per-trade dollar risk") +
                 '</div><div class="kpis">' +
                 kpi("Avg win", "+"+dollarPlain(s["avgWin$"]), "pos", s.wins+" winning trades") +
                 kpi("Avg loss", "−"+dollarPlain(s["avgLoss$"]), "neg", s.losses+" losing trades") +
@@ -309,10 +329,12 @@
                 kpi("Max drawdown", "−"+dollarPlain(s["maxDrawdown$"]), "neg", (s.maxDrawdownPct==null?"":s.maxDrawdownPct+"% of ")+dollarPlain(s.workingUnit)+" working unit") +
                 '</div><div class="kpis">' +
                 kpi("Trades / month", s.tradesPerMonth==null?"—":s.tradesPerMonth.toFixed(1), "", "full-record rate over "+(s.months==null?"—":s.months.toFixed(1))+" months") +
-                kpi("Recovery", s.recovery==null?"not yet":s.recovery+" trades", "", "trades to restore peak") +
-                kpi("Loss streak (max)", s.maxLossStreak+" in a row", "", "longest consecutive losses") +
-                kpi("Avg risk / trade", s["avgRisk$"]==null?"—":dollarPlain(s["avgRisk$"]), "", "1R · per-trade dollar risk") +
-                '</div>';
+                kpi("Drawdown duration", s.maxDDDuration==null?"not yet":s.maxDDDuration+" trades", "", ddDurSub) +
+                kpi("Longest underwater", (s.longestUnderwater||0)+" trades", "", "longest stretch below a prior high") +
+                kpi("Loss streak (max)", s.maxLossStreak+" in a row", "", "observed · expected ~"+(s.expMaxLossStreak==null?"—":s.expMaxLossStreak)+" at this win rate") +
+                kpi("Avg cost / trade", s.avgCost$==null?"n/a":"−"+dollarPlain(s.avgCost$), "", s.avgCost$==null?"set cost_per_contract to model net":"modeled $"+s.costPerContract+"/contract round-trip") +
+                '</div>' +
+                '<p class="note" style="margin-top:1rem;">Two figures use different samples by necessity, so they are labelled rather than blended: <b>win rate, EV and profit factor</b> are computed over all '+s.tradeCount+' win/loss trades; <b>R-multiples</b> (R-expectancy, avg winner/loser in R, payoff) are defined only for the '+(s.rSampleN||0)+' trades carrying a usable logged stop — '+(s.rUncovered||0)+' have none and are excluded from the R-model, which is why its in-sample win rate ('+(s.rWinRate==null?"—":(s.rWinRate*100).toFixed(1)+"%")+') sits below the headline. Logged points are <b>gross</b>; net figures subtract a modeled '+(s.costPerContract==null?"$0":"$"+s.costPerContract)+'/contract round-trip (editable in trades.json). Size risk to the <b>net</b> figure and to the drawdown, not to the annualised number.</p>';
         }
         function kpi(lab,val,cls,sub){
             return '<div class="kpi"><div class="lab">'+lab+'</div><div class="val '+cls+'">'+val+'</div><div class="sub">'+sub+'</div></div>';

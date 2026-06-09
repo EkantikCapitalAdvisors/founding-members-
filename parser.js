@@ -233,20 +233,48 @@
 
     // R model: per-trade risk = |entry - stop| in points (guard against typos).
     // R-expectancy is size-neutral (points/riskPts); avg risk $ is size-aware.
-    var riskList = [], risk$List = [], rMults = [];
+    // IMPORTANT: R-multiples are only defined for trades with a usable logged
+    // stop, so the R-model runs on a SUBSAMPLE of the win/loss record. We track
+    // winners and losers in R separately, plus the subsample's own win rate, so
+    // the figure is internally auditable (expectancy = pR·avgWinR + (1−pR)·avgLossR)
+    // and never silently conflated with the full-record win rate.
+    var costPerContract = opts.costPerContract != null ? opts.costPerContract : null; // round-trip $ per ES-equivalent
+    var riskList = [], risk$List = [], rMults = [], rWinMults = [], rLossMults = [], rCostMults = [];
+    var cost$List = [];   // modeled cost per win/loss trade, size-aware (for net EV$)
     ordered.forEach(function (t) {
+      var isWL = (t.status === "win" || t.status === "loss");
+      var dpp = dollarPerPoint(t.size, pv);
+      if (isWL && costPerContract != null) cost$List.push(costPerContract * (dpp / pv));
       if (t.entry != null && t.stop != null) {
         var rp = Math.abs(t.entry - t.stop);
         if (rp > 0 && rp <= maxRiskPts) {
           riskList.push(rp);
-          risk$List.push(rp * dollarPerPoint(t.size, pv));
-          if (t.status === "win" || t.status === "loss") rMults.push(t.points / rp);
+          risk$List.push(rp * dpp);
+          if (isWL) {
+            var rm = t.points / rp;
+            rMults.push(rm);
+            if (t.status === "win") rWinMults.push(rm); else rLossMults.push(rm);
+            // cost in R is size-independent: costPerContract*(dpp/pv) / (rp*dpp) = costPerContract/(pv*rp)
+            if (costPerContract != null) rCostMults.push(costPerContract / (pv * rp));
+          }
         }
       }
     });
     var avgRiskPts = riskList.length ? mean(riskList) : null;
     var avgRisk$ = risk$List.length ? mean(risk$List) : null;
     var rExpectancy = rMults.length ? mean(rMults) : null;
+    var rSampleN = rMults.length;                                  // win/loss trades with a usable stop
+    var rWins = rWinMults.length, rLosses = rLossMults.length;
+    var rWinRate = rSampleN ? rWins / rSampleN : null;             // win rate WITHIN the R subsample
+    var avgWinR = rWins ? mean(rWinMults) : null;                  // > 0
+    var avgLossR = rLosses ? mean(rLossMults) : null;              // < 0 (loss points are negative)
+    var payoffR = (avgWinR != null && avgLossR != null && avgLossR !== 0)
+      ? avgWinR / Math.abs(avgLossR) : null;
+    var rUncovered = wl - rSampleN;                                // win/loss trades with no usable stop
+    // Net-of-cost views (only when a cost assumption is supplied)
+    var avgCostR = rCostMults.length ? mean(rCostMults) : null;
+    var rExpectancyNet = (rExpectancy != null && avgCostR != null) ? rExpectancy - avgCostR : null;
+    var avgCost$ = cost$List.length ? mean(cost$List) : null;
 
     // Annualised R + monthly trade rate from the realised rate over the window's span.
     var span = spanDays(ordered);
@@ -256,6 +284,17 @@
 
     var ddPts = maxDD(equity, "cum");
     var dd$ = maxDD(equity, "cum$");
+    // Full drawdown profile (size-aware $): depth, the run down to the trough,
+    // trades to recover, total underwater span, and the longest time the curve
+    // spent below a prior high anywhere in the record. Duration matters for
+    // sizing as much as depth — a shallow-but-long drawdown still tests nerve.
+    var ddProf = drawdownProfile(equity, "cum$");
+    var longestUW = longestUnderwater(equity, "cum$");
+    // Expected longest losing run for this sample size & loss rate — a sanity
+    // check on the observed streak (Schilling's approximation).
+    var lossRate = wl ? losses.length / wl : 0;
+    var expMaxLossStreak = (wl > 0 && lossRate > 0 && lossRate < 1)
+      ? Math.round(Math.log(wl * (1 - lossRate)) / Math.log(1 / lossRate)) : null;
 
     return {
       // counts
@@ -276,7 +315,13 @@
       best$: round(best$), worst$: round(worst$),
       maxDrawdown$: round(dd$),
       maxDrawdownPct: wu ? round(dd$ / wu * 1000) / 10 : null,   // % of working unit
+      maxDDToTrough: ddProf.toTrough,        // trades from prior peak down to the trough
+      maxDDRecover: ddProf.toRecover,        // trades from trough back to the prior peak (null = not yet)
+      maxDDDuration: ddProf.duration,        // total trades underwater for the deepest drawdown
+      longestUnderwater: longestUW,          // longest stretch below any prior high, in trades
       avgRisk$: avgRisk$ != null ? round(avgRisk$) : null,
+      avgCost$: avgCost$ != null ? round(avgCost$) : null,
+      evNet$: (avgCost$ != null && wl) ? round(net$ / wl - avgCost$) : null,
       // points (reference / size-neutral)
       grossProfit: round(gp), grossLoss: round(gl), net: round(net),
       expectancy: wl ? round(net / wl) : 0,             // points per trade
@@ -284,15 +329,29 @@
       avgLoss: losses.length ? round(gl / losses.length) : 0,
       best: round(best), worst: round(worst),
       maxDrawdown: round(ddPts),
-      // R-multiples (size-neutral)
+      // R-multiples (size-neutral) — computed ONLY over win/loss trades that
+      // carry a usable logged stop; the subsample (rSampleN) and its own win
+      // rate (rWinRate) are exposed so the figure can't be read against the
+      // full-record win rate. rExpectancy is GROSS; rExpectancyNet subtracts a
+      // supplied round-trip cost assumption (null when none is configured).
       avgRiskPts: avgRiskPts != null ? round(avgRiskPts) : null,
       rExpectancy: rExpectancy != null ? round(rExpectancy) : null,
+      rExpectancyNet: rExpectancyNet != null ? round(rExpectancyNet) : null,
+      avgWinR: avgWinR != null ? round(avgWinR) : null,
+      avgLossR: avgLossR != null ? round(avgLossR) : null,
+      payoffR: payoffR != null ? round(payoffR) : null,
+      rSampleN: rSampleN, rWins: rWins, rLosses: rLosses,
+      rWinRate: rWinRate != null ? round(rWinRate) : null,
+      rUncovered: rUncovered,
+      avgCostR: avgCostR != null ? round(avgCostR) : null,
+      costPerContract: costPerContract,
       annualR: annualR != null ? Math.round(annualR) : null,
       annualTrades: annualTrades != null ? Math.round(annualTrades) : null,
       tradesPerMonth: tradesPerMonth != null ? round(tradesPerMonth) : null,
       months: span > 0 ? round(span / 30.4375) : null,
       // behaviour
       maxLossStreak: maxStreak(ordered, "loss"),
+      expMaxLossStreak: expMaxLossStreak,
       recovery: recoveryTrades(equity, "cum$"),
       spanDays: span,
       // series / equity / durability
@@ -390,6 +449,30 @@
     return null; // not yet recovered
   }
   function maxDD(equity, key){ key = key || "cum"; var peak=-Infinity,dd=0; equity.forEach(function(p){ if(p[key]>peak)peak=p[key]; var d=peak-p[key]; if(d>dd)dd=d; }); return dd; }
+  /* Profile of the single deepest drawdown: depth, the prior-peak index, the
+     trough index, the recovery index, and the three durations (peak→trough,
+     trough→recovery, peak→recovery). Durations are in trades. */
+  function drawdownProfile(equity, key){
+    key = key || "cum";
+    var peak=-Infinity, peakIdx=0, dd=0, troughIdx=0, ddPeakIdx=0;
+    for (var i=0;i<equity.length;i++){ var v=equity[i][key];
+      if(v>peak){peak=v;peakIdx=i;} var d=peak-v;
+      if(d>dd){dd=d;troughIdx=i;ddPeakIdx=peakIdx;} }
+    if (dd<=0) return { depth:0, toTrough:0, toRecover:0, duration:0 };
+    var target=equity[ddPeakIdx][key], recoverIdx=null;
+    for (var j=troughIdx+1;j<equity.length;j++){ if(equity[j][key]>=target){recoverIdx=j;break;} }
+    return { depth:dd, toTrough:troughIdx-ddPeakIdx,
+             toRecover: recoverIdx==null?null:recoverIdx-troughIdx,
+             duration: recoverIdx==null?null:recoverIdx-ddPeakIdx };
+  }
+  /* Longest run (in trades) the curve spent below a prior high anywhere — the
+     worst time-underwater, independent of the deepest drawdown's depth. */
+  function longestUnderwater(equity, key){
+    key = key || "cum"; var peak=-Infinity, peakIdx=0, longest=0;
+    for (var i=0;i<equity.length;i++){ if(equity[i][key]>=peak){peak=equity[i][key];peakIdx=i;}
+      var len=i-peakIdx; if(len>longest)longest=len; }
+    return longest;
+  }
   function sum(a){ return a.reduce(function(s,x){return s+x;},0); }
   function mean(a){ return a.length ? sum(a)/a.length : 0; }
   function round(x){ return Math.round(x*100)/100; }
