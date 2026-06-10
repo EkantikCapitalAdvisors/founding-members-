@@ -1,6 +1,6 @@
 {
   "schema": "ekantik-trades/v1",
-  "generated": "2026-06-10T02:28:03Z",
+  "generated": "2026-06-10T02:42:11Z",
   "source": "Discord #imo-futures-trades export (Feb 02 2026 – May 30 2026)",
   "instrument": "ES / MES index futures (points)",
   "point_value": 50,
@@ -1827,30 +1827,14 @@
       "entry": 7442,
       "stop": 7434,
       "target": null,
-      "points": null,
+      "points": 9,
       "size": "5mes",
       "date": "2026-06-08",
       "time": "2026-06-08T09:24:11",
-      "status": "unresolved",
-      "review": true,
-      "raw": "S24: b 7442 5mes | S24: sl7434",
-      "seq": 114
-    },
-    {
-      "id": "S23",
-      "series": "live",
-      "direction": null,
-      "entry": null,
-      "stop": null,
-      "target": null,
-      "points": 9,
-      "size": "H3",
-      "date": "2026-06-08",
-      "time": "2026-06-08T09:26:37",
       "status": "win",
-      "review": true,
-      "raw": "S23: +9 H3",
-      "seq": 115
+      "review": false,
+      "raw": "S24: b 7442 5mes | S24: sl7434 | S24: +9 H3 (result mislabeled S23 in source)",
+      "seq": 114
     },
     {
       "id": "S25",
@@ -1866,10 +1850,10 @@
       "status": "loss",
       "review": false,
       "raw": "S25: b 7430 5mes | S25: sl7424 | S25: -6 H3",
-      "seq": 116
+      "seq": 115
     },
     {
-      "id": "S25",
+      "id": "S26",
       "series": "live",
       "direction": "long",
       "entry": 7430,
@@ -1882,10 +1866,10 @@
       "status": "loss",
       "review": false,
       "raw": "S25: b 7430 5mes | S25: sl7428 | S25: -2 H3",
-      "seq": 117
+      "seq": 116
     },
     {
-      "id": "S26",
+      "id": "S27",
       "series": "live",
       "direction": "long",
       "entry": 7431,
@@ -1898,10 +1882,10 @@
       "status": "win",
       "review": false,
       "raw": "s26: b 7431 5 mes sl7428 | s26: +1",
-      "seq": 118
+      "seq": 117
     },
     {
-      "id": "S27",
+      "id": "S28",
       "series": "live",
       "direction": "long",
       "entry": 7431,
@@ -1914,10 +1898,10 @@
       "status": "loss",
       "review": false,
       "raw": "s27: b 7431 5 mes sl7428 | s27: -3",
-      "seq": 119
+      "seq": 118
     },
     {
-      "id": "S28",
+      "id": "S29",
       "series": "live",
       "direction": "long",
       "entry": 7449,
@@ -1930,7 +1914,7 @@
       "status": "win",
       "review": false,
       "raw": "s28: b 7449 5mes sl7438 | s28: tp7469 | s28: +20",
-      "seq": 120
+      "seq": 119
     }
   ]
 }
