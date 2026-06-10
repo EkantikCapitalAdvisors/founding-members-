@@ -29,6 +29,28 @@ export default {
       "Vary": "Origin",
     };
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+
+    // Diagnostic: GET /diag?password=… reports the GitHub read status and the
+    // STORED token length (not the token) so a bad/placeholder secret is obvious.
+    // Never commits anything.
+    if (request.method === "GET") {
+      const url = new URL(request.url);
+      if (url.pathname === "/diag") {
+        if (!env.ADMIN_PASSWORD || url.searchParams.get("password") !== env.ADMIN_PASSWORD)
+          return json({ error: "unauthorized (wrong ?password=)" }, 401, cors);
+        const repo = env.GH_REPO, branch = env.GH_BRANCH || "main", path = env.GH_PATH || "trades.json";
+        const tok = String(env.GITHUB_TOKEN || "");
+        const r = await fetch(`https://api.github.com/repos/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`, {
+          headers: { "Authorization": `Bearer ${tok.trim()}`, "Accept": "application/vnd.github+json",
+                     "User-Agent": "ekantik-publish-worker", "X-GitHub-Api-Version": "2022-11-28" },
+        });
+        return json({ githubStatus: r.status, githubOk: r.ok, storedTokenLength: tok.length,
+          tokenLooksLikePAT: tok.trim().startsWith("github_pat_") || tok.trim().startsWith("ghp_"),
+          repo, branch, path, detail: (await r.text()).slice(0, 300) }, 200, cors);
+      }
+      return json({ error: "GET only supports /diag" }, 404, cors);
+    }
+
     if (request.method !== "POST") return json({ error: "POST only" }, 405, cors);
 
     // Defence-in-depth: the password is the real auth; origin is a secondary gate
