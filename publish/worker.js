@@ -63,11 +63,23 @@ export default {
       "X-GitHub-Api-Version": "2022-11-28",
     };
 
-    // Current file SHA (required by the Contents API to update an existing file).
-    let sha;
+    // Current file SHA (required by the Contents API to update an existing file)
+    // + current trade count, for the accidental-overwrite guard below.
+    let sha, currentCount = null;
     const cur = await fetch(`${api}?ref=${encodeURIComponent(branch)}`, { headers: gh });
-    if (cur.status === 200) { sha = (await cur.json()).sha; }
-    else if (cur.status !== 404) return json({ error: "github read failed", status: cur.status, detail: await cur.text() }, 502, cors);
+    if (cur.status === 200) {
+      const j = await cur.json();
+      sha = j.sha;
+      if (j.content) { try { const d = JSON.parse(b64ToStr(j.content)); if (Array.isArray(d.trades)) currentCount = d.trades.length; } catch { /* ignore */ } }
+    } else if (cur.status !== 404) return json({ error: "github read failed", status: cur.status, detail: await cur.text() }, 502, cors);
+
+    // Guard: refuse a publish that drops the record by >20% (an accidental
+    // "replace history with a small export"), unless body.force === true.
+    if (currentCount != null && body.force !== true && doc.trades.length < currentCount * 0.8) {
+      return json({ error: "refusing to shrink the record from " + currentCount + " to " + doc.trades.length +
+        " trades — this looks like an accidental overwrite. In admin, click 'Load current trades.json' first and ADD to it, then publish. To override deliberately, resend with force:true.",
+        currentCount, newCount: doc.trades.length }, 409, cors);
+    }
 
     const put = await fetch(api, {
       method: "PUT",
@@ -87,6 +99,13 @@ export default {
 
 function json(obj, status, cors) {
   return new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", ...cors } });
+}
+// Decode GitHub's base64 file content (newlined) back to a UTF-8 string.
+function b64ToStr(b64) {
+  const bin = atob(String(b64).replace(/\s/g, ""));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
 }
 // UTF-8-safe base64 (btoa alone mangles non-ASCII like the — in our notes).
 function base64Utf8(str) {
