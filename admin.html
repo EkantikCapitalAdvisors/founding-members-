@@ -93,11 +93,12 @@
             </div>
             <textarea id="input" placeholder="Paste the Discord export HTML here, or load a file above…"></textarea>
             <div class="row" style="margin-top:.9rem;">
-                <button class="btn primary" id="parseBtn">Parse trades</button>
-                <button class="btn ghost" id="loadCurrent">Load current trades.json</button>
+                <button class="btn primary" id="addBtn">➕ Add this week to the live record</button>
+                <button class="btn ghost" id="loadCurrent">Load current (no paste)</button>
+                <button class="btn ghost" id="parseBtn">Replace entire record…</button>
                 <span id="parseMsg" class="msg"></span>
             </div>
-            <p class="hint" style="color:var(--gold);margin-top:.7rem;">⚠ Parsing <b>replaces</b> the whole table with what you paste. To <b>add</b> new trades to the existing record, click <b>Load current trades.json</b> first — then publishing the full record. (The publish service also blocks any publish that would shrink the record by more than 20%.)</p>
+            <p class="hint" style="margin-top:.7rem;"><b>Add this week</b> pulls the live record and <b>appends only the new trades</b> from what you paste (matched by source line, so re-pasting can't duplicate) — this is the normal weekly flow. <span style="color:var(--gold)">“Replace entire record” wipes everything and uses only what you paste — use it only for a full re-import.</span> The publish service also blocks any publish that shrinks the record by &gt;20%.</p>
         </section>
 
         <section class="card" id="reviewCard" style="display:none;">
@@ -146,16 +147,43 @@
             rd.readAsText(f);
         });
 
+        // Signature for de-dup: exact source line if present, else id+date+time+points.
+        function sig(t){ return t.raw ? "raw:"+t.raw : [t.id,t.date,t.time,t.points].join("|"); }
+
+        // PRIMARY weekly flow: pull the live record and append ONLY new trades.
+        $("addBtn").addEventListener("click", function(){
+            var txt = $("input").value.trim();
+            if(!txt){ flash("parseMsg","Paste this week's export first.","err"); return; }
+            var parsed;
+            try { parsed = EkantikParser.parse(txt); }
+            catch(err){ flash("parseMsg","Parse error: "+err.message,"err"); return; }
+            flash("parseMsg","Fetching live record…","");
+            fetch("trades.json",{cache:"no-store"}).then(function(r){ if(!r.ok) throw new Error("not found"); return r.json(); })
+            .then(function(doc){
+                META = {}; Object.keys(doc).forEach(function(k){ if(k!=="trades") META[k]=doc[k]; });
+                var current = (doc.trades||doc);
+                var seen = {}; current.forEach(function(t){ seen[sig(t)] = true; });
+                var fresh = parsed.filter(function(t){ return !seen[sig(t)]; });
+                ROWS = current.concat(fresh).map(function(t){ if(t._incl===undefined) t._incl = (t.status!=="no-trade" && t.status!=="unresolved"); return t; });
+                renderRows(); renderStats();
+                $("reviewCard").style.display=""; $("exportCard").style.display="";
+                flash("parseMsg","Added "+fresh.length+" new trade(s) to the live record ("+current.length+" → "+ROWS.length+"). Review, then Publish.", fresh.length?"ok":"err");
+                $("reviewCard").scrollIntoView({behavior:"smooth"});
+            }).catch(function(e){ flash("parseMsg","Could not load live trades.json to append to: "+e.message,"err"); });
+        });
+
+        // EXPLICIT full replacement (guarded by a confirm).
         $("parseBtn").addEventListener("click", function(){
             var txt = $("input").value.trim();
             if(!txt){ flash("parseMsg","Nothing to parse — load a file or paste the export.","err"); return; }
+            if(!confirm("REPLACE the entire record with only what you pasted? This discards all existing trades. Use 'Add this week' instead unless you're doing a full re-import.")) return;
             try {
                 var trades = EkantikParser.parse(txt);
                 ROWS = trades.map(function(t){ t._incl = (t.status!=="no-trade" && t.status!=="unresolved"); return t; });
                 META = META || defaultMeta();
                 renderRows(); renderStats();
                 $("reviewCard").style.display = ""; $("exportCard").style.display = "";
-                flash("parseMsg","Parsed "+trades.length+" records.","ok");
+                flash("parseMsg","Parsed "+trades.length+" records (full replace).","ok");
                 $("reviewCard").scrollIntoView({behavior:"smooth"});
             } catch(err){ flash("parseMsg","Parse error: "+err.message,"err"); }
         });
@@ -292,8 +320,9 @@
         });
 
         function buildJSON(){
-            var trades = ROWS.map(function(t){
+            var trades = ROWS.map(function(t, i){
                 var o = stripUI(t);
+                o.seq = i + 1;                 // re-sequence in table order (appended weeks get clean, non-colliding seq)
                 o.review = !!t.review;
                 if(!t._incl && o.status!=="no-trade" && o.status!=="unresolved"){ o.status = "excluded"; o.review = true; }
                 return o;
