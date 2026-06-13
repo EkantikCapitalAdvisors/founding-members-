@@ -361,8 +361,10 @@
             var breachIds = (proto && proto.breachIds) || {};
             var rows = EkantikParser.filterWindow(TRADES, WINDOW).slice().sort(function(a,b){return a.seq-b.seq;});
             var body = rows.map(function(t){
-                var pts = t.points==null ? "—" : (t.points>0?"+":"") + t.points;
-                var cls = t.points>0?"pos":t.points<0?"neg":"";
+                // Points shown size-normalized to ONE ES contract (5mes/half = 0.5 ES, etc.) = $/$pointValue.
+                var esp = t.points==null ? null : t.points * EkantikParser.dollarPerPoint(t.size, PV) / PV;
+                var pts = esp==null ? "—" : (esp>0?"+":"") + (Math.round(esp*100)/100);
+                var cls = esp>0?"pos":esp<0?"neg":"";
                 var isBreach = !!breachIds[t.id];
                 var flag = (isBreach ? ' <span class="pill breach">breach</span>' : '') + (t.review ? ' <span class="pill flag">review</span>' : '');
                 var size = t.size ? '<span class="pill">'+esc(t.size)+'</span>' : '<span style="color:var(--slate-dim)">full</span>';
@@ -375,8 +377,8 @@
                 : 'No <b>breach</b> flags in this record — every protocol bound held. ';
             return '<section class="block"><h2>Trade log</h2>' +
                 '<div class="dl-btns"><button onclick="downloadCSV()">⬇ Download CSV</button><button onclick="downloadJSON()">⬇ Download JSON</button></div>' +
-                '<p class="note">' + breachNote + rows.length + ' records in the selected window, in order. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged); points are recorded as logged. "review" marks genuine gaps — an unresolved result or a no-trade — excluded from the counts above.</p>' +
-                '<div class="table-scroll"><table><thead><tr><th>ID</th><th>Date</th><th>Dir</th><th>Size</th><th>Entry</th><th>Stop</th><th>Target</th><th>Points</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
+                '<p class="note">' + breachNote + rows.length + ' records in the selected window, in order. <b>Size</b> shows the position tag as logged (half, 5mes, 2es … ; "full" = untagged). <b>ES&nbsp;pts</b> are points size-normalized to one ES contract — a 5-micro or half position counts as 0.5 ES, so magnitudes are comparable (raw logged points are in the CSV). "review" marks genuine gaps — an unresolved result or a no-trade — excluded from the counts above.</p>' +
+                '<div class="table-scroll"><table><thead><tr><th>ID</th><th>Date</th><th>Dir</th><th>Size</th><th>Entry</th><th>Stop</th><th>Target</th><th>ES&nbsp;pts</th><th>Status</th></tr></thead><tbody>'+body+'</tbody></table></div></section>';
         }
 
         /* ---- Downloads ---- */
@@ -391,10 +393,15 @@
             downloadFile("ekantik-trades.json", JSON.stringify(DOC, null, 2), "application/json");
         }
         function downloadCSV(){
-            var cols = ["id","date","time","series","direction","size","entry","stop","target","points","status","review","raw"];
+            var cols = ["id","date","time","series","direction","size","entry","stop","target","points","es_points","status","review","raw"];
             var esc = function(v){ if(v==null) return ""; v = String(v); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; };
             var lines = [cols.join(",")];
-            (DOC.trades || TRADES).forEach(function(t){ lines.push(cols.map(function(k){ return esc(t[k]); }).join(",")); });
+            (DOC.trades || TRADES).forEach(function(t){
+                lines.push(cols.map(function(k){
+                    if(k==="es_points") return t.points==null ? "" : Math.round(t.points * EkantikParser.dollarPerPoint(t.size, PV) / PV * 100)/100;
+                    return esc(t[k]);
+                }).join(","));
+            });
             downloadFile("ekantik-trades.csv", lines.join("\n"), "text/csv");
         }
         function fmtInt(n){ return Math.abs(Math.round(n)).toLocaleString("en-US"); }
