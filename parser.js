@@ -660,7 +660,7 @@
   var api = { parse: parse, parseMessages: parseMessages, extractFromHTML: extractFromHTML,
               extractFromText: extractFromText, computeStats: computeStats, filterWindow: filterWindow,
               monthlyBreakdown: monthlyBreakdown, battery: battery, sizing: sizing,
-              pnlFromText: pnlFromText };
+              dollarPerPoint: dollarPerPoint, pnlFromText: pnlFromText };
 
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.EkantikParser = api;
