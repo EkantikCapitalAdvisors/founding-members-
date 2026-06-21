@@ -1,6 +1,6 @@
 {
   "schema": "ekantik-trades/v1",
-  "generated": "2026-06-13T14:24:45Z",
+  "generated": "2026-06-21T16:16:07Z",
   "source": "Discord #imo-futures-trades export (Feb 02 2026 – May 30 2026)",
   "instrument": "ES / MES index futures (points)",
   "point_value": 50,
@@ -11,7 +11,6 @@
   "trades": [
     {
       "id": "F1",
-      "seq": 1,
       "series": "historical",
       "direction": "short",
       "entry": 6940,
@@ -23,11 +22,11 @@
       "time": "2026-02-04T09:40:15",
       "status": "win",
       "review": false,
-      "raw": "F1: s 6940 (half) | F1: sl6052 | F1: tp6901 | F1: 25 points ( 12.5 points)"
+      "raw": "F1: s 6940 (half) | F1: sl6052 | F1: tp6901 | F1: 25 points ( 12.5 points)",
+      "seq": 1
     },
     {
       "id": "F2",
-      "seq": 2,
       "series": "historical",
       "direction": "short",
       "entry": 6927,
@@ -39,11 +38,11 @@
       "time": "2026-02-04T10:16:16",
       "status": "win",
       "review": false,
-      "raw": "F2 : s 6927 - half | F2: sl6932 | F2: tp6911 | F2:  16 (8 points)"
+      "raw": "F2 : s 6927 - half | F2: sl6932 | F2: tp6911 | F2:  16 (8 points)",
+      "seq": 2
     },
     {
       "id": "F3",
-      "seq": 3,
       "series": "historical",
       "direction": "short",
       "entry": 6922,
@@ -55,11 +54,11 @@
       "time": "2026-02-04T14:16:09",
       "status": "loss",
       "review": false,
-      "raw": "F3: s 6922 - half | F3: sl6931 | F3: - 2"
+      "raw": "F3: s 6922 - half | F3: sl6931 | F3: - 2",
+      "seq": 3
     },
     {
       "id": "F4",
-      "seq": 4,
       "series": "historical",
       "direction": "short",
       "entry": 6864,
@@ -71,11 +70,11 @@
       "time": "2026-02-05T08:01:49",
       "status": "win",
       "review": false,
-      "raw": "F4: s 6864 - half | F4: sl6871.5 | F4: tp6854 | F4: 5 ( 10 half points)"
+      "raw": "F4: s 6864 - half | F4: sl6871.5 | F4: tp6854 | F4: 5 ( 10 half points)",
+      "seq": 4
     },
     {
       "id": "F5",
-      "seq": 5,
       "series": "historical",
       "direction": "short",
       "entry": 6849,
@@ -87,11 +86,11 @@
       "time": "2026-02-05T08:30:52",
       "status": "loss",
       "review": false,
-      "raw": "F5: s 6849 - half | F5: sl6861 | F5: -5 (I0 half points)"
+      "raw": "F5: s 6849 - half | F5: sl6861 | F5: -5 (I0 half points)",
+      "seq": 5
     },
     {
       "id": "F6",
-      "seq": 6,
       "series": "historical",
       "direction": "short",
       "entry": 6859,
@@ -103,11 +102,11 @@
       "time": "2026-02-06T07:20:48",
       "status": "win",
       "review": false,
-      "raw": "F6: s 6859 | F6: sl6866 | F6: tp6851 | F6: +8"
+      "raw": "F6: s 6859 | F6: sl6866 | F6: tp6851 | F6: +8",
+      "seq": 6
     },
     {
       "id": "F6",
-      "seq": 7,
       "series": "historical",
       "direction": "short",
       "entry": 6858,
@@ -119,11 +118,11 @@
       "time": "2026-02-06T07:45:47",
       "status": "scratch",
       "review": false,
-      "raw": "F6: s 6858 - half | F6: wash"
+      "raw": "F6: s 6858 - half | F6: wash",
+      "seq": 7
     },
     {
       "id": "F7",
-      "seq": 8,
       "series": "historical",
       "direction": "short",
       "entry": 6948,
@@ -135,11 +134,11 @@
       "time": "2026-02-09T09:03:30",
       "status": "loss",
       "review": false,
-      "raw": "F7: s 6948 | F7: sl6956 | F7: - 7"
+      "raw": "F7: s 6948 | F7: sl6956 | F7: - 7",
+      "seq": 8
     },
     {
       "id": "F8",
-      "seq": 9,
       "series": "historical",
       "direction": "short",
       "entry": 6964,
@@ -151,11 +150,11 @@
       "time": "2026-02-11T10:35:26",
       "status": "win",
       "review": false,
-      "raw": "F8: s 6964 | F8: sl6977 | F8: tp 6955 | F8: 9"
+      "raw": "F8: s 6964 | F8: sl6977 | F8: tp 6955 | F8: 9",
+      "seq": 9
     },
     {
       "id": "F9",
-      "seq": 10,
       "series": "historical",
       "direction": "short",
       "entry": 6889,
@@ -167,11 +166,11 @@
       "time": "2026-02-12T13:25:47",
       "status": "win",
       "review": false,
-      "raw": "F9: s 6889 | F9: sl6901 | F9: tp6871 | F9:  8"
+      "raw": "F9: s 6889 | F9: sl6901 | F9: tp6871 | F9:  8",
+      "seq": 10
     },
     {
       "id": "F10",
-      "seq": 11,
       "series": "historical",
       "direction": "short",
       "entry": 6849,
@@ -183,11 +182,11 @@
       "time": "2026-02-13T07:29:59",
       "status": "loss",
       "review": false,
-      "raw": "F10: s 6849 | F10: -10"
+      "raw": "F10: s 6849 | F10: -10",
+      "seq": 11
     },
     {
       "id": "F11",
-      "seq": 12,
       "series": "historical",
       "direction": "long",
       "entry": 6875,
@@ -199,11 +198,11 @@
       "time": "2026-02-18T08:29:18",
       "status": "loss",
       "review": false,
-      "raw": "F11: b 6875 | F11: -10"
+      "raw": "F11: b 6875 | F11: -10",
+      "seq": 12
     },
     {
       "id": "F11",
-      "seq": 13,
       "series": "historical",
       "direction": "long",
       "entry": 6853,
@@ -215,11 +214,11 @@
       "time": "2026-02-19T12:36:31",
       "status": "win",
       "review": false,
-      "raw": "F11: b 6853 | F11: +10"
+      "raw": "F11: b 6853 | F11: +10",
+      "seq": 13
     },
     {
       "id": "F12",
-      "seq": 14,
       "series": "historical",
       "direction": "long",
       "entry": 6855,
@@ -231,11 +230,11 @@
       "time": "2026-02-19T13:41:40",
       "status": "win",
       "review": false,
-      "raw": "F12: b 6855 | F12: +4"
+      "raw": "F12: b 6855 | F12: +4",
+      "seq": 14
     },
     {
       "id": "F13",
-      "seq": 15,
       "series": "historical",
       "direction": "long",
       "entry": 6901,
@@ -247,11 +246,11 @@
       "time": "2026-02-20T09:10:04",
       "status": "win",
       "review": false,
-      "raw": "F13: b 6901 | F13: tp6908 | F13: +7"
+      "raw": "F13: b 6901 | F13: tp6908 | F13: +7",
+      "seq": 15
     },
     {
       "id": "F14",
-      "seq": 16,
       "series": "historical",
       "direction": "short",
       "entry": 6859,
@@ -263,11 +262,11 @@
       "time": "2026-02-24T07:59:22",
       "status": "no-trade",
       "review": true,
-      "raw": "F14: s 6859 | F14: sl6881 | F14: no trade"
+      "raw": "F14: s 6859 | F14: sl6881 | F14: no trade",
+      "seq": 16
     },
     {
       "id": "F15",
-      "seq": 17,
       "series": "historical",
       "direction": "short",
       "entry": 6906,
@@ -279,11 +278,11 @@
       "time": "2026-02-24T12:38:35",
       "status": "win",
       "review": false,
-      "raw": "F15: s 6906 | F15: sl6911 | F15: 4"
+      "raw": "F15: s 6906 | F15: sl6911 | F15: 4",
+      "seq": 17
     },
     {
       "id": "F16",
-      "seq": 18,
       "series": "historical",
       "direction": "long",
       "entry": 6939,
@@ -295,11 +294,11 @@
       "time": "2026-02-25T08:58:30",
       "status": "win",
       "review": false,
-      "raw": "F16: b 6939 | F16: sl6934 | F16: tp6944 | F16: + 5"
+      "raw": "F16: b 6939 | F16: sl6934 | F16: tp6944 | F16: + 5",
+      "seq": 18
     },
     {
       "id": "F17",
-      "seq": 19,
       "series": "historical",
       "direction": "long",
       "entry": 6900.5,
@@ -311,11 +310,11 @@
       "time": "2026-02-26T12:56:10",
       "status": "win",
       "review": false,
-      "raw": "F17: b 6900.5 | F17: sl6897 | F17: exit | F17: +3"
+      "raw": "F17: b 6900.5 | F17: sl6897 | F17: exit | F17: +3",
+      "seq": 19
     },
     {
       "id": "F18",
-      "seq": 20,
       "series": "historical",
       "direction": "short",
       "entry": 6870,
@@ -327,11 +326,11 @@
       "time": "2026-02-27T09:31:16",
       "status": "loss",
       "review": false,
-      "raw": "F18: s 6870 | F18: sl6881 | F18: tp6851 | F18: -11"
+      "raw": "F18: s 6870 | F18: sl6881 | F18: tp6851 | F18: -11",
+      "seq": 20
     },
     {
       "id": "F19",
-      "seq": 21,
       "series": "historical",
       "direction": "short",
       "entry": 6849,
@@ -343,11 +342,11 @@
       "time": "2026-03-02T08:54:48",
       "status": "loss",
       "review": false,
-      "raw": "F19: s 6849 | F19: sl 6861 | F19: - 12"
+      "raw": "F19: s 6849 | F19: sl 6861 | F19: - 12",
+      "seq": 21
     },
     {
       "id": "F20",
-      "seq": 22,
       "series": "historical",
       "direction": "long",
       "entry": 6893,
@@ -359,11 +358,11 @@
       "time": "2026-03-05T13:52:01",
       "status": "win",
       "review": false,
-      "raw": "F20: b 6893 | F20: sl679 | F20: +10"
+      "raw": "F20: b 6893 | F20: sl679 | F20: +10",
+      "seq": 22
     },
     {
       "id": "F21",
-      "seq": 23,
       "series": "historical",
       "direction": "short",
       "entry": 6751,
@@ -375,11 +374,11 @@
       "time": "2026-03-06T08:29:04",
       "status": "win",
       "review": false,
-      "raw": "F21: s 6751 | F21: +10"
+      "raw": "F21: s 6751 | F21: +10",
+      "seq": 23
     },
     {
       "id": "F22",
-      "seq": 24,
       "series": "historical",
       "direction": "long",
       "entry": 6779,
@@ -391,11 +390,11 @@
       "time": "2026-03-09T08:35:20",
       "status": "win",
       "review": false,
-      "raw": "F22: b 6779 | F22: 3"
+      "raw": "F22: b 6779 | F22: 3",
+      "seq": 24
     },
     {
       "id": "F23",
-      "seq": 25,
       "series": "historical",
       "direction": "long",
       "entry": 6659,
@@ -407,11 +406,11 @@
       "time": "2026-03-09T09:01:47",
       "status": "win",
       "review": false,
-      "raw": "F23: b 6659 | F23: + 10"
+      "raw": "F23: b 6659 | F23: + 10",
+      "seq": 25
     },
     {
       "id": "F24",
-      "seq": 26,
       "series": "historical",
       "direction": "short",
       "entry": 6729,
@@ -423,11 +422,11 @@
       "time": "2026-03-09T13:37:38",
       "status": "win",
       "review": false,
-      "raw": "F24: s 6729 | F24: sl6732.5 | F24: exit | F24: + 6"
+      "raw": "F24: s 6729 | F24: sl6732.5 | F24: exit | F24: + 6",
+      "seq": 26
     },
     {
       "id": "F25",
-      "seq": 27,
       "series": "historical",
       "direction": "short",
       "entry": 6841,
@@ -439,11 +438,11 @@
       "time": "2026-03-10T12:48:49",
       "status": "win",
       "review": false,
-      "raw": "F25: s 6841 | F25: +4.5"
+      "raw": "F25: s 6841 | F25: +4.5",
+      "seq": 27
     },
     {
       "id": "F26",
-      "seq": 28,
       "series": "historical",
       "direction": "long",
       "entry": 6722,
@@ -455,11 +454,11 @@
       "time": "2026-03-12T08:42:49",
       "status": "loss",
       "review": false,
-      "raw": "F26: b 6722 | F26: - 6"
+      "raw": "F26: b 6722 | F26: - 6",
+      "seq": 28
     },
     {
       "id": "F27",
-      "seq": 29,
       "series": "historical",
       "direction": "short",
       "entry": 6711,
@@ -471,11 +470,11 @@
       "time": "2026-03-13T08:18:54",
       "status": "loss",
       "review": false,
-      "raw": "F27: s 6711 | F27: sl6713.5 | F27: -2.5"
+      "raw": "F27: s 6711 | F27: sl6713.5 | F27: -2.5",
+      "seq": 29
     },
     {
       "id": "F28",
-      "seq": 30,
       "series": "historical",
       "direction": "short",
       "entry": 6778,
@@ -487,11 +486,11 @@
       "time": "2026-03-17T10:39:19",
       "status": "win",
       "review": false,
-      "raw": "F28: s 6778 | F28: tp6771 | F28: +7"
+      "raw": "F28: s 6778 | F28: tp6771 | F28: +7",
+      "seq": 30
     },
     {
       "id": "F29",
-      "seq": 31,
       "series": "historical",
       "direction": "short",
       "entry": 6664,
@@ -503,11 +502,11 @@
       "time": "2026-03-19T14:45:02",
       "status": "win",
       "review": false,
-      "raw": "F29:  s 6664 | F29: +4"
+      "raw": "F29:  s 6664 | F29: +4",
+      "seq": 31
     },
     {
       "id": "F30",
-      "seq": 32,
       "series": "historical",
       "direction": "short",
       "entry": 6634,
@@ -519,11 +518,11 @@
       "time": "2026-03-20T08:53:45",
       "status": "win",
       "review": false,
-      "raw": "F30 : s 6634 | F30: + 3"
+      "raw": "F30 : s 6634 | F30: + 3",
+      "seq": 32
     },
     {
       "id": "F31",
-      "seq": 33,
       "series": "historical",
       "direction": "short",
       "entry": 6645,
@@ -535,11 +534,11 @@
       "time": "2026-03-20T14:44:52",
       "status": "win",
       "review": false,
-      "raw": "F31: s 6645 | F31: 4"
+      "raw": "F31: s 6645 | F31: 4",
+      "seq": 33
     },
     {
       "id": "F32",
-      "seq": 34,
       "series": "historical",
       "direction": "short",
       "entry": 6644,
@@ -551,11 +550,11 @@
       "time": "2026-03-24T10:51:21",
       "status": "win",
       "review": false,
-      "raw": "F32: s 6644 | F32:  + 10"
+      "raw": "F32: s 6644 | F32:  + 10",
+      "seq": 34
     },
     {
       "id": "F33",
-      "seq": 35,
       "series": "historical",
       "direction": "long",
       "entry": 6661,
@@ -567,11 +566,11 @@
       "time": "2026-03-25T08:18:44",
       "status": "win",
       "review": false,
-      "raw": "F33: b 6661 | F33: sl 6657 | F33: +7"
+      "raw": "F33: b 6661 | F33: sl 6657 | F33: +7",
+      "seq": 35
     },
     {
       "id": "F34",
-      "seq": 36,
       "series": "historical",
       "direction": "short",
       "entry": 6624,
@@ -583,11 +582,11 @@
       "time": "2026-04-02T10:12:38",
       "status": "win",
       "review": false,
-      "raw": "f34: s 6624 | f34: exit | f34: + 3"
+      "raw": "f34: s 6624 | f34: exit | f34: + 3",
+      "seq": 36
     },
     {
       "id": "F35",
-      "seq": 37,
       "series": "historical",
       "direction": "long",
       "entry": 6791,
@@ -599,11 +598,11 @@
       "time": "2026-04-08T10:10:17",
       "status": "win",
       "review": false,
-      "raw": "f35: b 6791 | f35: +4"
+      "raw": "f35: b 6791 | f35: +4",
+      "seq": 37
     },
     {
       "id": "F36",
-      "seq": 38,
       "series": "historical",
       "direction": "long",
       "entry": 6869,
@@ -615,11 +614,11 @@
       "time": "2026-04-10T08:46:51",
       "status": "loss",
       "review": false,
-      "raw": "f36: b 6869 | f36: stop 6864 | F36: - 5"
+      "raw": "f36: b 6869 | f36: stop 6864 | F36: - 5",
+      "seq": 38
     },
     {
       "id": "F37",
-      "seq": 39,
       "series": "historical",
       "direction": "short",
       "entry": 6837.5,
@@ -631,11 +630,11 @@
       "time": "2026-04-13T08:33:58",
       "status": "win",
       "review": false,
-      "raw": "F37: s 6837.5 | F37:  exit | F37: +4.5"
+      "raw": "F37: s 6837.5 | F37:  exit | F37: +4.5",
+      "seq": 39
     },
     {
       "id": "F38",
-      "seq": 40,
       "series": "historical",
       "direction": "short",
       "entry": 6894.25,
@@ -647,11 +646,11 @@
       "time": "2026-04-13T13:58:44",
       "status": "loss",
       "review": false,
-      "raw": "F38: s 6894.25 | F38: -1"
+      "raw": "F38: s 6894.25 | F38: -1",
+      "seq": 40
     },
     {
       "id": "F39",
-      "seq": 41,
       "series": "historical",
       "direction": "short",
       "entry": 6899,
@@ -663,11 +662,11 @@
       "time": "2026-04-13T14:36:26",
       "status": "loss",
       "review": false,
-      "raw": "F39: s 6899 | F39: -2.5"
+      "raw": "F39: s 6899 | F39: -2.5",
+      "seq": 41
     },
     {
       "id": "F40",
-      "seq": 42,
       "series": "historical",
       "direction": "short",
       "entry": 6992,
@@ -679,11 +678,11 @@
       "time": "2026-04-14T14:05:41",
       "status": "loss",
       "review": false,
-      "raw": "f40: s 6992 | f40: -10"
+      "raw": "f40: s 6992 | f40: -10",
+      "seq": 42
     },
     {
       "id": "F41",
-      "seq": 43,
       "series": "historical",
       "direction": "short",
       "entry": 7153,
@@ -695,11 +694,11 @@
       "time": "2026-04-17T09:29:25",
       "status": "loss",
       "review": false,
-      "raw": "F41: sell 7153 stp 7156 | F41: -3"
+      "raw": "F41: sell 7153 stp 7156 | F41: -3",
+      "seq": 43
     },
     {
       "id": "F42",
-      "seq": 44,
       "series": "historical",
       "direction": "short",
       "entry": 7120,
@@ -711,11 +710,11 @@
       "time": "2026-04-21T13:06:45",
       "status": "win",
       "review": false,
-      "raw": "f42: s 7120 | f42: sl 7126 | f42: exit | f42: 3"
+      "raw": "f42: s 7120 | f42: sl 7126 | f42: exit | f42: 3",
+      "seq": 44
     },
     {
       "id": "F43",
-      "seq": 45,
       "series": "historical",
       "direction": "short",
       "entry": 7147,
@@ -727,11 +726,11 @@
       "time": "2026-04-22T08:19:56",
       "status": "win",
       "review": false,
-      "raw": "F43: s 7147 | F43: sl 7152 | F43: exit | F43: + 6"
+      "raw": "F43: s 7147 | F43: sl 7152 | F43: exit | F43: + 6",
+      "seq": 45
     },
     {
       "id": "F44",
-      "seq": 46,
       "series": "historical",
       "direction": "short",
       "entry": 7151,
@@ -743,11 +742,11 @@
       "time": "2026-04-22T08:47:29",
       "status": "win",
       "review": false,
-      "raw": "f44:  s 7151 | F44: sl 7153 | f44: +6"
+      "raw": "f44:  s 7151 | F44: sl 7153 | f44: +6",
+      "seq": 46
     },
     {
       "id": "F45",
-      "seq": 47,
       "series": "historical",
       "direction": "short",
       "entry": 7146,
@@ -759,11 +758,11 @@
       "time": "2026-04-22T08:52:58",
       "status": "loss",
       "review": false,
-      "raw": "f45:  s 7146 | F45: sl 7148 | f45: -2"
+      "raw": "f45:  s 7146 | F45: sl 7148 | f45: -2",
+      "seq": 47
     },
     {
       "id": "F46",
-      "seq": 48,
       "series": "historical",
       "direction": "short",
       "entry": 7157,
@@ -775,11 +774,11 @@
       "time": "2026-04-22T10:49:44",
       "status": "win",
       "review": false,
-      "raw": "f46: s 7157 | f46: sl 7161 | f46:exit | f46: +3"
+      "raw": "f46: s 7157 | f46: sl 7161 | f46:exit | f46: +3",
+      "seq": 48
     },
     {
       "id": "F46",
-      "seq": 49,
       "series": "historical",
       "direction": "short",
       "entry": 7159,
@@ -791,11 +790,11 @@
       "time": "2026-04-22T10:56:46",
       "status": "win",
       "review": false,
-      "raw": "f46: s 7159 | f46: sl 7161 | f46: +4"
+      "raw": "f46: s 7159 | f46: sl 7161 | f46: +4",
+      "seq": 49
     },
     {
       "id": "F47",
-      "seq": 50,
       "series": "historical",
       "direction": "short",
       "entry": 7154,
@@ -807,11 +806,11 @@
       "time": "2026-04-22T14:05:52",
       "status": "loss",
       "review": false,
-      "raw": "f47: s 7154 | f47: sl 7156 | f47: -2"
+      "raw": "f47: s 7154 | f47: sl 7156 | f47: -2",
+      "seq": 50
     },
     {
       "id": "F48",
-      "seq": 51,
       "series": "historical",
       "direction": "short",
       "entry": 7151,
@@ -823,11 +822,11 @@
       "time": "2026-04-23T07:47:47",
       "status": "loss",
       "review": false,
-      "raw": "F48: s 7151 | F48: sl 7153 | F48: -2"
+      "raw": "F48: s 7151 | F48: sl 7153 | F48: -2",
+      "seq": 51
     },
     {
       "id": "F49",
-      "seq": 52,
       "series": "historical",
       "direction": "short",
       "entry": 7155,
@@ -839,11 +838,11 @@
       "time": "2026-04-23T08:32:36",
       "status": "win",
       "review": false,
-      "raw": "f49: s 7155 | f49: sl 7161 | f49: +3"
+      "raw": "f49: s 7155 | f49: sl 7161 | f49: +3",
+      "seq": 52
     },
     {
       "id": "F50",
-      "seq": 53,
       "series": "historical",
       "direction": "long",
       "entry": 7162,
@@ -855,11 +854,11 @@
       "time": "2026-04-23T08:56:57",
       "status": "loss",
       "review": false,
-      "raw": "f50: b 7162 | f50: sl 7159 | f50: -3"
+      "raw": "f50: b 7162 | f50: sl 7159 | f50: -3",
+      "seq": 53
     },
     {
       "id": "F51",
-      "seq": 54,
       "series": "historical",
       "direction": "short",
       "entry": 7141,
@@ -871,11 +870,11 @@
       "time": "2026-04-23T14:21:45",
       "status": "loss",
       "review": false,
-      "raw": "f51: s 7141 | f51: sl7144 | F51: -1"
+      "raw": "f51: s 7141 | f51: sl7144 | F51: -1",
+      "seq": 54
     },
     {
       "id": "F52",
-      "seq": 55,
       "series": "historical",
       "direction": "short",
       "entry": 7194.75,
@@ -887,11 +886,11 @@
       "time": "2026-04-27T08:39:31",
       "status": "loss",
       "review": false,
-      "raw": "F52: s 7194.75  sl 7197 | F52: - 2.5"
+      "raw": "F52: s 7194.75  sl 7197 | F52: - 2.5",
+      "seq": 55
     },
     {
       "id": "F53",
-      "seq": 56,
       "series": "historical",
       "direction": "long",
       "entry": 7162,
@@ -903,11 +902,11 @@
       "time": "2026-04-28T08:33:41",
       "status": "win",
       "review": false,
-      "raw": "F53: b 7162 sl 7157 5mes | F53: +4"
+      "raw": "F53: b 7162 sl 7157 5mes | F53: +4",
+      "seq": 56
     },
     {
       "id": "F54",
-      "seq": 57,
       "series": "historical",
       "direction": "long",
       "entry": 7154.5,
@@ -919,11 +918,11 @@
       "time": "2026-04-28T12:00:38",
       "status": "loss",
       "review": false,
-      "raw": "F54: b 7154.5 sl 7144 2mes | F54: -4.5"
+      "raw": "F54: b 7154.5 sl 7144 2mes | F54: -4.5",
+      "seq": 57
     },
     {
       "id": "F55",
-      "seq": 58,
       "series": "historical",
       "direction": "short",
       "entry": 7266,
@@ -935,11 +934,11 @@
       "time": "2026-05-01T08:33:13",
       "status": "win",
       "review": false,
-      "raw": "f55: s 7266 | f55: +3.5"
+      "raw": "f55: s 7266 | f55: +3.5",
+      "seq": 58
     },
     {
       "id": "F56",
-      "seq": 59,
       "series": "historical",
       "direction": "short",
       "entry": 7295,
@@ -951,11 +950,11 @@
       "time": "2026-05-01T09:19:38",
       "status": "win",
       "review": false,
-      "raw": "F56: s 7295 5mes | F56: tp7291 | F56: +2 (resolved from log image, 5 MES)"
+      "raw": "F56: s 7295 5mes | F56: tp7291 | F56: +2 (resolved from log image, 5 MES)",
+      "seq": 59
     },
     {
       "id": "F57",
-      "seq": 60,
       "series": "historical",
       "direction": "short",
       "entry": 7339,
@@ -967,11 +966,11 @@
       "time": "2026-05-06T08:36:58",
       "status": "loss",
       "review": false,
-      "raw": "F57: s 7339 sl 7346 | F57: -7"
+      "raw": "F57: s 7339 sl 7346 | F57: -7",
+      "seq": 60
     },
     {
       "id": "F58",
-      "seq": 61,
       "series": "historical",
       "direction": "short",
       "entry": 7418.25,
@@ -983,11 +982,11 @@
       "time": "2026-05-12T14:31:26",
       "status": "loss",
       "review": false,
-      "raw": "F58: s 7418.25 sl7423 | F58: -4.75"
+      "raw": "F58: s 7418.25 sl7423 | F58: -4.75",
+      "seq": 61
     },
     {
       "id": "F59",
-      "seq": 62,
       "series": "historical",
       "direction": "short",
       "entry": 7475,
@@ -999,11 +998,11 @@
       "time": "2026-05-13T13:58:34",
       "status": "win",
       "review": false,
-      "raw": "F59: s 7475 | F59: +4"
+      "raw": "F59: s 7475 | F59: +4",
+      "seq": 62
     },
     {
       "id": "F60",
-      "seq": 63,
       "series": "historical",
       "direction": "short",
       "entry": 7491,
@@ -1015,11 +1014,11 @@
       "time": "2026-05-14T08:35:09",
       "status": "loss",
       "review": false,
-      "raw": "F60: s 7491 sl7502 | F60: -11"
+      "raw": "F60: s 7491 sl7502 | F60: -11",
+      "seq": 63
     },
     {
       "id": "F61",
-      "seq": 64,
       "series": "historical",
       "direction": "short",
       "entry": 7453,
@@ -1032,13 +1031,10 @@
       "status": "win",
       "review": false,
       "raw": "F61: s 7453 5mes | F61: s 7463 | F61: +16",
-      "adds": [
-        7463
-      ]
+      "seq": 64
     },
     {
       "id": "F62",
-      "seq": 65,
       "series": "historical",
       "direction": "short",
       "entry": 7448,
@@ -1050,11 +1046,11 @@
       "time": "2026-05-15T08:56:03",
       "status": "win",
       "review": false,
-      "raw": "F62: s 7448 5mes | F62: sl 7452 | F62: tp7432 | F62: +16"
+      "raw": "F62: s 7448 5mes | F62: sl 7452 | F62: tp7432 | F62: +16",
+      "seq": 65
     },
     {
       "id": "F63",
-      "seq": 66,
       "series": "historical",
       "direction": "short",
       "entry": 7451,
@@ -1066,11 +1062,11 @@
       "time": "2026-05-15T09:15:21",
       "status": "loss",
       "review": false,
-      "raw": "F63: s 7451 5mes | f63: sl7462 | F63: -11"
+      "raw": "F63: s 7451 5mes | f63: sl7462 | F63: -11",
+      "seq": 66
     },
     {
       "id": "F64",
-      "seq": 67,
       "series": "historical",
       "direction": "short",
       "entry": 7445,
@@ -1082,11 +1078,11 @@
       "time": "2026-05-15T11:00:46",
       "status": "win",
       "review": false,
-      "raw": "f64: s 7445 5mes | F64: +4"
+      "raw": "f64: s 7445 5mes | F64: +4",
+      "seq": 67
     },
     {
       "id": "F65",
-      "seq": 68,
       "series": "historical",
       "direction": "short",
       "entry": 4557,
@@ -1098,11 +1094,11 @@
       "time": "2026-05-15T13:57:14",
       "status": "win",
       "review": false,
-      "raw": "F65: s 4557 | F65: exit | F65: +2.5"
+      "raw": "F65: s 4557 | F65: exit | F65: +2.5",
+      "seq": 68
     },
     {
       "id": "F66",
-      "seq": 69,
       "series": "historical",
       "direction": "short",
       "entry": 4557,
@@ -1114,11 +1110,11 @@
       "time": "2026-05-15T14:00:45",
       "status": "win",
       "review": false,
-      "raw": "F66: s 4557 | F66: exit | F66: +2"
+      "raw": "F66: s 4557 | F66: exit | F66: +2",
+      "seq": 69
     },
     {
       "id": "F67",
-      "seq": 70,
       "series": "historical",
       "direction": "short",
       "entry": 7453,
@@ -1130,11 +1126,11 @@
       "time": "2026-05-15T14:03:16",
       "status": "win",
       "review": false,
-      "raw": "f67: s 7453 3mes | F67: sl7463 | F67: tp7421 | F67: +3"
+      "raw": "f67: s 7453 3mes | F67: sl7463 | F67: tp7421 | F67: +3",
+      "seq": 70
     },
     {
       "id": "F68",
-      "seq": 71,
       "series": "historical",
       "direction": "short",
       "entry": 7446,
@@ -1146,11 +1142,11 @@
       "time": "2026-05-15T14:32:00",
       "status": "win",
       "review": false,
-      "raw": "f68: s 7446 | f68: exit | F68: +2.5"
+      "raw": "f68: s 7446 | f68: exit | F68: +2.5",
+      "seq": 71
     },
     {
       "id": "F69",
-      "seq": 72,
       "series": "historical",
       "direction": "short",
       "entry": 7429,
@@ -1162,11 +1158,11 @@
       "time": "2026-05-18T08:44:12",
       "status": "win",
       "review": false,
-      "raw": "f69: s 7429 5mes | f69: sl7431 | F69: +10"
+      "raw": "f69: s 7429 5mes | f69: sl7431 | F69: +10",
+      "seq": 72
     },
     {
       "id": "F70",
-      "seq": 73,
       "series": "historical",
       "direction": "short",
       "entry": 7447,
@@ -1178,11 +1174,11 @@
       "time": "2026-05-18T08:59:55",
       "status": "win",
       "review": false,
-      "raw": "f70: s 7447 | F70: sl7456 | F70: tp7431 | F70: +16"
+      "raw": "f70: s 7447 | F70: sl7456 | F70: tp7431 | F70: +16",
+      "seq": 73
     },
     {
       "id": "F71",
-      "seq": 74,
       "series": "historical",
       "direction": "short",
       "entry": 7388.5,
@@ -1194,11 +1190,11 @@
       "time": "2026-05-18T13:33:36",
       "status": "win",
       "review": false,
-      "raw": "F71: s 7388.50 | F71:  +2.5"
+      "raw": "F71: s 7388.50 | F71:  +2.5",
+      "seq": 74
     },
     {
       "id": "F72",
-      "seq": 75,
       "series": "historical",
       "direction": "long",
       "entry": 7403,
@@ -1210,11 +1206,11 @@
       "time": "2026-05-18T14:11:01",
       "status": "loss",
       "review": false,
-      "raw": "f72: b 7403 5mes | F72: sl7394 | F72: -5"
+      "raw": "f72: b 7403 5mes | F72: sl7394 | F72: -5",
+      "seq": 75
     },
     {
       "id": "F73",
-      "seq": 76,
       "series": "historical",
       "direction": "long",
       "entry": 7385,
@@ -1226,11 +1222,11 @@
       "time": "2026-05-19T08:31:27",
       "status": "win",
       "review": false,
-      "raw": "F73: b 7385 | F73: sl7378 | F73: +1.5"
+      "raw": "F73: b 7385 | F73: sl7378 | F73: +1.5",
+      "seq": 76
     },
     {
       "id": "F74",
-      "seq": 77,
       "series": "historical",
       "direction": "long",
       "entry": 7386,
@@ -1242,11 +1238,11 @@
       "time": "2026-05-19T08:35:56",
       "status": "win",
       "review": false,
-      "raw": "F74: b 7386 | F74: sl7377 | F74: + 6"
+      "raw": "F74: b 7386 | F74: sl7377 | F74: + 6",
+      "seq": 77
     },
     {
       "id": "F75",
-      "seq": 78,
       "series": "historical",
       "direction": "long",
       "entry": 7381.5,
@@ -1258,11 +1254,11 @@
       "time": "2026-05-19T08:42:44",
       "status": "loss",
       "review": false,
-      "raw": "F75: b 7381.5 | F75: sl7377 | F75: -4.5"
+      "raw": "F75: b 7381.5 | F75: sl7377 | F75: -4.5",
+      "seq": 78
     },
     {
       "id": "F76",
-      "seq": 79,
       "series": "historical",
       "direction": "short",
       "entry": 7389,
@@ -1274,11 +1270,11 @@
       "time": "2026-05-19T08:49:52",
       "status": "win",
       "review": false,
-      "raw": "F76: s 7389 | F76: sl7391 | F76: +5"
+      "raw": "F76: s 7389 | F76: sl7391 | F76: +5",
+      "seq": 79
     },
     {
       "id": "F77",
-      "seq": 80,
       "series": "historical",
       "direction": "short",
       "entry": 7370,
@@ -1290,11 +1286,11 @@
       "time": "2026-05-19T09:06:38",
       "status": "win",
       "review": false,
-      "raw": "F77: s 7370 | F77: sl7373 | F77: +2"
+      "raw": "F77: s 7370 | F77: sl7373 | F77: +2",
+      "seq": 80
     },
     {
       "id": "F78",
-      "seq": 81,
       "series": "historical",
       "direction": "short",
       "entry": 7372,
@@ -1306,11 +1302,11 @@
       "time": "2026-05-19T09:10:42",
       "status": "win",
       "review": false,
-      "raw": "F78: s 7372 | F78: sl7378 | F78: +1"
+      "raw": "F78: s 7372 | F78: sl7378 | F78: +1",
+      "seq": 81
     },
     {
       "id": "F79",
-      "seq": 82,
       "series": "historical",
       "direction": "short",
       "entry": 7366,
@@ -1322,11 +1318,11 @@
       "time": "2026-05-19T09:25:16",
       "status": "win",
       "review": false,
-      "raw": "F79: s 7366 | F79: +4"
+      "raw": "F79: s 7366 | F79: +4",
+      "seq": 82
     },
     {
       "id": "F80",
-      "seq": 83,
       "series": "historical",
       "direction": "short",
       "entry": 7375,
@@ -1338,11 +1334,11 @@
       "time": "2026-05-19T11:22:32",
       "status": "loss",
       "review": false,
-      "raw": "F80: s 7375 sl7381 | F80: -6"
+      "raw": "F80: s 7375 sl7381 | F80: -6",
+      "seq": 83
     },
     {
       "id": "F81",
-      "seq": 84,
       "series": "historical",
       "direction": "short",
       "entry": 7414,
@@ -1354,11 +1350,11 @@
       "time": "2026-05-19T12:31:51",
       "status": "win",
       "review": false,
-      "raw": "F81: s 7414 | F81: +4"
+      "raw": "F81: s 7414 | F81: +4",
+      "seq": 84
     },
     {
       "id": "F82",
-      "seq": 85,
       "series": "historical",
       "direction": "short",
       "entry": 7412.5,
@@ -1370,11 +1366,11 @@
       "time": "2026-05-19T12:40:08",
       "status": "win",
       "review": false,
-      "raw": "F82: s 7412.5 | F82: sl7416 | F82: +1.5"
+      "raw": "F82: s 7412.5 | F82: sl7416 | F82: +1.5",
+      "seq": 85
     },
     {
       "id": "F83",
-      "seq": 86,
       "series": "historical",
       "direction": "short",
       "entry": 7410,
@@ -1386,11 +1382,11 @@
       "time": "2026-05-19T12:45:11",
       "status": "win",
       "review": false,
-      "raw": "F83: s 7410  5mes | F83: sl7421 | F83: tp7405 | F83: +5"
+      "raw": "F83: s 7410  5mes | F83: sl7421 | F83: tp7405 | F83: +5",
+      "seq": 86
     },
     {
       "id": "F84",
-      "seq": 87,
       "series": "historical",
       "direction": "short",
       "entry": 7407,
@@ -1402,11 +1398,11 @@
       "time": "2026-05-19T13:00:10",
       "status": "loss",
       "review": false,
-      "raw": "F84: s 7407 H2 | F84: sl7411 | F84: tp7401 | F84: -2.5"
+      "raw": "F84: s 7407 H2 | F84: sl7411 | F84: tp7401 | F84: -2.5",
+      "seq": 87
     },
     {
       "id": "F85",
-      "seq": 88,
       "series": "historical",
       "direction": "short",
       "entry": 7400,
@@ -1418,11 +1414,11 @@
       "time": "2026-05-20T08:57:32",
       "status": "win",
       "review": false,
-      "raw": "F85: s 7400 | F85: +1"
+      "raw": "F85: s 7400 | F85: +1",
+      "seq": 88
     },
     {
       "id": "F86",
-      "seq": 89,
       "series": "historical",
       "direction": "short",
       "entry": 7386,
@@ -1434,11 +1430,11 @@
       "time": "2026-05-20T09:06:09",
       "status": "loss",
       "review": false,
-      "raw": "F86: s 7386 | F86: sl7391 | F86: -5 H2"
+      "raw": "F86: s 7386 | F86: sl7391 | F86: -5 H2",
+      "seq": 89
     },
     {
       "id": "F87",
-      "seq": 90,
       "series": "historical",
       "direction": "short",
       "entry": 7463.25,
@@ -1450,11 +1446,11 @@
       "time": "2026-05-21T14:15:39",
       "status": "loss",
       "review": false,
-      "raw": "F87: s 7463.25 | F87: sl7471 | f87: -1 H2"
+      "raw": "F87: s 7463.25 | F87: sl7471 | f87: -1 H2",
+      "seq": 90
     },
     {
       "id": "S1",
-      "seq": 91,
       "series": "live",
       "direction": "short",
       "entry": 7511,
@@ -1466,11 +1462,11 @@
       "time": "2026-05-22T10:35:58",
       "status": "win",
       "review": false,
-      "raw": "S1: S 7511 | S1: sl7517 | S1: +0.5 H3"
+      "raw": "S1: S 7511 | S1: sl7517 | S1: +0.5 H3",
+      "seq": 91
     },
     {
       "id": "S2",
-      "seq": 92,
       "series": "live",
       "direction": "short",
       "entry": 7510,
@@ -1482,11 +1478,11 @@
       "time": "2026-05-22T10:49:00",
       "status": "win",
       "review": false,
-      "raw": "S2: s 7510 sl 7517 | S2: +2 H3"
+      "raw": "S2: s 7510 sl 7517 | S2: +2 H3",
+      "seq": 92
     },
     {
       "id": "S3",
-      "seq": 93,
       "series": "live",
       "direction": "short",
       "entry": 7508,
@@ -1498,11 +1494,11 @@
       "time": "2026-05-22T13:19:08",
       "status": "loss",
       "review": false,
-      "raw": "S3: s 7508 sl 7517 | S3: -1 H3"
+      "raw": "S3: s 7508 sl 7517 | S3: -1 H3",
+      "seq": 93
     },
     {
       "id": "S4",
-      "seq": 94,
       "series": "live",
       "direction": "short",
       "entry": 7499,
@@ -1514,11 +1510,11 @@
       "time": "2026-05-22T14:12:45",
       "status": "win",
       "review": false,
-      "raw": "S4: s 7499  sl 7501 | S4: +2 h3"
+      "raw": "S4: s 7499  sl 7501 | S4: +2 h3",
+      "seq": 94
     },
     {
       "id": "S5",
-      "seq": 95,
       "series": "live",
       "direction": "short",
       "entry": 7489,
@@ -1530,11 +1526,11 @@
       "time": "2026-05-22T14:45:43",
       "status": "win",
       "review": false,
-      "raw": "S5: s 7489 sl7491 | s5: +2 H3"
+      "raw": "S5: s 7489 sl7491 | s5: +2 H3",
+      "seq": 95
     },
     {
       "id": "S6",
-      "seq": 96,
       "series": "live",
       "direction": "short",
       "entry": 7544.25,
@@ -1546,11 +1542,11 @@
       "time": "2026-05-26T07:32:56",
       "status": "loss",
       "review": false,
-      "raw": "S6: s 7544.25 2es | s6: sl7547 | s6: tp7541 | S6: -3 H3"
+      "raw": "S6: s 7544.25 2es | s6: sl7547 | s6: tp7541 | S6: -3 H3",
+      "seq": 96
     },
     {
       "id": "S7",
-      "seq": 97,
       "series": "live",
       "direction": "short",
       "entry": 7566,
@@ -1562,11 +1558,11 @@
       "time": "2026-05-27T07:30:38",
       "status": "win",
       "review": false,
-      "raw": "s7: s 7566 2es | s7: +5 H2"
+      "raw": "s7: s 7566 2es | s7: +5 H2",
+      "seq": 97
     },
     {
       "id": "S8",
-      "seq": 98,
       "series": "live",
       "direction": "short",
       "entry": 7536,
@@ -1578,11 +1574,11 @@
       "time": "2026-05-27T08:55:26",
       "status": "win",
       "review": false,
-      "raw": "s8: s 7536 e2 sl7537 | S8: +3 H3"
+      "raw": "s8: s 7536 e2 sl7537 | S8: +3 H3",
+      "seq": 98
     },
     {
       "id": "S9",
-      "seq": 99,
       "series": "live",
       "direction": "short",
       "entry": 7540,
@@ -1594,11 +1590,11 @@
       "time": "2026-05-27T09:44:07",
       "status": "win",
       "review": false,
-      "raw": "s9: s 7540 sl7541 | s9: +3 H3"
+      "raw": "s9: s 7540 sl7541 | s9: +3 H3",
+      "seq": 99
     },
     {
       "id": "S10",
-      "seq": 100,
       "series": "live",
       "direction": "short",
       "entry": 7534,
@@ -1610,11 +1606,11 @@
       "time": "2026-05-27T10:09:25",
       "status": "win",
       "review": false,
-      "raw": "s10: s 7534 sl7536 | s10: tp7531 | S10: +3"
+      "raw": "s10: s 7534 sl7536 | s10: tp7531 | S10: +3",
+      "seq": 100
     },
     {
       "id": "S11",
-      "seq": 101,
       "series": "live",
       "direction": "short",
       "entry": 7544.5,
@@ -1626,11 +1622,11 @@
       "time": "2026-05-27T14:06:47",
       "status": "win",
       "review": false,
-      "raw": "s11: s 7544.5 sl 7546 | S11: exit | S11: +2.5"
+      "raw": "s11: s 7544.5 sl 7546 | S11: exit | S11: +2.5",
+      "seq": 101
     },
     {
       "id": "S12",
-      "seq": 102,
       "series": "live",
       "direction": "short",
       "entry": 7540,
@@ -1642,11 +1638,11 @@
       "time": "2026-05-27T14:33:44",
       "status": "loss",
       "review": false,
-      "raw": "s12: s 7540 | S12: sl7542 | S12: -0.5"
+      "raw": "s12: s 7540 | S12: sl7542 | S12: -0.5",
+      "seq": 102
     },
     {
       "id": "S13",
-      "seq": 103,
       "series": "live",
       "direction": "short",
       "entry": 7539,
@@ -1658,11 +1654,11 @@
       "time": "2026-05-27T14:50:59",
       "status": "loss",
       "review": false,
-      "raw": "S13: s 7539 sl7541 | S13: -2"
+      "raw": "S13: s 7539 sl7541 | S13: -2",
+      "seq": 103
     },
     {
       "id": "S14",
-      "seq": 104,
       "series": "live",
       "direction": "short",
       "entry": 7531,
@@ -1674,11 +1670,11 @@
       "time": "2026-05-28T08:46:00",
       "status": "win",
       "review": false,
-      "raw": "S14: s 7531 sl7533 2es | S14: +2"
+      "raw": "S14: s 7531 sl7533 2es | S14: +2",
+      "seq": 104
     },
     {
       "id": "S15",
-      "seq": 105,
       "series": "live",
       "direction": "short",
       "entry": 7569,
@@ -1690,7 +1686,8 @@
       "time": "2026-05-28T10:09:31",
       "status": "loss",
       "review": false,
-      "raw": "S15: s 7569 sl7581 5mes | S15: -12 H2"
+      "raw": "S15: s 7569 sl7581 5mes | S15: -12 H2",
+      "seq": 105
     },
     {
       "id": "S16",
@@ -2075,6 +2072,86 @@
       "review": false,
       "raw": "S38: b 7405.75  2mes | S38: sl7398 | S38: exit | S38: +2",
       "seq": 129
+    },
+    {
+      "id": "S24",
+      "series": "live",
+      "direction": "long",
+      "entry": 7442,
+      "stop": 7434,
+      "target": null,
+      "points": 9,
+      "size": "5mes",
+      "date": "2026-06-08",
+      "time": "2026-06-08T09:24:11",
+      "status": "win",
+      "review": false,
+      "raw": "S24: b 7442 5mes | S24: sl7434 | S24: +9 H3",
+      "seq": 130
+    },
+    {
+      "id": "S39",
+      "series": "live",
+      "direction": "long",
+      "entry": 7571,
+      "stop": null,
+      "target": null,
+      "points": 4,
+      "size": null,
+      "date": "2026-06-15",
+      "time": "2026-06-15T12:11:14",
+      "status": "win",
+      "review": false,
+      "raw": "S39: b 7571 | S39: +4  H3",
+      "seq": 131
+    },
+    {
+      "id": "S40",
+      "series": "live",
+      "direction": "long",
+      "entry": 7633,
+      "stop": null,
+      "target": null,
+      "points": -5,
+      "size": "5mes",
+      "date": "2026-06-15",
+      "time": "2026-06-15T14:16:47",
+      "status": "loss",
+      "review": false,
+      "raw": "S40: b 7633 5mes | S40: -5 H3",
+      "seq": 132
+    },
+    {
+      "id": "S41",
+      "series": "live",
+      "direction": "short",
+      "entry": 7535,
+      "stop": 7536,
+      "target": null,
+      "points": 4,
+      "size": null,
+      "date": "2026-06-16",
+      "time": "2026-06-16T08:35:15",
+      "status": "win",
+      "review": false,
+      "raw": "S41: s 7535 sl7536 | S41: exit | S41: +4 H3",
+      "seq": 133
+    },
+    {
+      "id": "S42",
+      "series": "live",
+      "direction": null,
+      "entry": null,
+      "stop": null,
+      "target": null,
+      "points": 2,
+      "size": null,
+      "date": "2026-06-17",
+      "time": "2026-06-17T09:03:34",
+      "status": "win",
+      "review": true,
+      "raw": "S42: +2",
+      "seq": 134
     }
   ]
 }
